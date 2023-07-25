@@ -59,6 +59,29 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/alamat/provinsi', [AlamatController::class, 'index'])->name('alamat');
+    Route::post('/simpan_provinsi', [AlamatController::class, 'simpan_provinsi'])->name('simpan_provinsi');
+    Route::delete('/hapus_provinsi', [AlamatController::class, 'hapus_provinsi'])->name('hapus_provinsi');
+    
+    Route::post('/get_kabupaten', [AlamatController::class, 'get_kabupaten'])->name('get_kabupaten');
+    Route::post('/simpan_kabupaten', [AlamatController::class, 'simpan_kabupaten'])->name('simpan_kabupaten');
+    Route::delete('/hapus_kabupaten', [AlamatController::class, 'hapus_kabupaten'])->name('hapus_kabupaten');
+    
+    Route::post('/get_kecamatan', [AlamatController::class, 'get_kecamatan'])->name('get_kecamatan');
+    Route::post('/simpan_kecamatan', [AlamatController::class, 'simpan_kecamatan'])->name('simpan_kecamatan');
+    Route::delete('/hapus_kecamatan', [AlamatController::class, 'hapus_kecamatan'])->name('hapus_kecamatan');
+    
+    Route::post('/get_desa', [AlamatController::class, 'get_desa'])->name('get_desa');
+    Route::post('/simpan_desa', [AlamatController::class, 'simpan_desa'])->name('simpan_desa');
+    Route::delete('/hapus_desa', [AlamatController::class, 'hapus_desa'])->name('hapus_desa');
+
+
+
+
+
+
+
+
+
 });
 
 Auth::routes();
