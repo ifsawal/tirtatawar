@@ -55,6 +55,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/detil_hakakses/{id}', [HakaksesController::class, 'detil_hakakses'])->name('detil_hakakses');
     Route::post('/simpan_hakakses', [HakaksesController::class, 'store'])->name('simpan_hakakses');
     Route::get('/hapus_detil_hakakses/{id_user}/{id_role}', [HakaksesController::class, 'destroy'])->name('hapus_detil_hakakses');
+
+
+
+    Route::get('/alamat/provinsi', [AlamatController::class, 'index'])->name('alamat');
 });
 
 Auth::routes();
