@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Role;
 
-use App\Http\Controllers\Controller;
-use App\Models\Role\Model_has_role;
-use App\Models\Role\Role;
 use App\Models\User;
+use App\Models\Role\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Role\Model_has_role;
+use App\Http\Controllers\Controller;
 
 class HakaksesController extends Controller
 {
@@ -44,7 +45,7 @@ class HakaksesController extends Controller
      */
     public function store(Request $request)
     {
-        $user=User::findOrFail($request->id_user);
+        $user = User::findOrFail($request->id_user);
 
         $user->assignRole($request->role);
 
@@ -79,8 +80,13 @@ class HakaksesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id_user, $id_role)
     {
-        //
+        $id_user = decrypt($id_user);
+        $id_role = decrypt($id_role);
+        DB::table('model_has_roles')->where('role_id', $id_role)->where('model_id', '=', $id_user)->delete();
+
+        flash('Sukses terhapus.');
+        return back();
     }
 }
