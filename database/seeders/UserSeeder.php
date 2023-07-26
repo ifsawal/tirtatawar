@@ -21,21 +21,21 @@ class UserSeeder extends Seeder
             'email' => 'ifsawal@gmail.com',
             'password' => bcrypt('1'),
             'j_permisi' => 10,
-            'pdam_id' => 4,
+            'pdam_id' => 1,
         ]);
         $user2 = User::create([
             'nama' => 'aa',
             'email' => 'aa@gmail.com',
             'password' => bcrypt('1'),
             'j_permisi' => 10,
-            'pdam_id' => 4,
+            'pdam_id' => 1,
         ]);
         $user3 = User::create([
             'nama' => 'bb',
             'email' => 'bb@gmail.com',
             'password' => bcrypt('1'),
             'j_permisi' => 10,
-            'pdam_id' => 4,
+            'pdam_id' => 1,
         ]);
 
 
