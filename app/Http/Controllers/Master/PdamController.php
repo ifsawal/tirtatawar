@@ -41,7 +41,8 @@ class PdamController extends Controller
 
     public function update(Request $request)
     {
-        $pdam =  Pdam::findOrFail($request->id);
+        $id = decrypt($request->id);
+        $pdam =  Pdam::findOrFail($id);
 
         $pdam->pdam = $request->pdam;
         $pdam->save();

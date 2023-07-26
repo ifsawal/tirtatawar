@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\Master\AlamatController;
-use App\Http\Controllers\Master\PdamController;
-use App\Http\Controllers\Role\HakaksesController;
+use App\Models\Role\Hakakses;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Role\IzinController;
 use App\Http\Controllers\Role\RoleController;
-use App\Models\Role\Hakakses;
+use App\Http\Controllers\Master\PdamController;
+use App\Http\Controllers\Master\UserController;
+use App\Http\Controllers\Master\AlamatController;
+use App\Http\Controllers\Role\HakaksesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,6 +86,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/user', [UserController::class, 'index'])->name('user');
     Route::post('/tambah_user', [UserController::class, 'store'])->name('tambah_user');
     Route::get('/edit_user/{id}', [UserController::class, 'edit'])->name('edit_user');
+    Route::get('/hapus_user/{id}', [UserController::class, 'destroy'])->name('hapus_user');
+    Route::post('/update_user', [UserController::class, 'update'])->name('update_user');
 });
 
 Auth::routes();

@@ -28,23 +28,47 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <p></p>
+
 
 
                     <form method=post action="{{ isset($user_e) ? route('update_user') : route('tambah_user') }}"
                         class="form-horizontal form-label-left">
                         @csrf
                         @if (isset($user_e))
-                            <input type=hidden name=id value="{{ $user_e->id }}">
+                            <input type=hidden name=id value="{{ encrypt($user_e->id) }}">
                         @endif
                         <div class="form-group row">
-                            <label class="control-label col-md-3 col-sm-3 ">Role</label>
+                            <label class="control-label col-md-3 col-sm-3 ">Nama pengguna</label>
                             <div class="col-md-9 col-sm-9 ">
-                                <input name=user type="text" class="form-control"
-                                    value="{{ isset($user_e->user) ? $user_e->user : '' }}" placeholder="User">
-                                {!! $errors->first('user') !!}
+                                <input name=user type="text" class="form-control" required
+                                    value="{{ isset($user_e->nama) ? $user_e->nama : '' }}" placeholder="User">
+                                {!! $errors->first('nama') !!}
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-3 col-sm-3 ">Email</label>
+                            <div class="col-md-9 col-sm-9 ">
+                                <input name=email type="email" class="form-control has-feedback-left  "
+                                    value="{{ isset($user_e->email) ? $user_e->email : '' }}" placeholder="Email" required>
+                                {!! $errors->first('email') !!}
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="control-label col-md-3 col-sm-3 ">Email</label>
+                            <div class="col-md-9 col-sm-9 ">
+                                <select class="select2_single form-control" tabindex="-1" name=pdam>
+                                    @if (isset($pdam_terpilih))
+                                        <option value="{{ encrypt($pdam_terpilih[0]->id) }}">{{ $pdam_terpilih[0]->pdam }}
+                                        </option>
+                                    @endif
+                                    @foreach ($pdam as $p)
+                                        <option value="{{ encrypt($p->id) }}">{{ $p->pdam }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
 
                         <div class="ln_solid"></div>
                         <div class="form-group">
@@ -65,7 +89,7 @@
         </div>
 
         <!-- daftar user -->
-        @if (isset($pdam))
+        @if (isset($user))
             <div class="col-md-6 col-sm-12  ">
                 <div class="x_panel">
                     <div class="x_title">
@@ -96,21 +120,23 @@
                                 <thead>
                                     <tr>
                                         <td>No</td>
-                                        <td>Nama PDAM</td>
+                                        <td>Nama</td>
+                                        <td>Email</td>
                                         <td>Aksi</td>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($pdam as $p)
+                                    @foreach ($user as $u)
                                         <tr>
                                             <td></td>
-                                            <td>{{ $p->pdam }}</td>
+                                            <td>{{ $u->nama }}</td>
+                                            <td>{{ $u->email }}</td>
 
                                             <td>
-                                                <a href="{{ route('edit_pdam', encrypt($p->id)) }}"><i
+                                                <a href="{{ route('edit_user', encrypt($u->id)) }}"><i
                                                         class="fa fa-pencil"></i></a>
                                                 &nbsp&nbsp
-                                                <a href="{{ route('hapus_pdam', encrypt($p->id)) }}"><i
+                                                <a href="{{ route('hapus_user', encrypt($u->id)) }}"><i
                                                         class="fa fa-close"></i></a>
 
 
@@ -132,7 +158,7 @@
 
 
 
-        <!-- jika hak akses belum di pilih user -->
+
 
 
 
