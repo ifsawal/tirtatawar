@@ -7,8 +7,8 @@
                                         @role('super_admin')
                                             <li><a href="{{ route('alamat') }}">Alamat</a></li>
                                         @endrole
-                                        <li><a href="#level1_1">PDAM</a>
-                                        <li><a href="#level1_1">User</a>
+                                        <li><a href="{{ route('pdam') }}">PDAM</a>
+                                        <li><a href="{{ route('user') }}">User</a>
                                         <li><a>Level One<span class="fa fa-chevron-down"></span></a>
                                         <li><a>Level One<span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">

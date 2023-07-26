@@ -61,11 +61,11 @@ class AlamatController extends Controller
 
     public function simpan_kecamatan(Request $request)
     {
-        $id_kab=$request->id_kab;
+        $id_kab = $request->id_kab;
         try {
             $data = $request->validate([
                 'nama' => 'required',
-                'id_kab'=>'required',
+                'id_kab' => 'required',
             ]);
             $kecamatan = new Kecamatan();
             $kecamatan->kecamatan = $request->nama;
@@ -103,11 +103,11 @@ class AlamatController extends Controller
 
     public function simpan_desa(Request $request)
     {
-        $id_kec=$request->id_kec;
+        $id_kec = $request->id_kec;
         try {
             $data = $request->validate([
                 'nama' => 'required',
-                'id_kec'=>'required',
+                'id_kec' => 'required',
             ]);
             $desa = new Desa();
             $desa->desa = $request->nama;
@@ -146,11 +146,11 @@ class AlamatController extends Controller
 
     public function simpan_kabupaten(Request $request)
     {
-        $id_pro=decrypt($request->id_pro);
+        $id_pro = decrypt($request->id_pro);
         try {
             $data = $request->validate([
                 'nama' => 'required',
-                'id_pro'=>'required',
+                'id_pro' => 'required',
             ]);
             $kabupaten = new Kabupaten();
             $kabupaten->kabupaten = $request->nama;
