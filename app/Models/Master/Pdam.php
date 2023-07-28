@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pdam extends Model
 {
     use HasFactory;
+
+
+
 }

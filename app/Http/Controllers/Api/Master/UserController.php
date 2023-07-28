@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Master;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\Api\Master\UserResource;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -64,12 +64,14 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        $user = User::findOrFail($id);
+        // $user = User::with('pdam:id,pdam')->findOrFail($id);  // dengan relasa
+        $user = User::findOrFail($id); //tanpa relasi
+        // $user = User::all();
         return response()->json([
             'sukses' => true,
             'pesan' => "ditemukan",
-            'data' => $user,
-        ], 200);
+            'data' => new UserResource($user),
+        ]); 
     }
 
     /**
