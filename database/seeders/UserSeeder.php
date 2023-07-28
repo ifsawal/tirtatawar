@@ -56,10 +56,23 @@ class UserSeeder extends Seeder
         $p_edit = Permission::create(['name' => 'edit permisi', 'guard_name' => 'web']);
         $p_hapus = Permission::create(['name' => 'hapus permisi', 'guard_name' => 'web']);
 
+        //role-permisi
         $rp = Permission::create(['name' => 'lihat rp', 'guard_name' => 'web']);
         $rp_tambah = Permission::create(['name' => 'tambah rp', 'guard_name' => 'web']);
         $rp_edit = Permission::create(['name' => 'edit rp', 'guard_name' => 'web']);
         $rp_hapus = Permission::create(['name' => 'hapus rp', 'guard_name' => 'web']);
+
+        //user
+        $user = Permission::create(['name' => 'lihat user', 'guard_name' => 'web']);
+        $user_tambah = Permission::create(['name' => 'tambah user', 'guard_name' => 'web']);
+        $user_edit = Permission::create(['name' => 'edit user', 'guard_name' => 'web']);
+        $user_hapus = Permission::create(['name' => 'hapus user', 'guard_name' => 'web']);
+
+        //user
+        $pdam = Permission::create(['name' => 'lihat pdam', 'guard_name' => 'web']);
+        $pdam_tambah = Permission::create(['name' => 'tambah pdam', 'guard_name' => 'web']);
+        $pdam_edit = Permission::create(['name' => 'edit pdam', 'guard_name' => 'web']);
+        $pdam_hapus = Permission::create(['name' => 'hapus pdam', 'guard_name' => 'web']);
 
         $role->givePermissionTo(Permission::all());
 

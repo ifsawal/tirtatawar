@@ -3,38 +3,55 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Models\User;
-
+use App\Models\Role\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+
     public function login(Request $request)
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()
-                ->json(['sukses'=>false ,'pesan' => 'Unauthorized'], 401);
+                ->json(['sukses' => false, 'pesan' => 'Unauthorized'], 401);
         }
 
         $user = User::where('email', $request['email'])->firstOrFail();
+        $role = $user->getRoleNames();
+        $col = collect($user->getAllPermissions());
+        $permisi = $col->map(function ($col) {
+            return collect($col->toArray())
+                ->only(['id', 'name'])
+                ->all();
+        });
+        $jumlah_permisi = count($col);
+        $user->j_permisi = $jumlah_permisi;
+        $user->save();
 
         $token = $user->createToken('auth_token')->plainTextToken;
-
         return response()
             ->json([
                 'sukses' => true,
-                'pesan'=> "Login Berhasil",
-                'toke,'=>$token,
-                'email'=> $user->email, 
-            ]);
+                'pesan' => "Login Berhasil",
+                'token,' => $token,
+                'email' => $user->email,
+                'j_permisi' => $jumlah_permisi,
+                'permisi' => $permisi,
+            ], 201);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        dd($request->all());
+        // auth()->user()->tokens()->delete();
+        Auth::user()->tokens()->delete();
+        return response()
+            ->json([
+                'sukses' => true,
+                'pesan' => "Logout sukses...",
+            ], 204);
     }
 
     public function daftar(Request $request)
