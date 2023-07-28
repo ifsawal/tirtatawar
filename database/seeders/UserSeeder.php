@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Carbon\Carbon;
 use PhpParser\Node\Expr\New_;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -21,6 +22,7 @@ class UserSeeder extends Seeder
             'email' => 'ifsawal@gmail.com',
             'password' => bcrypt('1'),
             'j_permisi' => 10,
+            'email_verified_at'=> Carbon::now(),
             'pdam_id' => 1,
         ]);
         $user2 = User::create([

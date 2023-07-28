@@ -20,6 +20,14 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request['email'])->firstOrFail();
+        if ($user->email_verified_at === NULL) {
+            return response()
+                ->json([
+                    'sukses' => false,
+                    'pesan' => "Email belum disetujui...",
+                ], 401);
+        }
+
         $role = $user->getRoleNames();
         $col = collect($user->getAllPermissions());
         $permisi = $col->map(function ($col) {
@@ -27,6 +35,7 @@ class AuthController extends Controller
                 ->only(['id', 'name'])
                 ->all();
         });
+
         $jumlah_permisi = count($col);
         $user->j_permisi = $jumlah_permisi;
         $user->save();

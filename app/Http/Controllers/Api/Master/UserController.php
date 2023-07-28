@@ -29,24 +29,24 @@ class UserController extends Controller
     public function store(Request $request)
     {
 
-        // $this->validate($request, [
-        //     'nama' => 'required|min:4',
-        //     'email' => 'required|email|unique:users,email',
-        //     'password' => 'required|min:4',
-        // ]);
+        $this->validate($request, [
+            'nama' => 'required|min:4',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:4',
+        ]);
 
-        // $user = User::create([
-        //     'nama' => $request->nama,
-        //     'email' => $request->email,
-        //     'password' => bcrypt($request->password),
-        //     'j_permisi' => 0,
-        // ]);
+        $user = User::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'j_permisi' => 0,
+        ]);
 
 
-        // return response()->json([
-        //     'sukses' => true,
-        //     'pesan' => "Pendaftaran berhasil...",
-        // ], 201);
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Pendaftaran berhasil...",
+        ], 201);
     }
 
     /**
