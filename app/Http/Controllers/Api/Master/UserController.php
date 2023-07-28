@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Master;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -62,15 +64,41 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "ditemukan",
+            'data' => $user,
+        ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|min:4',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'required|min:4',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'sukses' => 0,
+                'pesan' => $validator->errors(),
+            ]);
+        }
+
+        $user = User::findOrFail($id);
+        $user->nama = $request->nama;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->save();
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Perubahan berhasil...",
+        ], 201);
     }
 
     /**
@@ -78,6 +106,11 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->delete();
+        return response()->json([
+            'sukses' => 1,
+            'pesan' => 'Sukses Terhapus...',
+        ], 204);
     }
 }
