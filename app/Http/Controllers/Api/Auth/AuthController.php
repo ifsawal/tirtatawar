@@ -22,7 +22,7 @@ class AuthController extends Controller
                 ->json(['sukses' => false, 'pesan' => 'Login gagal...'], 401);
         }
 
-        $user = User::where('email', $request['email'])->firstOrFail();
+        $user = User::with('pdam:id,pdam')->where('email', $request['email'])->firstOrFail();
         if ($user->email_verified_at === NULL) {
             return response()
                 ->json([
@@ -51,7 +51,8 @@ class AuthController extends Controller
                 'token' => $token,
                 'email' => $user->email,
                 'nama' => $user->nama,
-                'role' => $role,
+                'role' => $role[0],
+                'pdam' => $user->pdam->pdam,
                 'j_permisi' => $jumlah_permisi,
                 'permisi' => $permisi,
             ], 201);
