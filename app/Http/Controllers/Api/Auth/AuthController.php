@@ -14,9 +14,12 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+
+        // return $request['email'];
+
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()
-                ->json(['sukses' => false, 'pesan' => 'Unauthorized'], 401);
+                ->json(['sukses' => false, 'pesan' => 'Login gagal...'], 401);
         }
 
         $user = User::where('email', $request['email'])->firstOrFail();
@@ -45,16 +48,21 @@ class AuthController extends Controller
             ->json([
                 'sukses' => true,
                 'pesan' => "Login Berhasil",
-                'token,' => $token,
+                'token' => $token,
                 'email' => $user->email,
+                'nama' => $user->nama,
+                'role' => $role,
                 'j_permisi' => $jumlah_permisi,
                 'permisi' => $permisi,
             ], 201);
     }
 
+
+
     public function logout()
     {
         // auth()->user()->tokens()->delete();
+
         Auth::user()->tokens()->delete();
         return response()
             ->json([
