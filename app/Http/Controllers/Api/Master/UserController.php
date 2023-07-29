@@ -5,14 +5,31 @@ namespace App\Http\Controllers\Api\Master;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\Master\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\Api\Master\UserResource;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    public function ganti_p(Request $request)
+    {
+        // auth()->user()->tokens()->delete();
+
+        $user = Auth::user();
+        $user = User::findOrFail($user->id);
+        $user->password = bcrypt($request->password);
+        $user->save();
+        return response()
+            ->json([
+                'sukses' => true,
+                'pesan' => "Perubahan berhasil...",
+            ], 202);
+    }
+
     public function index()
     {
         //
@@ -47,7 +64,7 @@ class UserController extends Controller
 
         return response()->json([
             'sukses' => true,
-            'pesan' => "Pendaftaran berhasil...",
+            'pesan' => "Perubahan berhasil...",
         ], 201);
     }
 
@@ -71,7 +88,7 @@ class UserController extends Controller
             'sukses' => true,
             'pesan' => "ditemukan",
             'data' => new UserResource($user),
-        ]); 
+        ]);
     }
 
     /**
