@@ -59,6 +59,14 @@ class AlamatSeeder extends Seeder
             [
                 'desa' => 'Durin',
                 'kecamatan_id' => 3
+            ],
+            [
+                'desa' => 'Blang Kolak 1',
+                'kecamatan_id' => 2
+            ],
+            [
+                'desa' => 'Blang Kolak 2',
+                'kecamatan_id' => 2
             ]
         ]);
     }

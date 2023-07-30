@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\Models\Master\Pelanggan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Master\DesaController;
 use App\Http\Controllers\Api\Master\UserController;
 use App\Http\Controllers\Api\Master\PelangganController;
 
@@ -33,4 +34,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('/user', UserController::class);
     Route::post('/setujui', [PelangganController::class, 'setujui']);
     Route::resource('/pelanggan', PelangganController::class);
+
+    Route::get('/desa_di_kec/{id}', [DesaController::class, 'desa_di_kecamatan']);
 });
