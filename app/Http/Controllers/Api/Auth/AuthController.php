@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Models\User;
 use App\Models\Role\Role;
 use Illuminate\Http\Request;
+use App\Models\Master\Kabupaten;
+use App\Models\Master\Kecamatan;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -22,7 +24,7 @@ class AuthController extends Controller
                 ->json(['sukses' => false, 'pesan' => 'Login gagal...'], 401);
         }
 
-        $user = User::with('pdam:id,pdam')->where('email', $request['email'])->firstOrFail();
+        $user = User::with('pdam:id,pdam,nama,kabupaten_id')->where('email', $request['email'])->firstOrFail();
         if ($user->email_verified_at === NULL) {
             return response()
                 ->json([
@@ -39,6 +41,8 @@ class AuthController extends Controller
                 ->all();
         });
 
+        $kec = Kecamatan::where('kabupaten_id', $user->pdam->kabupaten_id)->get(['id', 'kecamatan']);
+
         $jumlah_permisi = count($col);
         $user->j_permisi = $jumlah_permisi;
         $user->save();
@@ -53,8 +57,10 @@ class AuthController extends Controller
                 'nama' => $user->nama,
                 'role' => $role[0],
                 'pdam' => $user->pdam->pdam,
+                'nama_pdam' => $user->pdam->nama,
                 'j_permisi' => $jumlah_permisi,
                 'permisi' => $permisi,
+                'kec' => $kec,
             ], 201);
     }
 

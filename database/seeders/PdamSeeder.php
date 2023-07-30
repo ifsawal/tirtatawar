@@ -15,6 +15,8 @@ class PdamSeeder extends Seeder
     {
         Pdam::create([
             'pdam' => 'PDAM Tirta Tawar',
+            'nama' => 'PDAM Tirta Tawar Aceh Tengah',
+            'kabupaten_id' => 1,
         ]);
     }
 }

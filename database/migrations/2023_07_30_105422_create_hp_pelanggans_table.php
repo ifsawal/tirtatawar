@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pdams', function (Blueprint $table) {
+        Schema::create('hp_pelanggans', function (Blueprint $table) {
             $table->id();
-            $table->string('pdam');
-            $table->string('nama')->nullable();
-            $table->unsignedBigInteger('kabupaten_id')->nullable();
-            $table->foreign('kabupaten_id')->references('id')->on('kabupatens')->onDelete('restrict')->onUpdate('cascade');
+            $table->string('nohp');
+            $table->string('aktif')->nullable();
+            $table->unsignedBigInteger('pelanggan_id')->nullable();
+            $table->foreign('pelanggan_id')->references('id')->on('pelanggans')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pdams');
+        Schema::dropIfExists('hp_pelanggans');
     }
 };
