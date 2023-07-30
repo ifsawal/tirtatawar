@@ -76,6 +76,13 @@ class UserSeeder extends Seeder
         $pdam_edit = Permission::create(['name' => 'edit pdam', 'guard_name' => 'web']);
         $pdam_hapus = Permission::create(['name' => 'hapus pdam', 'guard_name' => 'web']);
 
+        //pelanggan
+        $pelanggan = Permission::create(['name' => 'lihat pelanggan', 'guard_name' => 'web']);
+        $pelanggan_tambah = Permission::create(['name' => 'tambah pelanggan', 'guard_name' => 'web']);
+        $pelanggan_edit = Permission::create(['name' => 'edit pelanggan', 'guard_name' => 'web']);
+        $pelanggan_hapus = Permission::create(['name' => 'hapus pelanggan', 'guard_name' => 'web']);
+        $pelanggan_setujui = Permission::create(['name' => 'setujui pelanggan', 'guard_name' => 'web']);
+
         $role->givePermissionTo(Permission::all());
 
 

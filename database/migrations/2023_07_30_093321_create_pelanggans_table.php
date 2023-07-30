@@ -17,12 +17,18 @@ return new class extends Migration
             $table->string('nik')->nullable();
             $table->string('lat')->nullable();
             $table->string('long')->nullable();
+            $table->unsignedBigInteger('pdam_id');
+            $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('desa_id');
             $table->foreign('desa_id')->references('id')->on('desas')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            
+            $table->unsignedBigInteger('user_id_penyetuju')->nullable();
+            $table->foreign('user_id_penyetuju')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id_perubahan')->nullable();
             $table->foreign('user_id_perubahan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+
             $table->softDeletes();
             $table->timestamps();
         });

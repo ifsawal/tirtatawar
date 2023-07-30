@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Models\Master\Pelanggan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Master\UserController;
+use App\Http\Controllers\Api\Master\PelangganController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,4 +31,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/user/ganti_p', [UserController::class, 'ganti_p']);
     Route::resource('/user', UserController::class);
+    Route::post('/setujui', [PelangganController::class, 'setujui']);
+    Route::resource('/pelanggan', PelangganController::class);
 });
