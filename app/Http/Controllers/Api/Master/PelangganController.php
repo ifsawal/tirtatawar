@@ -24,17 +24,49 @@ class PelangganController extends Controller
 
     public function setujui(Request $request)
     {
-        $user_id=Auth::user()->id;
-        $pelanggan=Pelanggan::withTrashed()->findOrFail($request->id);
+        $user_id = Auth::user()->id;
+        $pelanggan = Pelanggan::withTrashed()->findOrFail($request->id);
         $pelanggan->restore();
-        $pelanggan->user_id_penyetuju=$user_id;
+        $pelanggan->user_id_penyetuju = $user_id;
         $pelanggan->save();
-        
+
         return response()->json([
             'sukses' => true,
             'pesan' => "Pendaftaran berhasil...",
             'id' => $pelanggan->id,
         ], 202);
+    }
+
+    public function cari(Request $request)
+    {
+        $user_id = Auth::user()->id;
+        $operator = "=";
+        ($request->tipe == "Nomor Pelanggan") ? $request->tipe = 'id' : '';
+        ($request->tipe == "nama") ? $operator = 'like' : '';
+        ($request->tipe == "nama") ? $request->kata =  '%' . $request->kata . '%' : '';
+
+        $user = User::with('pdam:id,pdam')->where('id', $user_id)->get();
+
+        if ($request->tipe == "nohp") {
+            $pelanggan = Pelanggan::whereHas('hp_pelanggan', function (Builder $query) {
+                $query->where('nohp', '=', $request->kata);
+            });
+        } else {
+            $pelanggan = Pelanggan::where($request->tipe, $operator, $request->kata)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->get();
+        }
+
+        if (count($pelanggan) <> 0) {
+            return response()->json([
+                'sukses' => true,
+                'pesan' => "Pendaftaran berhasil...",
+                'id' => $pelanggan,
+            ], 200);
+        } else {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Pelanggan tidak ditemukan...",
+            ], 404);
+        }
     }
     /**
      * Show the form for creating a new resource.
@@ -58,19 +90,20 @@ class PelangganController extends Controller
         ]);
 
         $pelanggan = new Pelanggan;
-        $pelanggan->nama=$request->nama;
-        $pelanggan->nik=$request->nik;
-        $pelanggan->pdam_id=$request->pdam_id;
-        $pelanggan->desa_id=$request->desa_id;
-        $pelanggan->user_id=$request->user_id;
-        $pelanggan->deleted_at=Carbon::now();
+        $pelanggan->nama = $request->nama;
+        $pelanggan->nik = $request->nik;
+        $pelanggan->kk = $request->kk;
+        $pelanggan->pdam_id = $request->pdam_id;
+        $pelanggan->desa_id = $request->desa_id;
+        $pelanggan->user_id = $request->user_id;
+        $pelanggan->deleted_at = Carbon::now();
         $pelanggan->save();
 
-        if(isset($request->nohp)){
-            $nohp= new HpPelanggan;
-            $nohp->nohp=$request->nohp;
-            $nohp->pelanggan_id=$pelanggan->id;
-            $nohp->aktif="Y";
+        if (isset($request->nohp)) {
+            $nohp = new HpPelanggan;
+            $nohp->nohp = $request->nohp;
+            $nohp->pelanggan_id = $pelanggan->id;
+            $nohp->aktif = "Y";
             $nohp->save();
         }
 
@@ -111,18 +144,18 @@ class PelangganController extends Controller
         ]);
 
         $pelanggan = Pelanggan::findOrFail($id);
-        $pelanggan->nama=$request->nama;
-        $pelanggan->nik=$request->nik;
-        $pelanggan->desa_id=$request->desa_id;
-        $pelanggan->user_id=$request->user_id;
-        $pelanggan->user_id_perubahan=Auth::user()->id;
+        $pelanggan->nama = $request->nama;
+        $pelanggan->nik = $request->nik;
+        $pelanggan->desa_id = $request->desa_id;
+        $pelanggan->user_id = $request->user_id;
+        $pelanggan->user_id_perubahan = Auth::user()->id;
         $pelanggan->save();
 
-        if(isset($request->nohp)){
-            $nohp= new HpPelanggan;
-            $nohp->nohp=$request->nohp;
-            $nohp->pelanggan_id=$pelanggan->id;
-            $nohp->aktif="Y";
+        if (isset($request->nohp) && !empty($request->nohp)) {
+            $nohp = new HpPelanggan;
+            $nohp->nohp = $request->nohp;
+            $nohp->pelanggan_id = $pelanggan->id;
+            $nohp->aktif = "Y";
             $nohp->save();
         }
 

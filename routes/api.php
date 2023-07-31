@@ -32,6 +32,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/user/ganti_p', [UserController::class, 'ganti_p']);
     Route::resource('/user', UserController::class);
+
+    Route::post('/pelanggan/cari', [PelangganController::class, 'cari']);
     Route::post('/setujui', [PelangganController::class, 'setujui']);
     Route::resource('/pelanggan', PelangganController::class);
 

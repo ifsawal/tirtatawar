@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('nik')->nullable();
+            $table->string('kk')->nullable();
             $table->string('lat')->nullable();
             $table->string('long')->nullable();
             $table->unsignedBigInteger('pdam_id');
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->foreign('desa_id')->references('id')->on('desas')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
-            
+
             $table->unsignedBigInteger('user_id_penyetuju')->nullable();
             $table->foreign('user_id_penyetuju')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id_perubahan')->nullable();
