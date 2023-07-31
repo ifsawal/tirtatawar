@@ -4,6 +4,8 @@ namespace App\Models\Master;
 
 use App\Models\User;
 use App\Models\Master\Desa;
+use App\Models\Master\Pdam;
+use App\Models\Master\Golongan;
 use App\Models\Master\HpPelanggan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,6 +30,21 @@ class Pelanggan extends Model
     public function user_perubahan()
     {
         return $this->belongsTo(User::class, 'user_id_perubahan', 'id');
+    }
+
+    public function pdam()
+    {
+        return $this->belongsTo(Pdam::class, 'pdam_id', 'id');
+    }
+
+    public function rute()
+    {
+        return $this->belongsTo(Rute::class, 'rute_id', 'id');
+    }
+
+    public function golongan()
+    {
+        return $this->belongsTo(Golongan::class, 'golongan_id', 'id');
     }
 
     public function hp_pelanggan()

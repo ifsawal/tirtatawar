@@ -18,6 +18,7 @@ class PelangganSeeder extends Seeder
         $pelanggan->nama = "Sawaludin";
         $pelanggan->nik = "11224546456";
         $pelanggan->kk = "4455662665";
+        $pelanggan->golongan_id = 1;
         $pelanggan->lat = "4.629504850910602";
         $pelanggan->long = "96.844175600882";
         $pelanggan->pdam_id = 1;
@@ -31,6 +32,8 @@ class PelangganSeeder extends Seeder
                 'nama' => 'Iwan Darita',
                 'nik' => "445565656",
                 'kk' => "456456215",
+                'golongan_id' => 1,
+
                 'lat' => "4.629504850910602",
                 'long' => "96.844175600882",
                 'pdam_id' => 1,
@@ -41,6 +44,7 @@ class PelangganSeeder extends Seeder
                 'nama' => 'Sulstri B',
                 'nik' => "445565656",
                 'kk' => "445565656",
+                'golongan_id' => 1,
                 'lat' => "4.629504850910602",
                 'long' => "96.844175600882",
                 'pdam_id' => 1,

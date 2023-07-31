@@ -41,18 +41,20 @@ class PelangganController extends Controller
     {
         $user_id = Auth::user()->id;
         $operator = "=";
-        ($request->tipe == "Nomor Pelanggan") ? $request->tipe = 'id' : '';
-        ($request->tipe == "nama") ? $operator = 'like' : '';
-        ($request->tipe == "nama") ? $request->kata =  '%' . $request->kata . '%' : '';
+        $tipe = $request->tipe;
+        $kata = $request->kata;
+        ($tipe == "Nomor Pelanggan") ? $tipe = 'id' : '';
+        ($tipe == "nama") ? $operator = 'like' : '';
+        ($tipe == "nama") ? $kata =  '%' . $kata . '%' : '';
 
         $user = User::with('pdam:id,pdam')->where('id', $user_id)->get();
 
-        if ($request->tipe == "nohp") {
-            $pelanggan = Pelanggan::whereHas('hp_pelanggan', function (Builder $query) {
-                $query->where('nohp', '=', $request->kata);
-            });
+        if ($tipe == "nohp") {
+            $pelanggan = Pelanggan::with('hp_pelanggan')->whereHas('hp_pelanggan', function ($q) use ($kata) {
+                $q->where('nohp', '=', $kata);
+            })->where('pdam_id', $user[0]->pdam->id)->get();
         } else {
-            $pelanggan = Pelanggan::where($request->tipe, $operator, $request->kata)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->get();
+            $pelanggan = Pelanggan::where($request->tipe, $operator, $kata)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->get();
         }
 
         if (count($pelanggan) <> 0) {
@@ -146,6 +148,9 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::findOrFail($id);
         $pelanggan->nama = $request->nama;
         $pelanggan->nik = $request->nik;
+        $pelanggan->kk = $request->kk;
+        $pelanggan->lat = $request->lat;
+        $pelanggan->long = $request->long;
         $pelanggan->desa_id = $request->desa_id;
         $pelanggan->user_id = $request->user_id;
         $pelanggan->user_id_perubahan = Auth::user()->id;
