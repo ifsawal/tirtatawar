@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Master\Kabupaten;
 use App\Models\Master\Kecamatan;
 use App\Http\Controllers\Controller;
+use App\Models\Master\Golongan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -42,6 +43,7 @@ class AuthController extends Controller
         });
 
         $kec = Kecamatan::where('kabupaten_id', $user->pdam->kabupaten_id)->get(['id', 'kecamatan']);
+        $golongan = Golongan::where('pdam_id', $user->pdam->id)->get(['id', 'golongan']);
 
         $jumlah_permisi = count($col);
         $user->j_permisi = $jumlah_permisi;
@@ -63,6 +65,7 @@ class AuthController extends Controller
                 'j_permisi' => $jumlah_permisi,
                 'permisi' => $permisi,
                 'kec' => $kec,
+                'golongan' => $golongan,
             ], 201);
     }
 

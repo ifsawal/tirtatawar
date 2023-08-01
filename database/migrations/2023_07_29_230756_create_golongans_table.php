@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('golongans', function (Blueprint $table) {
             $table->id();
             $table->string("golongan");
+            $table->string("jenis");
             $table->integer("harga");
             $table->integer("biaya");
             $table->unsignedBigInteger('pdam_id');

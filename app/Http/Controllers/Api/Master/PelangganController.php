@@ -86,6 +86,7 @@ class PelangganController extends Controller
         $this->validate($request, [
             'nama' => 'required|min:4',
             'nik' => 'required|min:16',
+            'gorongan_id' => 'required',
             'pdam_id' => 'required',
             'desa_id' => 'required',
             'user_id' => 'required',
@@ -95,6 +96,7 @@ class PelangganController extends Controller
         $pelanggan->nama = $request->nama;
         $pelanggan->nik = $request->nik;
         $pelanggan->kk = $request->kk;
+        $pelanggan->golongan_id = $request->golongan_id;
         $pelanggan->pdam_id = $request->pdam_id;
         $pelanggan->desa_id = $request->desa_id;
         $pelanggan->user_id = $request->user_id;
@@ -141,8 +143,9 @@ class PelangganController extends Controller
         $this->validate($request, [
             'nama' => 'required|min:4',
             'nik' => 'required|min:16',
+            'golongan_id' => 'required',
             'desa_id' => 'required',
-            'user_id' => 'required',
+            'user_id_perubahan' => 'required',
         ]);
 
         $pelanggan = Pelanggan::findOrFail($id);
