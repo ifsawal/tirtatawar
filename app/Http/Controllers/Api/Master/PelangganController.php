@@ -32,7 +32,7 @@ class PelangganController extends Controller
 
         return response()->json([
             'sukses' => true,
-            'pesan' => "Pendaftaran berhasil...",
+            'pesan' => "Pendaftaran disetujui...",
             'id' => $pelanggan->id,
         ], 202);
     }
@@ -86,7 +86,7 @@ class PelangganController extends Controller
         $this->validate($request, [
             'nama' => 'required|min:4',
             'nik' => 'required|min:16',
-            'gorongan_id' => 'required',
+            'golongan_id' => 'required',
             'pdam_id' => 'required',
             'desa_id' => 'required',
             'user_id' => 'required',
@@ -131,7 +131,9 @@ class PelangganController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user_id = Auth::user()->id;
+        $user = User::with('pdam:id,pdam')->where('id', $user_id)->get();
+        return  $pelanggan = Pelanggan::where('id', $id)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->get();
     }
 
     /**
@@ -155,7 +157,6 @@ class PelangganController extends Controller
         $pelanggan->lat = $request->lat;
         $pelanggan->long = $request->long;
         $pelanggan->desa_id = $request->desa_id;
-        $pelanggan->user_id = $request->user_id;
         $pelanggan->user_id_perubahan = Auth::user()->id;
         $pelanggan->save();
 

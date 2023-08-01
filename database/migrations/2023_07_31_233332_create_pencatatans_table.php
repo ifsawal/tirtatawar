@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->integer('awal');
             $table->integer('akhir');
+            $table->integer('pemakaian');
             $table->integer('bulan');
             $table->integer('tahun');
+            $table->boolean('photo')->nullable();
             $table->unsignedBigInteger('pelanggan_id');
             $table->foreign('pelanggan_id')->references('id')->on('pelanggans')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id');

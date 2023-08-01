@@ -24,6 +24,7 @@ class PelangganSeeder extends Seeder
         $pelanggan->pdam_id = 1;
         $pelanggan->desa_id = 3;
         $pelanggan->user_id = 1;
+        $pelanggan->user_id_penyetuju = 1;
         $pelanggan->save();
 
 
@@ -34,11 +35,12 @@ class PelangganSeeder extends Seeder
                 'kk' => "456456215",
                 'golongan_id' => 1,
 
-                'lat' => "4.629504850910602",
-                'long' => "96.844175600882",
+                'lat' => "",
+                'long' => "",
                 'pdam_id' => 1,
                 'desa_id' => 3,
                 'user_id' => 1,
+                'user_id_penyetuju' => 1,
             ],
             [
                 'nama' => 'Sulstri B',
@@ -48,8 +50,33 @@ class PelangganSeeder extends Seeder
                 'lat' => "4.629504850910602",
                 'long' => "96.844175600882",
                 'pdam_id' => 1,
-                'desa_id' => 3,
+                'desa_id' => 3, //kemili
                 'user_id' => 1,
+                'user_id_penyetuju' => 1,
+            ],
+            [
+                'nama' => 'Ucok B',
+                'nik' => "3435",
+                'kk' => "22245666",
+                'golongan_id' => 2,
+                'lat' => "4.629504850910602",
+                'long' => "96.844175600882",
+                'pdam_id' => 1,
+                'desa_id' => 3, //kemili
+                'user_id' => 1,
+                'user_id_penyetuju' => 1,
+            ],
+            [
+                'nama' => 'Arwin',
+                'nik' => "445565656",
+                'kk' => "445565656",
+                'golongan_id' => 1,
+                'lat' => "",
+                'long' => "",
+                'pdam_id' => 1,
+                'desa_id' => 1,  //pegasing
+                'user_id' => 1,
+                'user_id_penyetuju' => 1,
             ],
 
         ]);
