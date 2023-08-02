@@ -38,6 +38,10 @@ class PelangganController extends Controller
         ], 202);
     }
 
+    public function carisatu(Request $request)
+    {
+    }
+
     public function cari(Request $request)
     {
         $user_id = Auth::user()->id;
@@ -63,12 +67,16 @@ class PelangganController extends Controller
         if (count($pelanggan) <> 1 or $pelanggan[0]->lat == "" or $pelanggan[0]->long = "" or !isset($pelanggan[0]->hp_pelanggan[0]->nohp)) {
             $status = "Belum update";
         }
+        if (count($pelanggan) > 1) {
+            $status = "data 2";
+        }
 
         if (count($pelanggan) <> 0) {
             return response()->json([
                 'sukses' => true,
                 'pesan' => "Data ditemukan...",
                 'status' => $status,
+                'jumlah' => count($pelanggan),
                 'data' => $pelanggan,
             ], 200);
         } else {
