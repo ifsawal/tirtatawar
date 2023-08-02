@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\HpPelanggan;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\Master\PelangganResource;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -54,14 +55,21 @@ class PelangganController extends Controller
                 $q->where('nohp', '=', $kata);
             })->where('pdam_id', $user[0]->pdam->id)->get();
         } else {
-            $pelanggan = Pelanggan::where($request->tipe, $operator, $kata)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->get();
+            $pelanggan = Pelanggan::with('hp_pelanggan')
+                ->where($tipe, $operator, $kata)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->get();
+        }
+
+        $status = "";
+        if (count($pelanggan) <> 1 or $pelanggan[0]->lat == "" or $pelanggan[0]->long = "" or !isset($pelanggan[0]->hp_pelanggan[0]->nohp)) {
+            $status = "Belum update";
         }
 
         if (count($pelanggan) <> 0) {
             return response()->json([
                 'sukses' => true,
-                'pesan' => "Pendaftaran berhasil...",
-                'id' => $pelanggan,
+                'pesan' => "Data ditemukan...",
+                'status' => $status,
+                'data' => $pelanggan,
             ], 200);
         } else {
             return response()->json([
