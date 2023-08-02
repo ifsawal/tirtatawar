@@ -9,6 +9,7 @@ use App\Models\Master\Pelanggan;
 use App\Models\Master\HpPelanggan;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Master\PelangganResource;
+use App\Http\Resources\Api\Master\PelangganSatuResource;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -40,6 +41,21 @@ class PelangganController extends Controller
 
     public function carisatu(Request $request)
     {
+        $id = $request->id;
+        $pel = Pelanggan::with(
+            'user:id,nama',
+            'hp_pelanggan',
+            'pdam:id,pdam',
+            'desa:id,desa',
+            'golongan:id,golongan',
+            'rute:id,rute',
+            'user_perubahan:id,nama'
+        )->where('id', $id)->get();
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Data ditemukan...",
+            'data'=> $pel
+        ], 200);
     }
 
     public function cari(Request $request)
