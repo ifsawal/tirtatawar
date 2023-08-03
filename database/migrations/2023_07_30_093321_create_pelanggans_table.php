@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('long')->nullable();
             $table->unsignedBigInteger('pdam_id');
             $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
-            $table->unsignedBigInteger('desa_id');
+            $table->unsignedBigInteger('desa_id')->nullable();
             $table->foreign('desa_id')->references('id')->on('desas')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');

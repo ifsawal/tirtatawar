@@ -46,7 +46,7 @@ class PelangganController extends Controller
             'user:id,nama',
             'hp_pelanggan',
             'pdam:id,pdam',
-            'desa:id,desa',
+            'desa.kecamatan:id,kecamatan',
             'golongan:id,golongan',
             'rute:id,rute',
             'user_perubahan:id,nama'
@@ -54,7 +54,7 @@ class PelangganController extends Controller
         return response()->json([
             'sukses' => true,
             'pesan' => "Data ditemukan...",
-            'data'=> $pel
+            'data' => $pel
         ], 200);
     }
 

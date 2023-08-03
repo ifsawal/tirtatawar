@@ -20,6 +20,16 @@ class HpPelangganSeeder extends Seeder
                 'pelanggan_id' => 1,
             ],
             [
+                'nohp' => '085360055555',
+                'aktif' => 'Y',
+                'pelanggan_id' => 1,
+            ],
+            [
+                'nohp' => '085360055777',
+                'aktif' => 'Y',
+                'pelanggan_id' => 1,
+            ],
+            [
                 'nohp' => '082304086565',
                 'aktif' => 'Y',
                 'pelanggan_id' => 2,
