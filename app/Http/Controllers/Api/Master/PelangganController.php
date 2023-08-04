@@ -180,6 +180,7 @@ class PelangganController extends Controller
     {
 
         $this->validate($request, [
+            'id' => 'required',
             'lat' => 'required',
             'long' => 'required',
         ]);
