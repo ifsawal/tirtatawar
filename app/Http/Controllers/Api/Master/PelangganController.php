@@ -155,7 +155,12 @@ class PelangganController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $pel = Pelanggan::findOrFail($id);
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Detemukan...",
+            'data' => $pel,
+        ], 200);
     }
 
     /**
@@ -171,8 +176,29 @@ class PelangganController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    public function updatelokasi(Request $request)
+    {
+
+        $this->validate($request, [
+            'lat' => 'required',
+            'long' => 'required',
+        ]);
+
+        $pelanggan = Pelanggan::findOrFail($request->id);
+        $pelanggan->lat = $request->lat;
+        $pelanggan->long = $request->long;
+        $pelanggan->save();
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Perubahan berhasil...",
+        ], 202);
+    }
+
+
     public function update(Request $request, string $id)
     {
+
 
         $this->validate($request, [
             'nama' => 'required|min:4',
@@ -186,6 +212,7 @@ class PelangganController extends Controller
         $pelanggan->nama = $request->nama;
         $pelanggan->nik = $request->nik;
         $pelanggan->kk = $request->kk;
+        $pelanggan->golongan_id = $request->golongan_id;
         $pelanggan->lat = $request->lat;
         $pelanggan->long = $request->long;
         $pelanggan->desa_id = $request->desa_id;
