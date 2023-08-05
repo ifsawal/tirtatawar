@@ -24,6 +24,36 @@ class PelangganController extends Controller
     }
 
 
+    public function belumsetujui()
+    {
+        $user_id = Auth::user()->id;
+        $user = User::with('pdam:id,pdam')->where('id', $user_id)->get();
+
+        $belum = Pelanggan::with(
+            'desa',
+            'desa.kecamatan:id,kecamatan'
+        )
+            ->withTrashed()->where('user_id_penyetuju', '=', NULL)->where('pdam_id', $user[0]->pdam->id)->get();
+
+
+        if (count($belum) == 0) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Data tidak ditemukan...",
+            ], 404);
+        }
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Pendaftaran disetujui...",
+            'jumlah' => count($belum),
+            'data' => $belum,
+        ], 200);
+    }
+
+
+
+
     public function setujui(Request $request)
     {
         $user_id = Auth::user()->id;
@@ -41,6 +71,9 @@ class PelangganController extends Controller
 
     public function carisatu(Request $request)
     {
+        $user_id = Auth::user()->id;
+        $user = User::with('pdam:id,pdam')->where('id', $user_id)->get();
+
         $id = $request->id;
         $pel = Pelanggan::with(
             'user:id,nama',
@@ -50,7 +83,8 @@ class PelangganController extends Controller
             'golongan:id,golongan',
             'rute:id,rute',
             'user_perubahan:id,nama'
-        )->where('id', $id)->get();
+        )->where('id', $id)->where('pdam_id', $user[0]->pdam->id)->get();
+
         return response()->json([
             'sukses' => true,
             'pesan' => "Data ditemukan...",
