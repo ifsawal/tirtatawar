@@ -6,11 +6,14 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\Master\Pelanggan;
+use App\Models\Master\PhotoRumah;
 use App\Models\Master\HpPelanggan;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use App\Http\Resources\Api\Master\PelangganResource;
 use App\Http\Resources\Api\Master\PelangganSatuResource;
-use Illuminate\Support\Facades\Auth;
 
 
 class PelangganController extends Controller
@@ -147,6 +150,57 @@ class PelangganController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    public function deletegambarrumah(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required',
+        ]);
+        $user_id = Auth::user()->id;
+
+        $photo = PhotoRumah::findOrFail($request->id);
+        if ($photo->delete()) {
+            File::delete('files/rumah/'.$user_id.'/' . $photo->id.'.jpg');
+
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Sukses menghapus..."
+            ],204);
+
+        }
+    }
+
+    public function uploadgambarrumah(Request $request)
+    {
+
+        $this->validate(
+            $request,
+            [
+                'id' => 'required',
+                'file' => 'required|image|mimes:jpg|max:1048',
+            ],
+            [
+                "file.required" => "File belum diinput...",
+            ],
+        );
+
+
+        $photo = new PhotoRumah;
+        $photo->pelanggan_id = $request->id;
+        $photo->save();
+
+        $user_id = Auth::user()->id;
+        $file = $request->file('file');
+
+        $tempatfile = public_path() . '/files/rumah/' . $user_id . '/';
+        $nama = $photo->id . '.' . $file->extension();
+        $file->move($tempatfile, $nama);
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Berhasil upload..."
+        ],201);
+    }
+
     public function store(Request $request)
     {
         $this->validate($request, [
