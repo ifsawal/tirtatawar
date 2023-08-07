@@ -148,8 +148,8 @@ class PelangganController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
+    /**  
+     * Store a newly created resource in storage. fdasfdas
      */
     public function deletegambarrumah(Request $request)
     {
