@@ -12,9 +12,10 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Console\Input\Input;
 use App\Http\Resources\Api\Master\PelangganResource;
 use App\Http\Resources\Api\Master\PelangganSatuResource;
-
 
 class PelangganController extends Controller
 {
@@ -159,29 +160,17 @@ class PelangganController extends Controller
 
         $photo = PhotoRumah::findOrFail($request->id);
         if ($photo->delete()) {
-            File::delete('files/rumah/'.$user_id.'/' . $photo->id.'.jpg');
+            File::delete('files/rumah/' . $photo->pelanggan_id . '/' . $photo->id . '.jpg');
 
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Sukses menghapus..."
-            ],204);
-
+            ], 204);
         }
     }
 
-    public function uploadgambarrumah(Request $request)
+    public function uploadgambarrumah(Request $request, $id)
     {
-
-        $this->validate(
-            $request,
-            [
-                'id' => 'required',
-                'file' => 'required|image|mimes:jpg|max:1048',
-            ],
-            [
-                "file.required" => "File belum diinput...",
-            ],
-        );
 
 
         $photo = new PhotoRumah;
@@ -189,16 +178,25 @@ class PelangganController extends Controller
         $photo->save();
 
         $user_id = Auth::user()->id;
-        $file = $request->file('file');
 
-        $tempatfile = public_path() . '/files/rumah/' . $user_id . '/';
-        $nama = $photo->id . '.' . $file->extension();
-        $file->move($tempatfile, $nama);
+        $data = file_get_contents('php://input');
+        $path = public_path('files/rumah/' . $id);
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0777, true, true);
+        }
 
-        return response()->json([
-            "sukses" => true,
-            "pesan" => "Berhasil upload..."
-        ],201);
+        if (!(file_put_contents(public_path() . '/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data) === FALSE)) {
+
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Berhasil upload..."
+            ], 201);
+        } else {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Gagal upload..."
+            ], 404);
+        }
     }
 
     public function store(Request $request)
