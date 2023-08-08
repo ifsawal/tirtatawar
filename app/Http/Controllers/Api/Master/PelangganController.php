@@ -181,14 +181,14 @@ class PelangganController extends Controller
         $user_id = Auth::user()->id;
 
         $data = file_get_contents('php://input');
-        $path = storage_path('app/files/rumah/' . $id);
+        $path = public_path('files/rumah/' . $id);
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
 
         // file_put_contents(storage_path() . '/app/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data);
 
-        if (!(file_put_contents(storage_path() . '/app/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data) === FALSE)) {
+        if (!(file_put_contents(public_path() . '/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data) === FALSE)) {
 
             return response()->json([
                 "sukses" => true,
