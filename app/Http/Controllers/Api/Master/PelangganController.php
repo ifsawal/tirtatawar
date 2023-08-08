@@ -17,6 +17,7 @@ use Symfony\Component\Console\Input\Input;
 use App\Http\Resources\Api\Master\PelangganResource;
 use App\Http\Resources\Api\Master\PelangganSatuResource;
 
+
 class PelangganController extends Controller
 {
     /**
@@ -180,12 +181,14 @@ class PelangganController extends Controller
         $user_id = Auth::user()->id;
 
         $data = file_get_contents('php://input');
-        $path = public_path('files/rumah/' . $id);
+        $path = storage_path('app/files/rumah/' . $id);
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
 
-        if (!(file_put_contents(public_path() . '/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data) === FALSE)) {
+        // file_put_contents(storage_path() . '/app/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data);
+
+        if (!(file_put_contents(storage_path() . '/app/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data) === FALSE)) {
 
             return response()->json([
                 "sukses" => true,
