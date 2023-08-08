@@ -183,7 +183,7 @@ class PelangganController extends Controller
         $data = file_get_contents('php://input');
         $path = public_path('files/rumah/' . $id);
         if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0777, true, true);
+            File::makeDirectory($path, 777, true, true);
         }
 
         // file_put_contents(storage_path() . '/app/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data);
