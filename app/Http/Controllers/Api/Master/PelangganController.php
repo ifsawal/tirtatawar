@@ -157,7 +157,7 @@ class PelangganController extends Controller
 
         $photo = PhotoRumah::findOrFail($request->id);
         if ($photo->delete()) {
-            File::delete('files2/rumah/' . $photo->pelanggan_id . '/' . $photo->id . '.jpg');
+            File::delete(public_path() . '/files2/rumah/' . $photo->pelanggan_id . '/' . $photo->id . '.jpg');
 
             return response()->json([
                 "sukses" => true,
