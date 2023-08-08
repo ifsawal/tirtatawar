@@ -12,10 +12,6 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\Console\Input\Input;
-use App\Http\Resources\Api\Master\PelangganResource;
-use App\Http\Resources\Api\Master\PelangganSatuResource;
 
 
 class PelangganController extends Controller
@@ -173,35 +169,43 @@ class PelangganController extends Controller
     public function uploadgambarrumah(Request $request, $id)
     {
 
-        return public_path();
+        DB::beginTransaction();
+
+        try {
+            $photo = new PhotoRumah;
+            $photo->pelanggan_id = $request->id;
+            $photo->save();
+
+            if (!File::isDirectory(public_path() . '/files2')) {
+                File::makeDirectory(public_path() . '/files2', 0777, true, true);
+            }
+            if (!File::isDirectory(public_path() . '/files2/rumah')) {
+                File::makeDirectory(public_path() . '/files2/rumah', 0777, true, true);
+            }
+            if (!File::isDirectory(public_path() . '/files2/rumah/' . $id)) {
+                File::makeDirectory(public_path() . '/files2/rumah/' . $id, 0777, true, true);
+            }
 
 
-        // $photo = new PhotoRumah;
-        // $photo->pelanggan_id = $request->id;
-        // $photo->save();
+            $plainText = base64_decode(str_replace(array('-', '_', ' ', '\n'), array('+', '/', '+', ' '), $request->file));
 
-        // $user_id = Auth::user()->id;
+            $ifp = fopen(public_path() . '/files2/rumah/' . $id . '/' . $photo->id . '.jpg', "wb");
+            fwrite($ifp,  $plainText);
+            fclose($ifp);
 
-        // $data = file_get_contents('php://input');
-        // $path = public_path('files/rumah/' . $id);
-        // if (!File::isDirectory($path)) {
-        //     File::makeDirectory($path, 777, true, true);
-        // }
+            DB::commit();
 
-        // //  // file_put_contents(storage_path() . '/app/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data);
-
-        // if (!(file_put_contents(public_path() . '/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data) === FALSE)) {
-
-        //     return response()->json([
-        //         "sukses" => true,
-        //         "pesan" => "Berhasil upload..."
-        //     ], 201);
-        // } else {
-        //     return response()->json([
-        //         "sukses" => false,
-        //         "pesan" => "Gagal upload..."
-        //     ], 404);
-        // }
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Berhasil upload..."
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Gagal upload..."
+            ], 404);
+        }
     }
 
     public function store(Request $request)
