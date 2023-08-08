@@ -173,33 +173,35 @@ class PelangganController extends Controller
     public function uploadgambarrumah(Request $request, $id)
     {
 
+        return public_path();
 
-        $photo = new PhotoRumah;
-        $photo->pelanggan_id = $request->id;
-        $photo->save();
 
-        $user_id = Auth::user()->id;
+        // $photo = new PhotoRumah;
+        // $photo->pelanggan_id = $request->id;
+        // $photo->save();
 
-        $data = file_get_contents('php://input');
-        $path = public_path('files/rumah/' . $id);
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 777, true, true);
-        }
+        // $user_id = Auth::user()->id;
 
-        // file_put_contents(storage_path() . '/app/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data);
+        // $data = file_get_contents('php://input');
+        // $path = public_path('files/rumah/' . $id);
+        // if (!File::isDirectory($path)) {
+        //     File::makeDirectory($path, 777, true, true);
+        // }
 
-        if (!(file_put_contents(public_path() . '/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data) === FALSE)) {
+        // //  // file_put_contents(storage_path() . '/app/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data);
 
-            return response()->json([
-                "sukses" => true,
-                "pesan" => "Berhasil upload..."
-            ], 201);
-        } else {
-            return response()->json([
-                "sukses" => false,
-                "pesan" => "Gagal upload..."
-            ], 404);
-        }
+        // if (!(file_put_contents(public_path() . '/files/rumah/' . $id . '/' . $photo->id . '.jpg', $data) === FALSE)) {
+
+        //     return response()->json([
+        //         "sukses" => true,
+        //         "pesan" => "Berhasil upload..."
+        //     ], 201);
+        // } else {
+        //     return response()->json([
+        //         "sukses" => false,
+        //         "pesan" => "Gagal upload..."
+        //     ], 404);
+        // }
     }
 
     public function store(Request $request)
