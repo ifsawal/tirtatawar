@@ -51,3 +51,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/desa_di_kec/{id}', [DesaController::class, 'desa_di_kecamatan']);
 });
+
+
+Route::get('/tampilphoto/{folder}/{nama}', [PhotoRumahController::class, 'tampilphoto']);

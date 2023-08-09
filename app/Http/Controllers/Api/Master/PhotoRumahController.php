@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Api\Master;
 
-use App\Http\Controllers\Controller;
-use App\Models\Master\PhotoRumah;
 use Illuminate\Http\Request;
+use App\Models\Master\PhotoRumah;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
 
 class PhotoRumahController extends Controller
 {
@@ -32,6 +33,12 @@ class PhotoRumahController extends Controller
     /**
      * Show the form for creating a new resource. fdsafds
      */
+    public function tampilphoto($folder, $nama)
+    {
+        $path = public_path() . '/files2/rumah/' . $folder . '/' . $nama . '.jpg';
+        return Response::download($path);
+    }
+
     public function create()
     {
         //
