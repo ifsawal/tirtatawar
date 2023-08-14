@@ -228,6 +228,9 @@ class PelangganController extends Controller
         $pelanggan->pdam_id = $request->pdam_id;
         $pelanggan->desa_id = $request->desa_id;
         $pelanggan->user_id = $request->user_id;
+        if ($pelanggan->rute_id <> "") {
+            $pelanggan->rute_id = $request->rute_id;
+        }
         $pelanggan->deleted_at = Carbon::now();
         $pelanggan->save();
 
@@ -302,6 +305,7 @@ class PelangganController extends Controller
             'nik' => 'required|min:16',
             'golongan_id' => 'required',
             'desa_id' => 'required',
+            'rute_id' => 'required',
             'user_id_perubahan' => 'required',
         ]);
 
@@ -313,6 +317,7 @@ class PelangganController extends Controller
         $pelanggan->lat = $request->lat;
         $pelanggan->long = $request->long;
         $pelanggan->desa_id = $request->desa_id;
+        $pelanggan->rute_id = $request->rute_id;
         $pelanggan->user_id_perubahan = Auth::user()->id;
         $pelanggan->save();
 

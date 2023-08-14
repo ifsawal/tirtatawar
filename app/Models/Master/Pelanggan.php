@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Master\Desa;
 use App\Models\Master\Pdam;
 use App\Models\Master\Golongan;
+use App\Models\Master\Pencatatan;
 use App\Models\Master\HpPelanggan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -50,5 +51,9 @@ class Pelanggan extends Model
     public function hp_pelanggan()
     {
         return $this->hasMany(HpPelanggan::class, 'pelanggan_id', 'id');
+    }
+    public function pencatatan()
+    {
+        return $this->hasMany(Pencatatan::class, 'pelanggan_id', 'id');
     }
 }

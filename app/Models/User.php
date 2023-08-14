@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\Master\Pdam;
+use App\Models\Master\Pencatatan;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -50,7 +51,13 @@ class User extends Authenticatable
 
 
 
-    public function pdam(){
-        return $this->belongsTo(Pdam::class,'pdam_id','id');
+    public function pdam()
+    {
+        return $this->belongsTo(Pdam::class, 'pdam_id', 'id');
+    }
+
+    public function pencatatan()
+    {
+        return $this->hasMany(Pencatatan::class, 'user_id', 'id');
     }
 }

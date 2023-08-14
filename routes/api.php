@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Master\DesaController;
 use App\Http\Controllers\Api\Master\HpPelangganController;
 use App\Http\Controllers\Api\Master\UserController;
 use App\Http\Controllers\Api\Master\PelangganController;
+use App\Http\Controllers\Api\Master\PencatatanController;
 use App\Http\Controllers\Api\Master\PhotoRumahController;
 
 /*
@@ -37,6 +38,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/potorumahpelanggan/{id}', [PhotoRumahController::class, 'potorumahpelanggan']);
 
+
+    Route::post('/catat', [PencatatanController::class, 'store']);
 
     Route::post('/delete/gambar/rumah', [PelangganController::class, 'deletegambarrumah']);
     Route::post('/upload/gambar/rumah/{id}', [PelangganController::class, 'uploadgambarrumah']);

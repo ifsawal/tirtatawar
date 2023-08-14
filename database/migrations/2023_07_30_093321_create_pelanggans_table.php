@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('kk')->nullable();
             $table->string('lat')->nullable();
             $table->string('long')->nullable();
+            $table->string('email')->nullable();
+            $table->string('nolama')->nullable();
             $table->unsignedBigInteger('pdam_id');
             $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('desa_id')->nullable();

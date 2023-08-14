@@ -21,6 +21,7 @@ class PelangganSeeder extends Seeder
         $pelanggan->golongan_id = 1;
         $pelanggan->lat = "4.629504850910602";
         $pelanggan->long = "96.844175600882";
+        $pelanggan->nolama = 11122254;
         $pelanggan->pdam_id = 1;
         $pelanggan->desa_id = 3;
         $pelanggan->user_id = 1;
