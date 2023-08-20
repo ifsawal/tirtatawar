@@ -18,15 +18,15 @@ return new class extends Migration
             $table->integer('pemakaian');
             $table->integer('bulan');
             $table->integer('tahun');
-            $table->boolean('photo')->nullable();
+            $table->string('photo')->nullable();
             $table->unsignedBigInteger('pelanggan_id');
             $table->foreign('pelanggan_id')->references('id')->on('pelanggans')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
-           
+
             $table->unsignedBigInteger('user_id_perubahan')->nullable();
             $table->foreign('user_id_perubahan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
-            
+            $table->unique(array('bulan', 'tahun', 'pelanggan_id'));
             $table->softDeletes();
             $table->timestamps();
         });

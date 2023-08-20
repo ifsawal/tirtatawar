@@ -4,10 +4,13 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+
 use Illuminate\Database\Seeder;
 use Database\Seeders\RuteSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\AlamatSeeder;
+use Database\Seeders\WilayahSeeder;
+use Database\Seeders\GoldetilSeeder;
 use Database\Seeders\GolonganSeeder;
 use Database\Seeders\PelangganSeeder;
 use Database\Seeders\PencatatanSeeder;
@@ -28,7 +31,9 @@ class DatabaseSeeder extends Seeder
         $this->call([PelangganSeeder::class]);
         $this->call([HpPelangganSeeder::class]);
         $this->call([PencatatanSeeder::class]);
-        
+        $this->call([GoldetilSeeder::class]);
+        $this->call([WilayahSeeder::class]);
+
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',

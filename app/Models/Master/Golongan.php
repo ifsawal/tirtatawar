@@ -2,8 +2,9 @@
 
 namespace App\Models\Master;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Master\Goldetil;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Golongan extends Model
 {
@@ -13,5 +14,10 @@ class Golongan extends Model
     public function pelanggan()
     {
         return $this->hasMany(Pelanggan::class, 'golongan_id', 'id');
+    }
+
+    public function goldetil()
+    {
+        return $this->hasMany(Goldetil::class, 'golongan_id', 'id');
     }
 }
