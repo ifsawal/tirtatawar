@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('goldetils', function (Blueprint $table) {
             $table->id();
             $table->string("nama");
-            $table->string("meteran");
+            $table->string("awal_meteran");
+            $table->string("akhir_meteran");
             $table->integer("harga");
             $table->unsignedBigInteger('golongan_id');
             $table->foreign('golongan_id')->references('id')->on('golongans')->onDelete('restrict')->onUpdate('cascade');

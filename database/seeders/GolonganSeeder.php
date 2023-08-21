@@ -24,7 +24,7 @@ class GolonganSeeder extends Seeder
             ],
             [
                 'golongan' => 'Golongan Sosial 2',
-                'jenis' => 'penetapan',
+                'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
                 'pdam_id' => 1,

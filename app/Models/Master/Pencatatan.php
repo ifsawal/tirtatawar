@@ -23,4 +23,9 @@ class Pencatatan extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    public function user_perubahan()
+    {
+        return $this->belongsTo(User::class, 'user_id_perubahan', 'id');
+    }
 }

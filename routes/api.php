@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/potorumahpelanggan/{id}', [PhotoRumahController::class, 'potorumahpelanggan']);
 
 
+    Route::post('/datameteran', [PencatatanController::class, 'index']);
     Route::post('/catat', [PencatatanController::class, 'store']);
 
     Route::post('/delete/gambar/rumah', [PelangganController::class, 'deletegambarrumah']);
