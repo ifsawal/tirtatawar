@@ -119,12 +119,14 @@ class PencatatanController extends Controller
                 $cek->pemakaian = $this->hitung($cek->awal, $request->akhir); //
                 $cek->photo = $file;
                 $cek->user_id_perubahan = $user_id; //
-                // $cek->save();
+                $cek->save();
 
-                // $plainText = base64_decode(str_replace(array('-', '_', ' ', '\n'), array('+', '/', '+', ' '), $request->photo));
-                // $ifp = fopen(public_path() . '/files2/pencatatan/' . $tahun . '/' . $bulan . '/' . $file, "wb");
-                // fwrite($ifp,  $plainText);
-                // fclose($ifp);
+                $this->simpanTagihan($cek->id, $request->pelanggan_id, $cek->pemakaian, 'ubah');
+
+                $plainText = base64_decode(str_replace(array('-', '_', ' ', '\n'), array('+', '/', '+', ' '), $request->photo));
+                $ifp = fopen(public_path() . '/files2/pencatatan/' . $tahun . '/' . $bulan . '/' . $file, "wb");
+                fwrite($ifp,  $plainText);
+                fclose($ifp);
 
 
 
@@ -157,14 +159,16 @@ class PencatatanController extends Controller
             $pencatatan->photo = $file;
             $pencatatan->pelanggan_id = $request->pelanggan_id;
             $pencatatan->user_id = $user_id; //
-            // $pencatatan->save();
+            $pencatatan->save();
 
-            // $plainText = base64_decode(str_replace(array('-', '_', ' ', '\n'), array('+', '/', '+', ' '), $request->photo));
-            // $ifp = fopen(public_path() . '/files2/pencatatan/' . $tahun . '/' . $bulan . '/' . $file, "wb");
-            // fwrite($ifp,  $plainText);
-            // fclose($ifp);
+            $this->simpanTagihan($pencatatan->id, $pencatatan->pelanggan_id, $pemakaian);
 
-            return $this->simpanTagihan($pencatatan->id, $pencatatan->pelanggan_id, $pemakaian);
+
+            $plainText = base64_decode(str_replace(array('-', '_', ' ', '\n'), array('+', '/', '+', ' '), $request->photo));
+            $ifp = fopen(public_path() . '/files2/pencatatan/' . $tahun . '/' . $bulan . '/' . $file, "wb");
+            fwrite($ifp,  $plainText);
+            fclose($ifp);
+
 
             DB::commit();
 
@@ -190,6 +194,7 @@ class PencatatanController extends Controller
 
     public function simpanTagihan($pencatatan_id, $pelanggan_id, $pemakaian, $aksi = "tambah")
     {
+
         if ($aksi == "tambah") {
             $tagihan = new Tagihan();
         } else {
@@ -217,7 +222,14 @@ class PencatatanController extends Controller
             }
         }
         $biaya = $golongan[0]->golongan->biaya;
-        return $pemakaian . '-' . $jumlah = $biaya + $jumlah;
+        $jumlah = $biaya + $jumlah;
+
+        $tagihan->pencatatan_id = $pencatatan_id;
+        $tagihan->jumlah = $jumlah;
+        $tagihan->total = $jumlah;
+        $tagihan->diskon = 0;
+        $tagihan->status_bayar = 'N';
+        $tagihan->save();
     }
     /**
      * Display the specified resource.
