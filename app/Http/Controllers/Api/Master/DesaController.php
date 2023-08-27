@@ -18,7 +18,9 @@ class DesaController extends Controller
 
     public function desa_di_kecamatan(string $id)
     {
-        $desa = Desa::where('kecamatan_id', $id)->get(['id', 'desa']);
+        $desa = Desa::where('kecamatan_id', $id)
+            ->select('id', 'desa')
+            ->get();
         return response()->json([
             'sukses' => true,
             'pesan' => "Ditemukan...",

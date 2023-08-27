@@ -72,6 +72,7 @@ class GolonganSeeder extends Seeder
                 'pdam_id' => 1,
             ],
 
+
         ]);
     }
 }
