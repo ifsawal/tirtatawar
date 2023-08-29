@@ -28,6 +28,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('golongan_id');
             $table->foreign('golongan_id')->references('id')->on('golongans')->onDelete('restrict')->onUpdate('cascade');
+            $table->unsignedBigInteger('wiljalan_id')->nullable();
+            $table->foreign('wiljalan_id')->references('id')->on('wiljalans')->onDelete('restrict')->onUpdate('cascade');
 
             $table->unsignedBigInteger('rute_id')->nullable();
             $table->foreign('rute_id')->references('id')->on('rutes')->onDelete('restrict')->onUpdate('cascade');

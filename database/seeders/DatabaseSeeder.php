@@ -12,6 +12,7 @@ use Database\Seeders\AlamatSeeder;
 use Database\Seeders\WilayahSeeder;
 use Database\Seeders\GoldetilSeeder;
 use Database\Seeders\GolonganSeeder;
+use Database\Seeders\WiljalanSeeder;
 use Database\Seeders\PelangganSeeder;
 use Database\Seeders\PencatatanSeeder;
 
@@ -28,7 +29,9 @@ class DatabaseSeeder extends Seeder
         $this->call([UserSeeder::class]);
         $this->call([GolonganSeeder::class]);
         $this->call([RuteSeeder::class]);
+        $this->call([WiljalanSeeder::class]);
         $this->call([PelangganSeeder::class]);
+        $this->call([PelangganDataAsliSeeder::class]);
         $this->call([HpPelangganSeeder::class]);
         $this->call([PencatatanSeeder::class]);
         $this->call([GoldetilSeeder::class]);

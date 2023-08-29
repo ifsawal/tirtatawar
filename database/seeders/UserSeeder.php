@@ -17,28 +17,128 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $user1 = User::create([
+        $user = User::create([
+            'id' => 20,
             'nama' => 'Sawal',
             'email' => 'ifsawal@gmail.com',
             'password' => bcrypt('1'),
             'j_permisi' => 10,
-            'email_verified_at'=> Carbon::now(),
+            'email_verified_at' => Carbon::now(),
+            'pdam_id' => 1,
+        ]);
+        $user1 = User::create([
+            'id' => 1,
+            'nama' => 'Ramhlah',
+            'email' => 'user1@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
             'pdam_id' => 1,
         ]);
         $user2 = User::create([
-            'nama' => 'aa',
-            'email' => 'aa@gmail.com',
-            'password' => bcrypt('1'),
+            'id' => 2,
+            'nama' => 'Candrawati',
+            'email' => 'user2@gmail.com',
+            'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
         ]);
         $user3 = User::create([
-            'nama' => 'bb',
-            'email' => 'bb@gmail.com',
-            'password' => bcrypt('1'),
+            'id' => 3,
+            'nama' => 'Sumardiani',
+            'email' => 'user3@gmail.com',
+            'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
         ]);
+        $user4 = User::create([
+            'id' => 4,
+            'nama' => 'Susianti',
+            'email' => 'user4@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user5 = User::create([
+            'id' => 5,
+            'nama' => 'Maulina Sari',
+            'email' => 'user5@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user6 = User::create([
+            'id' => 6,
+            'nama' => 'Lisa Ivania',
+            'email' => 'user6@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user7 = User::create([
+            'id' => 7,
+            'nama' => 'Mahdi Putra',
+            'email' => 'user7@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user8 = User::create([
+            'id' => 8,
+            'nama' => 'Hamisah',
+            'email' => 'user8@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user9 = User::create([
+            'id' => 9,
+            'nama' => 'Elti Jusmari',
+            'email' => 'user9@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user10 = User::create([
+            'id' => 10,
+            'nama' => 'Yunika Putri Bintang',
+            'email' => 'user10@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user11 = User::create([
+            'id' => 11,
+            'nama' => 'Sukria',
+            'email' => 'user11@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user12 = User::create([
+            'id' => 12,
+            'nama' => 'Evia Fitriani',
+            'email' => 'user12@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user13 = User::create([
+            'id' => 13,
+            'nama' => 'Putra Abadi',
+            'email' => 'user13@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user14 = User::create([
+            'id' => 14,
+            'nama' => 'Putra Abadi',
+            'email' => 'user14@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+
 
 
         $role = Role::create(['name' => 'super_admin', 'guard_name' => 'web']);
