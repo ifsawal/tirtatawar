@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call([GolonganSeeder::class]);
         $this->call([RuteSeeder::class]);
         $this->call([WiljalanSeeder::class]);
-        $this->call([PelangganSeeder::class]);
+        // $this->call([PelangganSeeder::class]);
         $this->call([PelangganDataAsliSeeder::class]);
         $this->call([HpPelangganSeeder::class]);
         $this->call([PencatatanSeeder::class]);

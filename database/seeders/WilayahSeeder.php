@@ -16,7 +16,7 @@ class WilayahSeeder extends Seeder
         Wilayah::insert([
             [
                 'wilayah' => 'Wilayah 1',
-                'user_id' => 1,
+                'user_id' => 11,
                 'desa_id' => 1,
                 'mulai' => 0,
                 'akhir' => 0,
@@ -27,7 +27,7 @@ class WilayahSeeder extends Seeder
             ],
             [
                 'wilayah' => 'Wilayah 2',
-                'user_id' => 2,
+                'user_id' => 12,
                 'desa_id' => 2,
                 'mulai' => 0,
                 'akhir' => 0,
@@ -36,7 +36,7 @@ class WilayahSeeder extends Seeder
             ],
             [
                 'wilayah' => 'Wilayah 3',
-                'user_id' => 3,
+                'user_id' => 13,
                 'desa_id' => 3,
                 'mulai' => 0,
                 'akhir' => 0,
