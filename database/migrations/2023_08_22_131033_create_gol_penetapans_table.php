@@ -18,7 +18,11 @@ return new class extends Migration
             $table->string('aktif');
             $table->integer("harga");
             $table->dateTime("tgl_awal");
-            $table->dateTime("tgl_akhir");
+            $table->dateTime("tgl_akhir")->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->unsignedBigInteger('user_id_perubahan')->nullable();
+            $table->foreign('user_id_perubahan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Models\Master\Pelanggan;
+use App\Models\Master\GolPenetapan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Master\DesaController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\Master\PencatatanController;
 use App\Http\Controllers\Api\Master\PhotoRumahController;
 use App\Http\Controllers\Api\Data\DataPelangganController;
 use App\Http\Controllers\Api\Master\HpPelangganController;
+use App\Http\Controllers\Api\Master\GolPenetapanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +52,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/pelanggan/cari', [PelangganController::class, 'cari']);
     Route::post('/pelanggan/carisatu', [PelangganController::class, 'carisatu']);
     Route::post('/laporan_survei', [DataPelangganController::class, 'index']);
+    Route::post('/penetapan', [GolPenetapanController::class, 'store']);
     Route::post('/setujui', [PelangganController::class, 'setujui']);
     Route::resource('/pelanggan', PelangganController::class);
 

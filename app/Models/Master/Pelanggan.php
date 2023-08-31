@@ -8,6 +8,7 @@ use App\Models\Master\Pdam;
 use App\Models\Master\Golongan;
 use App\Models\Master\Pencatatan;
 use App\Models\Master\HpPelanggan;
+use App\Models\Master\GolPenetapan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,6 +53,12 @@ class Pelanggan extends Model
     {
         return $this->hasMany(HpPelanggan::class, 'pelanggan_id', 'id');
     }
+
+    public function gol_penetapan()
+    {
+        return $this->hasMany(GolPenetapan::class, 'pelanggan_id', 'id');
+    }
+
     public function pencatatan()
     {
         return $this->hasMany(Pencatatan::class, 'pelanggan_id', 'id');
