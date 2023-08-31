@@ -1,20 +1,33 @@
 <?php
 
-namespace App\Http\Controllers\Api\Master;
+namespace App\Http\Controllers\Api\Data;
 
-use Illuminate\Http\Request;
-use App\Models\Master\HpPelanggan;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\Master\PelangganController;
+use App\Http\Resources\Api\Data\DataPelangganResource;
+use App\Models\Master\Pelanggan;
+use Illuminate\Http\Request;
 
-class HpPelangganController extends Controller
+class DataPelangganController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $this->validate($request, [
+            'id' => 'required',
+            'sumber' => 'required',
+        ]);
+
+        $pel = Pelanggan::where($request->sumber, '=', $request->id)
+            ->paginate(50);
+        $pel = new DataPelangganResource($pel);
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Data ditemukan...",
+            'data' => $pel,
+        ], 202);
     }
 
     /**
@@ -60,18 +73,8 @@ class HpPelangganController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $hp_pelanggan)
+    public function destroy(string $id)
     {
-
-        $hp = HpPelanggan::findOrFail($hp_pelanggan);
-        $pelanggan_id = $hp->pelanggan_id;
-        $hp->delete();
-
-        PelangganController::simpanJumlahNoHp($pelanggan_id);  //update jumlah nomor hp
-
-        return response()->json([
-            'sukses' => true,
-            'pesan' => "Data terhapus...",
-        ], 204);
+        //
     }
 }

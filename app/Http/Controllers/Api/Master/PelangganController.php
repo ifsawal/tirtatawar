@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\Fungsi\KePelanggan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -211,6 +212,9 @@ class PelangganController extends Controller
 
     public function store(Request $request)
     {
+
+
+
         $this->validate($request, [
             'nama' => 'required|min:4',
             'nik' => 'required|min:16',
@@ -238,8 +242,11 @@ class PelangganController extends Controller
             $nohp = new HpPelanggan;
             $nohp->nohp = $request->nohp;
             $nohp->pelanggan_id = $pelanggan->id;
+            $pelanggan_id = $pelanggan->id;
             $nohp->aktif = "Y";
             $nohp->save();
+
+            $this->simpanJumlahNoHp($pelanggan_id); //simpan jumlah hp
         }
 
         return response()->json([
@@ -248,6 +255,17 @@ class PelangganController extends Controller
             'id' => $pelanggan->id,
         ], 201);
     }
+
+
+    public static function simpanJumlahNoHp($pelanggan_id)
+    {
+        $jumlah_hp = HpPelanggan::where('pelanggan_id', '=', $pelanggan_id)->count();
+        $pel = Pelanggan::withTrashed()->findOrFail($pelanggan_id);
+        $pel->hp = $jumlah_hp;
+        $pel->save();
+    }
+
+
 
     /**
      * Display the specified resource.
@@ -327,6 +345,8 @@ class PelangganController extends Controller
             $nohp->pelanggan_id = $pelanggan->id;
             $nohp->aktif = "Y";
             $nohp->save();
+
+            $this->simpanJumlahNoHp($pelanggan->id); //simpan jumlah hp
         }
 
         return response()->json([

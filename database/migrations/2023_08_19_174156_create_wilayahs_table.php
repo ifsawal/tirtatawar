@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer("akhir");
             $table->unsignedBigInteger('pdam_id');
             $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
+            $table->unique(array('wilayah', 'pdam_id'));
             $table->timestamps();
         });
     }

@@ -10,6 +10,7 @@ use App\Models\Master\Golongan;
 use App\Models\Master\Kabupaten;
 use App\Models\Master\Kecamatan;
 use App\Http\Controllers\Controller;
+use App\Models\Master\Wiljalan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -45,6 +46,7 @@ class AuthController extends Controller
 
         $kec = Kecamatan::where('kabupaten_id', $user->pdam->kabupaten_id)->get(['id', 'kecamatan']);
         $golongan = Golongan::where('pdam_id', $user->pdam->id)->get(['id', 'golongan']);
+        $wiljalan = Wiljalan::where('pdam_id', $user->pdam->id)->get(['id', 'jalan']);
         $rute = Rute::where('pdam_id', $user->pdam->id)->get(['id', 'rute']);
 
         $jumlah_permisi = count($col);
@@ -69,6 +71,7 @@ class AuthController extends Controller
                 'kec' => $kec,
                 'golongan' => $golongan,
                 'rute' => $rute,
+                'wiljalan' => $wiljalan,
             ], 201);
     }
 

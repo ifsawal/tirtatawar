@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("rute");
             $table->unsignedBigInteger('pdam_id');
             $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
+            $table->unique(array('rute', 'pdam_id'));
             $table->timestamps();
         });
     }

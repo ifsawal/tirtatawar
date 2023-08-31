@@ -5,11 +5,12 @@ use App\Models\Master\Pelanggan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Master\DesaController;
-use App\Http\Controllers\Api\Master\HpPelangganController;
 use App\Http\Controllers\Api\Master\UserController;
 use App\Http\Controllers\Api\Master\PelangganController;
 use App\Http\Controllers\Api\Master\PencatatanController;
 use App\Http\Controllers\Api\Master\PhotoRumahController;
+use App\Http\Controllers\Api\Data\DataPelangganController;
+use App\Http\Controllers\Api\Master\HpPelangganController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/pelanggan/updatelokasi', [PelangganController::class, 'updatelokasi']);
     Route::post('/pelanggan/cari', [PelangganController::class, 'cari']);
     Route::post('/pelanggan/carisatu', [PelangganController::class, 'carisatu']);
+    Route::post('/laporan_survei', [DataPelangganController::class, 'index']);
     Route::post('/setujui', [PelangganController::class, 'setujui']);
     Route::resource('/pelanggan', PelangganController::class);
 
