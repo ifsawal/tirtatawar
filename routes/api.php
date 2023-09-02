@@ -52,7 +52,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/pelanggan/cari', [PelangganController::class, 'cari']);
     Route::post('/pelanggan/carisatu', [PelangganController::class, 'carisatu']);
     Route::post('/laporan_survei', [DataPelangganController::class, 'index']);
+
     Route::post('/penetapan', [GolPenetapanController::class, 'store']);
+    Route::post('/cekpenetapan', [GolPenetapanController::class, 'index']);
+    Route::post('/nonaktifpenetapan', [GolPenetapanController::class, 'destroy']);
+
     Route::post('/setujui', [PelangganController::class, 'setujui']);
     Route::resource('/pelanggan', PelangganController::class);
 

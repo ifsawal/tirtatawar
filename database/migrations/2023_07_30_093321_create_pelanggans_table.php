@@ -38,6 +38,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id_perubahan')->nullable();
             $table->foreign('user_id_perubahan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->integer('hp')->default(0);
+            $table->integer('penetapan')->default(0);
 
             $table->softDeletes();
             $table->timestamps();

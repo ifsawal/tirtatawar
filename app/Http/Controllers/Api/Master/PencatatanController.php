@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Api\Master;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Master\Tagihan;
+use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
+use App\Models\Master\GolPenetapan;
 use App\Http\Controllers\Controller;
-use App\Models\Master\Pelanggan;
-use App\Models\Master\Tagihan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
@@ -202,13 +203,18 @@ class PencatatanController extends Controller
         }
 
         $golongan = Pelanggan::with('golongan:id,golongan,biaya', 'golongan.goldetil:id,nama,awal_meteran,akhir_meteran,harga,golongan_id')
-            ->select('nama', 'golongan_id')
+            ->select('nama', 'golongan_id', 'penetapan')
             ->where('id', '=', $pelanggan_id)
             ->get();
 
         $a = "";
         $jumlah = 0;
-        if (isset($golongan[0]->golongan->goldetil)) {
+        if ($golongan[0]->penetapan == 1) {  //jika penetapan
+            $harga = GolPenetapan::where('pelanggan_id', '=', $pelanggan_id)
+                ->where('aktif', '=', 'Y')
+                ->first();
+            $jumlah = $harga->harga;
+        } else if (isset($golongan[0]->golongan->goldetil)) {  //jika sesuai tarif
             foreach ($golongan[0]->golongan->goldetil as $detil) {
                 if ($pemakaian > $detil->awal_meteran && $pemakaian <= $detil->akhir_meteran && $detil->akhir_meteran <> 0) {
                     $jumlah = $jumlah + ($detil->harga * ($pemakaian - $detil->awal_meteran));
@@ -220,9 +226,10 @@ class PencatatanController extends Controller
                     $jumlah = $jumlah + ($detil->harga * ($detil->akhir_meteran - $detil->awal_meteran));
                 }
             }
+            $biaya = $golongan[0]->golongan->biaya;
+            $jumlah = $biaya + $jumlah;
         }
-        $biaya = $golongan[0]->golongan->biaya;
-        $jumlah = $biaya + $jumlah;
+
 
         $tagihan->pencatatan_id = $pencatatan_id;
         $tagihan->jumlah = $jumlah;
