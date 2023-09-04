@@ -86,7 +86,7 @@ class PelangganController extends Controller
             'golongan:id,golongan',
             'rute:id,rute',
             'user_perubahan:id,nama'
-        )->where('id', $id)->where('pdam_id', $user[0]->pdam->id)->get();
+        )->where('id', $id)->where('pdam_id', $user[0]->pdam->id)->withTrashed()->get();
 
         return response()->json([
             'sukses' => true,
