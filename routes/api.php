@@ -51,6 +51,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/pelanggan/updatelokasi', [PelangganController::class, 'updatelokasi']);
     Route::post('/pelanggan/cari', [PelangganController::class, 'cari']);
     Route::post('/pelanggan/carisatu', [PelangganController::class, 'carisatu']);
+
+    Route::get('/pelangganhistoriaktif/{id}', [PelangganController::class, 'pelangganhistoriaktif']);
+    Route::post('/pelangganhapus', [PelangganController::class, 'destroy']);
+    Route::post('/pelangganaktif', [PelangganController::class, 'aktif']);
+
     Route::post('/laporan_survei', [DataPelangganController::class, 'index']);
 
     Route::post('/penetapan', [GolPenetapanController::class, 'store']);

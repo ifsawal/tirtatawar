@@ -11,6 +11,7 @@ use App\Models\Master\PhotoRumah;
 use App\Models\Master\HpPelanggan;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Master\PelangganHapus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
@@ -111,8 +112,13 @@ class PelangganController extends Controller
                 $q->where('nohp', '=', $kata);
             })->where('pdam_id', $user[0]->pdam->id)->get();
         } else {
-            $pelanggan = Pelanggan::with('hp_pelanggan')
-                ->where($tipe, $operator, $kata)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->get();
+            if (isset($request->terhapus)) {  //mencari data yang terhapus
+                $pelanggan = Pelanggan::with('hp_pelanggan')
+                    ->where($tipe, $operator, $kata)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->withTrashed()->get();
+            } else {  //mencari data normal
+                $pelanggan = Pelanggan::with('hp_pelanggan')
+                    ->where($tipe, $operator, $kata)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->get();
+            }
         }
 
         $status = "";
@@ -359,8 +365,94 @@ class PelangganController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $r)
     {
-        //
+        $this->validate($r, [
+            'id' => 'required',
+            'ket' => 'required',
+        ]);
+
+
+        $pelanggan = Pelanggan::findOrFail($r->id);
+
+
+        DB::beginTransaction();
+
+        try {
+            $pelanggan_id = $pelanggan->id;
+            $pelanggan->delete();
+
+            $hap = new PelangganHapus();
+            $hap->pelanggan_id = $pelanggan_id;
+            $hap->user_id = Auth::user()->id;
+            $hap->tgl_nonaktif = now();
+            $hap->status_berlaku = 1;
+            $hap->ket = $r->ket;
+            $hap->save();
+
+            DB::commit();
+
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Berhasil memutuskan..."
+            ], 204);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Error dan gagal memutuskan..."
+            ], 404);
+        }
+    }
+
+
+    public function aktif(Request $r)
+    {
+
+        $this->validate($r, [
+            'id' => 'required',
+        ]);
+
+
+        $aktif = PelangganHapus::where('id', '=', $r->id)
+            ->where('status_berlaku', '=', 1)->first();
+
+
+        DB::beginTransaction();
+
+        try {
+            $pelanggan = Pelanggan::withTrashed()->findOrFail($aktif->pelanggan_id);
+            $pelanggan->restore();
+
+            $aktif->user_id_aktifkan = Auth::user()->id;
+            $aktif->tgl_aktif = now();
+            $aktif->status_berlaku = 0;
+            $aktif->save();
+
+            DB::commit();
+
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Berhasil Mengaktifkan..."
+            ], 202);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Error tidak dapat mengaktifkan..." . $e
+            ], 404);
+        }
+    }
+
+    public function pelangganhistoriaktif($id)
+    {
+        $data = PelangganHapus::with('user:id,nama', 'user_aktifkan:id,nama')
+            ->where('pelanggan_id', '=', $id)
+            ->orderBy('id', 'DESC')->get();
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Ditemukan...",
+            'data' => $data
+        ], 202);
     }
 }
