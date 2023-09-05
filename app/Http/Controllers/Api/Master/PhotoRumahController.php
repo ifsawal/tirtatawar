@@ -19,7 +19,7 @@ class PhotoRumahController extends Controller
 
     public function potorumahpelanggan($id)
     {
-        $p = PhotoRumah::where('pelanggan_id', $id)->withTrashed()->get(['id', 'pelanggan_id']);
+        $p = PhotoRumah::where('pelanggan_id', $id)->get(['id', 'pelanggan_id']);
 
         return response()->json([
             "sukses" => true,
