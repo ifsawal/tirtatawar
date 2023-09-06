@@ -2,8 +2,9 @@
 
 namespace App\Models\Master;
 
-use App\Models\Master\Pelanggan;
 use App\Models\User;
+use App\Models\Master\Tagihan;
+use App\Models\Master\Pelanggan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,5 +28,10 @@ class Pencatatan extends Model
     public function user_perubahan()
     {
         return $this->belongsTo(User::class, 'user_id_perubahan', 'id');
+    }
+
+    public function tagihan()
+    {
+        return $this->hasOne(Tagihan::class, 'pencatatan_id', 'id');
     }
 }

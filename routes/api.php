@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\Master\PhotoRumahController;
 use App\Http\Controllers\Api\Data\DataPelangganController;
 use App\Http\Controllers\Api\Master\HpPelangganController;
 use App\Http\Controllers\Api\Master\GolPenetapanController;
+use App\Http\Controllers\Api\Master\TagihanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +69,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('/hp_pelanggan', HpPelangganController::class);
 
     Route::get('/desa_di_kec/{id}', [DesaController::class, 'desa_di_kecamatan']);
+
+
+    Route::post('/tagihan', [TagihanController::class, 'index']);
 });
 
 
