@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Data\DataPelangganController;
 use App\Http\Controllers\Api\Master\HpPelangganController;
 use App\Http\Controllers\Api\Master\GolPenetapanController;
 use App\Http\Controllers\Api\Master\TagihanController;
+use App\Http\Controllers\Api\Proses\BayarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,6 +73,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     Route::post('/tagihan', [TagihanController::class, 'index']);
+    Route::post('/bayar', [BayarController::class, 'store']);
 });
 
 
