@@ -185,7 +185,7 @@ class PencatatanController extends Controller
 
             return response()->json([
                 "sukses" => false,
-                "pesan" => "Gagal mencatat...",
+                "pesan" => "Gagal mencatat..." . $e,
             ], 404);
         }
     }
@@ -235,6 +235,7 @@ class PencatatanController extends Controller
         $tagihan->jumlah = $jumlah;
         $tagihan->total = $jumlah;
         $tagihan->diskon = 0;
+        $tagihan->denda = 0;
         $tagihan->status_bayar = 'N';
         $tagihan->save();
     }

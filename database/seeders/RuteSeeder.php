@@ -15,12 +15,29 @@ class RuteSeeder extends Seeder
     {
         Rute::insert([
             [
-                'rute' => 'Sumber 1 KKL',
+                'rute' => 'SPAM Bukit Origon',
                 'pdam_id' => 1,
-                ],
+            ],
             [
-                'rute' => 'Sumber 2 CCD',
-                'pdam_id' => 1,            ],
+                'rute' => 'SPAM IKK Lut Tawar',
+                'pdam_id' => 1,
+            ],
+            [
+                'rute' => 'Arul Pestak',
+                'pdam_id' => 1,
+            ],
+            [
+                'rute' => 'IPA Lelabu',
+                'pdam_id' => 1,
+            ],
+            [
+                'rute' => 'SPAM IKK Pegasing',
+                'pdam_id' => 1,
+            ],
+            [
+                'rute' => 'SPAM IKK Celala',
+                'pdam_id' => 1,
+            ],
         ]);
     }
 }

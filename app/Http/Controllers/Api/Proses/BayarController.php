@@ -45,7 +45,7 @@ class BayarController extends Controller
         try {
             $tagihan = Tagihan::where('id', '=', $r->id)
                 ->where('status_bayar', '=', 'Y')
-                ->where('sistem_bayar', '=', 'Cash')
+                // ->where('sistem_bayar', '=', 'Cash')
                 ->first();
             if ($tagihan) {
                 DB::rollback();
@@ -96,8 +96,8 @@ class BayarController extends Controller
                 'rute:id,rute',
             )->where('id', $r->pelanggan_id)->first();
 
-            // DB::commit();
-            DB::rollback();
+            DB::commit();
+            // DB::rollback();
 
             return response()->json([
                 "sukses" => true,
