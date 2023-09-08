@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unique('pencatatan_id');
             $table->integer("jumlah");
             $table->integer("diskon");
+            $table->integer("denda");
             $table->integer("total");
             $table->string("status_bayar");
             $table->string("sistem_bayar")->nullable();

@@ -92,11 +92,12 @@ class BayarController extends Controller
                 'user:id,nama',
                 'pdam:id,pdam',
                 'desa.kecamatan:id,kecamatan',
-                'golongan:id,golongan',
+                'golongan:id,golongan,biaya',
                 'rute:id,rute',
             )->where('id', $r->pelanggan_id)->first();
 
-            DB::commit();
+            // DB::commit();
+            DB::rollback();
 
             return response()->json([
                 "sukses" => true,
