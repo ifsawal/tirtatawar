@@ -32,7 +32,18 @@ class UserController extends Controller
 
     public function index()
     {
-        //
+        $user = Auth::user();
+        $user = User::where('pdam_id', $user->pdam_id)
+            ->select('id', 'nama', 'email')
+            ->orderBy('nama', 'DESC')
+            ->get();
+
+        return response()
+            ->json([
+                'sukses' => true,
+                'pesan' => "User ditemukan...",
+                'data' => $user,
+            ], 202);
     }
 
     /**

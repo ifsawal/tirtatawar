@@ -11,8 +11,11 @@ use App\Http\Controllers\Api\Master\PelangganController;
 use App\Http\Controllers\Api\Master\PencatatanController;
 use App\Http\Controllers\Api\Master\PhotoRumahController;
 use App\Http\Controllers\Api\Data\DataPelangganController;
+use App\Http\Controllers\Api\Laporan\LaporanBayarController;
 use App\Http\Controllers\Api\Master\HpPelangganController;
 use App\Http\Controllers\Api\Master\GolPenetapanController;
+use App\Http\Controllers\Api\Master\PhotoCatatanController;
+use App\Http\Controllers\Api\Master\SetoranController;
 use App\Http\Controllers\Api\Master\TagihanController;
 use App\Http\Controllers\Api\Proses\BayarController;
 
@@ -42,6 +45,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('/user', UserController::class);
 
     Route::get('/potorumahpelanggan/{id}', [PhotoRumahController::class, 'potorumahpelanggan']);
+    Route::get('/potoc/{id}', [PhotoCatatanController::class, 'potocatatan']);
 
 
     Route::post('/datameteran', [PencatatanController::class, 'index']);
@@ -74,7 +78,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/tagihan', [TagihanController::class, 'index']);
     Route::post('/bayar', [BayarController::class, 'store']);
+    Route::post('/batalbayar', [BayarController::class, 'destroy']);
+
+    Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
+    Route::post('/laporanpenerimaan', [LaporanBayarController::class, 'laporanpenerimaan']);
+    Route::post('/simpanpenyerahan', [SetoranController::class, 'rubah']);
 });
 
 
 Route::get('/tampilphoto/{folder}/{nama}', [PhotoRumahController::class, 'tampilphoto']);
+Route::get('/tampilphotoc/{tahun}/{bulan}/{photo}', [PhotoCatatanController::class, 'tampilphotoc']);

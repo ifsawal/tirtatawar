@@ -143,8 +143,67 @@ class BayarController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $r)
     {
-        //
+        $user_id = Auth::user()->id;
+
+
+        DB::beginTransaction();
+        try {
+            $tagihan = Tagihan::where('id', '=', $r->id)
+                ->where('status_bayar', '=', 'Y')
+                // ->where('sistem_bayar', '=', 'Cash')
+                ->first();
+            if (!$tagihan) {
+                DB::rollback();
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Tagihan ini belum dibayar...",
+                ], 202);
+            }
+
+            $tagihan = Tagihan::findOrFail($r->id);
+            $tagihan->status_bayar = "N";
+            $tagihan->sistem_bayar = "";
+            $tagihan->save();
+
+            $penagih = Penagih::where('tagihan_id', $tagihan->id)->first();
+            $jumlah = $penagih->jumlah;
+            $tanggal = $penagih->waktu;
+            if (date('Y-m-d', strtotime($tanggal)) <> date('Y-m-d')) {
+                DB::rollback();
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Gagal membatalkan karena lewat hari...",
+                ], 404);
+            }
+
+            $penagih->delete();
+
+
+            $setoran = Setoran::whereDate('tanggal', '=', date('Y-m-d', strtotime($tanggal)))
+                ->where('user_id', '=', $user_id)
+                ->first();
+
+            $setoran->jumlah = $setoran->jumlah  + $jumlah;
+            $setoran->save();
+
+
+
+            DB::commit();
+            // DB::rollback();
+
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Pembatan sukses...",
+
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Gagal membatalkan...",
+            ], 404);
+        }
     }
 }
