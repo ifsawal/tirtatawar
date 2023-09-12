@@ -9,13 +9,27 @@ use App\Models\Master\Golongan;
 use App\Models\Master\Pencatatan;
 use App\Models\Master\HpPelanggan;
 use App\Models\Master\GolPenetapan;
-use Illuminate\Database\Eloquent\Model;
+// use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Pelanggan extends Model
+
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Model; //Authenticatable;
+
+class Pelanggan extends Model //Authenticatable //Model 
 {
     use HasFactory, SoftDeletes;
+    use HasApiTokens, Notifiable;
+
+    protected $hidden = [
+        'password',
+    ];
+
+    protected $casts = [
+        'password' => 'hashed',
+    ];
 
 
     public function desa()

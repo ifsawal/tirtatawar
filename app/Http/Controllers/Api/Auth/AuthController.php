@@ -21,8 +21,9 @@ class AuthController extends Controller
     {
 
         // return $request['email'];
+        // return Auth::guard('web')->attempt($request->only('email', 'password'));
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        if (!Auth::guard('web')->attempt($request->only('email', 'password'))) {
             return response()
                 ->json(['sukses' => false, 'pesan' => 'Login gagal...'], 401);
         }

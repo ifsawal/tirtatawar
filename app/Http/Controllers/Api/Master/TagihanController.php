@@ -27,13 +27,21 @@ class TagihanController extends Controller
         $user_id = Auth::user()->id;
 
         $pelanggan = Pelanggan::with('desa:id,desa')
-            ->select('id', 'nama', 'desa_id', 'lat', 'long')->where('id', '=', $r->id)->first();
+            ->select('id', 'nama', 'desa_id', 'lat', 'long')
+            ->where('id', '=', $r->id)
+            ->first();
 
         $catat = Pencatatan::with('tagihan:id,jumlah,diskon,total,status_bayar,created_at,pencatatan_id')
             ->where('pelanggan_id', '=', $r->id)
             ->orderBy('id', 'desc')
             ->get();
 
+        if (!$pelanggan) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pelanggan tidak ditemukan...",
+            ], 404);
+        }
         return response()->json([
             "sukses" => true,
             "pesan" => "Ditemukan...",

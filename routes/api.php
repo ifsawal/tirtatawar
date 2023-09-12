@@ -5,6 +5,7 @@ use App\Models\Master\Pelanggan;
 use App\Models\Master\GolPenetapan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\AuthMobileController;
 use App\Http\Controllers\Api\Master\DesaController;
 use App\Http\Controllers\Api\Master\UserController;
 use App\Http\Controllers\Api\Master\PelangganController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Api\Master\PhotoCatatanController;
 use App\Http\Controllers\Api\Master\SetoranController;
 use App\Http\Controllers\Api\Master\TagihanController;
 use App\Http\Controllers\Api\Proses\BayarController;
+use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,9 +39,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/daftar', [AuthController::class, 'daftar']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/loginmobile', [AuthMobileController::class, 'loginmobile']);
+
+
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/logoutmobile', [AuthMobileController::class, 'logoutmobile']);
+});
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+
 
     Route::post('/user/ganti_p', [UserController::class, 'ganti_p']);
     Route::resource('/user', UserController::class);
@@ -57,7 +67,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/pelanggan/updatelokasi', [PelangganController::class, 'updatelokasi']);
     Route::post('/pelanggan/cari', [PelangganController::class, 'cari']);
     Route::post('/pelanggan/carisatu', [PelangganController::class, 'carisatu']);
-
     Route::get('/pelangganhistoriaktif/{id}', [PelangganController::class, 'pelangganhistoriaktif']);
     Route::post('/pelangganhapus', [PelangganController::class, 'destroy']);
     Route::post('/pelangganaktif', [PelangganController::class, 'aktif']);
@@ -70,7 +79,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/setujui', [PelangganController::class, 'setujui']);
     Route::resource('/pelanggan', PelangganController::class);
-
     Route::resource('/hp_pelanggan', HpPelangganController::class);
 
     Route::get('/desa_di_kec/{id}', [DesaController::class, 'desa_di_kecamatan']);
@@ -82,7 +90,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
     Route::post('/laporanpenerimaan', [LaporanBayarController::class, 'laporanpenerimaan']);
+    Route::post('/laporanditerima', [LaporanBayarController::class, 'laporanditerima']);
     Route::post('/simpanpenyerahan', [SetoranController::class, 'rubah']);
+
+
+
+
+    Route::post('/kirimnotifikasi', [NotifikasiFcmController::class, 'notif']);
 });
 
 

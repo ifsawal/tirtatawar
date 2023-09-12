@@ -49,7 +49,32 @@ class LaporanBayarController extends Controller
         $user_id = Auth::user()->id;
         $setoran = Setoran::with('user:id,nama', 'user_diserahkan:id,nama')
             ->where('user_id', $user_id)
-            ->limit(31)->orderBy('id', "DESC")->get();
+            ->limit(50)->orderBy('id', "DESC")->get();
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Ditemukan...",
+            'setoran' => $setoran,
+        ], 202);
+    }
+
+    public function laporanditerima(Request $r)
+    {
+        $tanggal = now();
+        isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
+
+        $user_id = Auth::user()->id;
+        $setoran = Setoran::with('user:id,nama', 'user_diserahkan:id,nama')
+            ->where('user_id_diserahkan', $user_id)
+            ->whereDate('tanggal', $tanggal)
+            ->limit(100)->orderBy('id', "DESC")->get();
+
+        if (count($setoran) == 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Setoran tidak ditemukan...",
+            ], 404);
+        }
 
         return response()->json([
             "sukses" => true,
