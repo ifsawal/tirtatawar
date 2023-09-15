@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("jenis");
             $table->integer("harga");
             $table->integer("biaya");
+            $table->integer("denda");
             $table->unsignedBigInteger('pdam_id');
             $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();

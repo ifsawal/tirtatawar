@@ -22,7 +22,7 @@ class AuthMobileController extends Controller
         }
 
         $pelanggan = Pelanggan::with('pdam:id,pdam,nama,kabupaten_id')->where('email', $request['email'])->firstOrFail();
-        $token = $pelanggan->createToken('auth_token')->plainTextToken;
+        $token = $pelanggan->createToken('auth_token', ['pelanggan'])->plainTextToken;
 
         $pecah = explode('|', $token);
         $idtoken = $pecah[0];

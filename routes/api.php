@@ -18,8 +18,12 @@ use App\Http\Controllers\Api\Master\GolPenetapanController;
 use App\Http\Controllers\Api\Master\PhotoCatatanController;
 use App\Http\Controllers\Api\Master\SetoranController;
 use App\Http\Controllers\Api\Master\TagihanController;
+use App\Http\Controllers\Api\Pelanggan\MobBankController;
+use App\Http\Controllers\Api\Pelanggan\MobTagihanController;
+use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
+use App\Models\Master\Bank;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,11 +47,9 @@ Route::post('/loginmobile', [AuthMobileController::class, 'loginmobile']);
 
 
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/logoutmobile', [AuthMobileController::class, 'logoutmobile']);
-});
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+
+Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
 
@@ -102,3 +104,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 Route::get('/tampilphoto/{folder}/{nama}', [PhotoRumahController::class, 'tampilphoto']);
 Route::get('/tampilphotoc/{tahun}/{bulan}/{photo}', [PhotoCatatanController::class, 'tampilphotoc']);
+
+
+
+//untuk pelanggan
+Route::group(['middleware' => ['auth:sanctum', 'abilities:pelanggan']], function () {
+    Route::post('/logoutmobile', [AuthMobileController::class, 'logoutmobile']);
+});
+
+
+Route::get('/cek/{nopel}', [PelangganMobController::class, 'cek']);
+Route::post('/cektagihan', [MobTagihanController::class, 'cektagihan']);
+Route::get('/bank', [MobBankController::class, 'pilihbank']);
+Route::get('/cekbank/{bank}', [MobBankController::class, 'cekbank']);
+
+Route::post('/buattagihan', [MobTagihanController::class, 'buattagihan']);

@@ -54,7 +54,7 @@ class AuthController extends Controller
         $user->j_permisi = $jumlah_permisi;
         $user->save();
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token', ['admin'])->plainTextToken;
         return response()
             ->json([
                 'sukses' => true,

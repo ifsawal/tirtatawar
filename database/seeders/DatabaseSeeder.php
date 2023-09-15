@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\BankSeeder;
 use Database\Seeders\RuteSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\AlamatSeeder;
@@ -37,6 +38,7 @@ class DatabaseSeeder extends Seeder
         $this->call([PencatatanSeeder::class]);
         $this->call([GoldetilSeeder::class]);
         $this->call([WilayahSeeder::class]);
+        $this->call([BankSeeder::class]);
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

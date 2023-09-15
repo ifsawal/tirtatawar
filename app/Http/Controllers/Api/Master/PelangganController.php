@@ -108,9 +108,12 @@ class PelangganController extends Controller
         $user = User::with('pdam:id,pdam')->where('id', $user_id)->get();
 
         if ($tipe == "nohp") {
-            $pelanggan = Pelanggan::with('hp_pelanggan')->whereHas('hp_pelanggan', function ($q) use ($kata) {
-                $q->where('nohp', '=', $kata);
-            })->where('pdam_id', $user[0]->pdam->id)->get();
+            $pelanggan = Pelanggan::with('hp_pelanggan')
+                ->whereHas('hp_pelanggan', function ($q) use ($kata) {
+                    $q->where('nohp', '=', $kata);
+                })
+                ->where('pdam_id', $user[0]->pdam->id)
+                ->get();
         } else {
             if (isset($request->terhapus)) {  //mencari data yang terhapus
                 $pelanggan = Pelanggan::with('hp_pelanggan')

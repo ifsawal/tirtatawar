@@ -20,6 +20,7 @@ class GolonganSeeder extends Seeder
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
+                'denda' => 10000,
                 'pdam_id' => 1,
             ],
             [
@@ -27,6 +28,7 @@ class GolonganSeeder extends Seeder
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
+                'denda' => 10000,
                 'pdam_id' => 1,
             ],
             [
@@ -34,6 +36,7 @@ class GolonganSeeder extends Seeder
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
+                'denda' => 10000,
                 'pdam_id' => 1,
             ],
             [
@@ -41,6 +44,7 @@ class GolonganSeeder extends Seeder
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
+                'denda' => 10000,
                 'pdam_id' => 1,
             ],
             [
@@ -48,6 +52,7 @@ class GolonganSeeder extends Seeder
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
+                'denda' => 10000,
                 'pdam_id' => 1,
             ],
             [
@@ -55,6 +60,7 @@ class GolonganSeeder extends Seeder
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
+                'denda' => 10000,
                 'pdam_id' => 1,
             ],
             [
@@ -62,6 +68,8 @@ class GolonganSeeder extends Seeder
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
+                'denda' => 10000,
+
                 'pdam_id' => 1,
             ],
             [
@@ -69,6 +77,8 @@ class GolonganSeeder extends Seeder
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
+                'denda' => 10000,
+
                 'pdam_id' => 1,
             ],
 

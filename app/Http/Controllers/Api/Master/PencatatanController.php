@@ -25,7 +25,8 @@ class PencatatanController extends Controller
         ]);
 
         $pelanggan = Pelanggan::where('id', '=', $request->pelanggan_id)->first('nama');
-        $pencatatan = Pencatatan::with('user:id,nama', 'user_perubahan:id,nama')->where('pelanggan_id', '=', $request->pelanggan_id)
+        $pencatatan = Pencatatan::with('user:id,nama', 'user_perubahan:id,nama')
+            ->where('pelanggan_id', '=', $request->pelanggan_id)
             ->select('id', 'awal', 'akhir', 'pemakaian', 'bulan', 'tahun', 'user_id', 'user_id_perubahan')
             ->orderBy('tahun', 'desc')
             ->orderBy('bulan', 'desc')

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Master\Pencatatan;
+use App\Models\Master\Tagihan;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -40,6 +41,45 @@ class PencatatanSeeder extends Seeder
                 'tahun' => 2023,
                 'pelanggan_id' => 1,
                 'user_id' => 1,
+            ],
+            [
+                'awal' => 9500,
+                'akhir' => 9502,
+                'pemakaian' => 2,
+                'bulan' => 7,
+                'tahun' => 2023,
+                'pelanggan_id' => 1,
+                'user_id' => 1,
+            ],
+            [
+                'awal' => 9502,
+                'akhir' => 9504,
+                'pemakaian' => 2,
+                'bulan' => 8,
+                'tahun' => 2023,
+                'pelanggan_id' => 1,
+                'user_id' => 1,
+            ],
+        ]);
+
+        Tagihan::insert([
+            [
+                'pencatatan_id' => 4,
+                'jumlah' => 15000,
+                'diskon' => 0,
+                'denda' => 0,
+                'total' => 15000,
+                'status_bayar' => 'N',
+                'sistem_bayar' => NULL,
+            ],
+            [
+                'pencatatan_id' => 5,
+                'jumlah' => 15000,
+                'diskon' => 0,
+                'denda' => 0,
+                'total' => 15000,
+                'status_bayar' => 'N',
+                'sistem_bayar' => NULL,
             ],
         ]);
     }
