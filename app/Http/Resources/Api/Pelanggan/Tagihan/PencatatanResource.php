@@ -14,15 +14,11 @@ class PencatatanResource extends JsonResource
      * 
      */
 
-    public $denda;
-    public function with(Request $request): array
+    private static $data;
+    public static function customCollection($resource, $data)
     {
-        // $this->denda = $request;
-        return [
-            'meta' => [
-                'key' => 231321,
-            ],
-        ];
+        self::$data = $data;
+        return parent::collection($resource);
     }
 
     public function toArray(Request $request): array
@@ -30,6 +26,9 @@ class PencatatanResource extends JsonResource
         $tagihan = $this->whenLoaded('tagihan');
         $tagihan->bulan = $this->bulan;
         $tagihan->tahun = $this->tahun;
+        $tagihan->denda_perbulan = self::$data;
+
+        $detiltagihan = new TagihanResource($tagihan);
         return [
             // 'id' => $this->id,
             'awal' => $this->awal,
@@ -37,10 +36,11 @@ class PencatatanResource extends JsonResource
             'pemakaian' => $this->pemakaian,
             'bulan' => $this->bulan,
             'tahun' => $this->tahun,
-            'denda_perbulan' => $this->denda,
+            'denda_perbulan' => self::$data,
             // 'dsd' => $this->meta->denda,
 
-            'tagihan' => new TagihanResource($tagihan),
+            'tagihan' => $detiltagihan,
+            'total' => $detiltagihan->total,
         ];
     }
 }

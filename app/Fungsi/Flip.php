@@ -53,7 +53,7 @@ class Flip
     }
 
 
-    public static function create($title, $jumlah, $bank, $nama, $email, $alamat)
+    public static function create($title, $jumlah, $bank, $nama, $email, $alamat, $jen)
     {
 
 
@@ -72,7 +72,7 @@ class Flip
             "amount" => $jumlah,
             "type" => "SINGLE",
             "sender_bank" => $bank,
-            "sender_bank_type" => "virtual_account",
+            "sender_bank_type" => $jen,
             "step" => 3,
             "sender_name" => $nama,
             "sender_email" => $email,

@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\Pelanggan\MobTagihanController;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
+use App\Http\Controllers\Api\Proses\WebhookController;
 use App\Models\Master\Bank;
 
 /*
@@ -119,3 +120,5 @@ Route::get('/bank', [MobBankController::class, 'pilihbank']);
 Route::get('/cekbank/{bank}', [MobBankController::class, 'cekbank']);
 
 Route::post('/buattagihan', [MobTagihanController::class, 'buattagihan']);
+
+Route::post('/callbacktirtatawar', [WebhookController::class, 'callback']);

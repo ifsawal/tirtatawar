@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\Pelanggan\Tagihan;
 
+use App\Models\Master\Tagihan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -43,13 +44,22 @@ class TagihanResource extends JsonResource
         $kurangi1bulan = date('Y-m', strtotime(Carbon::create($this->tahun, $this->bulan, 1)->subMonths(1)));
 
         $denda = $this->denda($waktucatat, $kurangi1bulan, $this->denda_perbulan);
+        $total = $this->total;
+        if ($denda > 0 and $denda <> $this->denda) {
+            $tagihan = Tagihan::findOrFail($this->id);
+            $tagihan->denda = $denda;
+            $tagihan->total = $tagihan->total + $denda;
+            $total = $tagihan->total;
+            $tagihan->save();
+        }
+
 
         return [
             // 'id' => $this->id,
             'jumlah' => $this->jumlah,
             'diskon' => $this->diskon,
             'denda' => $denda,
-            'total' => $this->total,
+            'total' => $total,
 
             // 'bulan' => $this->bulan, //untuk ngambil bulan
             // 'tahun' => $this->tahun, //untuk ngambil tahun
