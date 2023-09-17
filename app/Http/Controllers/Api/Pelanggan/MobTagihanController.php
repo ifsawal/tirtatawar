@@ -31,6 +31,12 @@ class MobTagihanController extends Controller
 
         $pelanggan = Pelanggan::with('golongan:id,denda')
             ->where('id', $r->nopel)->first();
+        if (!$pelanggan) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pelanggan tidak ditemukan...",
+            ], 404);
+        }
 
         $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
             ->whereRelation('pelanggan', 'id', '=', $r->nopel)
@@ -43,7 +49,7 @@ class MobTagihanController extends Controller
         if (count($pencatatan) == 0) {
             return response()->json([
                 "sukses" => false,
-                "pesan" => "Tidak ditemukan...",
+                "pesan" => "Tagihan Tidak ditemukan...",
             ], 404);
         }
         return response()->json([
@@ -62,13 +68,19 @@ class MobTagihanController extends Controller
             'nopel' => 'required',
             'kode_bank' => 'required',
         ]);
-        $bankdata = Bank::where('kode', $r->kode_bank)->first();
 
         $pelanggan = Pelanggan::with('desa:id,desa')
             ->where('id', $r->nopel)->first();
+        if (!$pelanggan) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pelanggan tidak ditemukan...",
+            ], 404);
+        }
         if ($pelanggan->email == NULL) $pelanggan->email = "pdamtirtatawar@gmail.com";
         if ($pelanggan->desa == NULL) $pelanggan->desa = "Desa Test";
 
+        $bankdata = Bank::where('kode', $r->kode_bank)->first();
         $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
             ->whereRelation('pelanggan', 'id', '=', $r->nopel)
             ->whereRelation('tagihan', 'status_bayar', '=', 'N')

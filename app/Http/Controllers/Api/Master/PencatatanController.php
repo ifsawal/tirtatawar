@@ -94,6 +94,7 @@ class PencatatanController extends Controller
             $meteranSebelumnya = $sebelumnya->akhir;
         }
 
+
         $pemakaian = $this->hitung($meteranSebelumnya, $request->akhir);
 
 
@@ -108,10 +109,18 @@ class PencatatanController extends Controller
             File::makeDirectory(public_path() . '/files2/pencatatan/' . $tahun . '/' . $bulan, 0777, true, true);
         }
 
-        $cek = Pencatatan::where('pelanggan_id', '=', $request->pelanggan_id)
+        $cek = Pencatatan::with('tagihan:id,status_bayar')
+            ->where('pelanggan_id', '=', $request->pelanggan_id)
             ->where('bulan', '=', $bulan)
             ->where('tahun', '=', $tahun)
             ->first();
+        if ($cek->tagihan->status_bayar == "Y") {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Meteran ini tidak dapat di rubah, karena sudah di bayar...",
+                "kode" => 0,
+            ], 204);
+        }
 
         //update
         if ($cek) {
