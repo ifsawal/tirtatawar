@@ -109,7 +109,7 @@ class PencatatanController extends Controller
             File::makeDirectory(public_path() . '/files2/pencatatan/' . $tahun . '/' . $bulan, 0777, true, true);
         }
 
-        return $cek = Pencatatan::with('tagihan:id,status_bayar')
+        $cek = Pencatatan::with('tagihan:id,status_bayar,pencatatan_id')
             ->where('pelanggan_id', '=', $request->pelanggan_id)
             ->where('bulan', '=', $bulan)
             ->where('tahun', '=', $tahun)
@@ -120,7 +120,7 @@ class PencatatanController extends Controller
         //update
         if ($cek) {
 
-            if ($cek->tagihan->status_bayar == "Y") {
+            if (isset($cek->tagihan->status_bayar) && $cek->tagihan->status_bayar == "Y") {
                 return response()->json([
                     "sukses" => false,
                     "pesan" => "Meteran ini tidak dapat di rubah, karena sudah di bayar...",
