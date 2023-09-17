@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer("diskon");
             $table->integer("biaya")->default(0);
             $table->integer("denda");
+            $table->integer("adm_bank")->nullable();
             $table->integer("total");
             $table->string("status_bayar");
             $table->string("sistem_bayar")->nullable();

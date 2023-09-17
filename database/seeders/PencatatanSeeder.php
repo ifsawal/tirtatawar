@@ -81,6 +81,33 @@ class PencatatanSeeder extends Seeder
                 'status_bayar' => 'N',
                 'sistem_bayar' => NULL,
             ],
+            [
+                'pencatatan_id' => 1,
+                'jumlah' => 1000,
+                'diskon' => 0,
+                'denda' => 0,
+                'total' => 15000,
+                'status_bayar' => 'N',
+                'sistem_bayar' => NULL,
+            ],
+            [
+                'pencatatan_id' => 2,
+                'jumlah' => 8000,
+                'diskon' => 0,
+                'denda' => 0,
+                'total' => 8000,
+                'status_bayar' => 'N',
+                'sistem_bayar' => NULL,
+            ],
+            [
+                'pencatatan_id' => 3,
+                'jumlah' => 500,
+                'diskon' => 0,
+                'denda' => 0,
+                'total' => 500,
+                'status_bayar' => 'N',
+                'sistem_bayar' => NULL,
+            ],
         ]);
     }
 }

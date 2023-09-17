@@ -18,12 +18,15 @@ use App\Http\Controllers\Api\Master\GolPenetapanController;
 use App\Http\Controllers\Api\Master\PhotoCatatanController;
 use App\Http\Controllers\Api\Master\SetoranController;
 use App\Http\Controllers\Api\Master\TagihanController;
+use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
+use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
 use App\Http\Controllers\Api\Pelanggan\MobBankController;
 use App\Http\Controllers\Api\Pelanggan\MobTagihanController;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
 use App\Http\Controllers\Api\Proses\WebhookController;
+use App\Models\Keluhan\Keluhan;
 use App\Models\Master\Bank;
 
 /*
@@ -45,6 +48,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/daftar', [AuthController::class, 'daftar']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/loginmobile', [AuthMobileController::class, 'loginmobile']);
+
 
 
 
@@ -111,6 +115,12 @@ Route::get('/tampilphotoc/{tahun}/{bulan}/{photo}', [PhotoCatatanController::cla
 //untuk pelanggan
 Route::group(['middleware' => ['auth:sanctum', 'abilities:pelanggan']], function () {
     Route::post('/logoutmobile', [AuthMobileController::class, 'logoutmobile']);
+
+    Route::post('/mobtagihan', [MobPelangganTagihanController::class, 'daftartagihan']);
+    Route::post('/daftarmeteran', [MobPelangganTagihanController::class, 'daftarmeteran']);
+
+    Route::post('/keluhansim', [KeluhansimController::class, 'simpan_keluhan']);
+    Route::post('/keluhan', [KeluhansimController::class, 'tampil_keluhan']);
 });
 
 
