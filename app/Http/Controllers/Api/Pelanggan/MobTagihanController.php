@@ -107,6 +107,7 @@ class MobTagihanController extends Controller
         $hasil = Flip::create($title, $jumlah, $bank, $nama, $email, $alamat, $bankdata->jenis);
         $hasil = json_decode($hasil);
 
+
         DB::beginTransaction();
         try {
             foreach ($pencatatan as $catat) {
