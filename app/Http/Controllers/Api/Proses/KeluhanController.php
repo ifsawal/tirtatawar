@@ -130,7 +130,7 @@ class KeluhanController extends Controller
             DB::rollback();
             return response()->json([
                 "sukses" => false,
-                "pesan" => "Gagal...."
+                "pesan" => "Gagal..."
             ], 404);
         }
     }
