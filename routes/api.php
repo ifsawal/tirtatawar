@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\Pelanggan\MobBankController;
 use App\Http\Controllers\Api\Pelanggan\MobTagihanController;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Proses\BayarController;
+use App\Http\Controllers\Api\Proses\KeluhanController;
 use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
 use App\Http\Controllers\Api\Proses\WebhookController;
 use App\Models\Keluhan\Keluhan;
@@ -99,6 +100,10 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/laporanpenerimaan', [LaporanBayarController::class, 'laporanpenerimaan']);
     Route::post('/laporanditerima', [LaporanBayarController::class, 'laporanditerima']);
     Route::post('/simpanpenyerahan', [SetoranController::class, 'rubah']);
+
+    Route::post('/listkeluhan', [KeluhanController::class, 'listkeluhan']);
+    Route::post('/detilkeluhan', [KeluhanController::class, 'detilkeluhan']);
+    Route::post('/simpanpetugas', [KeluhanController::class, 'simpan_petugas']);
 
 
 

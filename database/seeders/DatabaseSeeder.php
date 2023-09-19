@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $this->call([GoldetilSeeder::class]);
         $this->call([WilayahSeeder::class]);
         $this->call([BankSeeder::class]);
+        $this->call([KeluhanSeeder::class]);
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

@@ -17,6 +17,8 @@ class PdamSeeder extends Seeder
             'pdam' => 'PDAM Tirta Tawar',
             'nama' => 'PDAM Tirta Tawar Aceh Tengah',
             'ttd' => 'Takengon',
+            'lat' => '4.619110883343515',
+            'long' => '96.84816010785435',
             'kabupaten_id' => 1,
         ]);
     }

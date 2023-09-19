@@ -7,15 +7,16 @@ use App\Models\Master\Desa;
 use App\Models\Master\Pdam;
 use App\Models\Master\Golongan;
 use App\Models\Master\Pencatatan;
+use App\Models\Master\PhotoRumah;
+use Laravel\Sanctum\HasApiTokens;
+// use Illuminate\Database\Eloquent\Model;
 use App\Models\Master\HpPelanggan;
 use App\Models\Master\GolPenetapan;
-// use Illuminate\Database\Eloquent\Model;
+
+
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Model; //Authenticatable;
 
 class Pelanggan extends Model //Authenticatable //Model 
@@ -62,6 +63,10 @@ class Pelanggan extends Model //Authenticatable //Model
     {
         return $this->belongsTo(Golongan::class, 'golongan_id', 'id');
     }
+    public function wiljalan()
+    {
+        return $this->belongsTo(Wiljalan::class, 'wiljalan_id', 'id');
+    }
 
     public function hp_pelanggan()
     {
@@ -76,5 +81,9 @@ class Pelanggan extends Model //Authenticatable //Model
     public function pencatatan()
     {
         return $this->hasMany(Pencatatan::class, 'pelanggan_id', 'id');
+    }
+    public function photo_rumah()
+    {
+        return $this->hasMany(PhotoRumah::class, 'pelanggan_id', 'id');
     }
 }

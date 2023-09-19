@@ -4,6 +4,7 @@ namespace App\Models\Keluhan;
 
 use App\Models\Keluhan\Tim;
 use App\Models\Keluhan\Proses;
+use App\Models\Master\Pelanggan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -19,5 +20,10 @@ class Keluhan extends Model
     public function tim()
     {
         return $this->hasMany(Tim::class, 'keluhan_id', 'id');
+    }
+
+    public function pelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class, 'pelanggan_id', 'id');
     }
 }

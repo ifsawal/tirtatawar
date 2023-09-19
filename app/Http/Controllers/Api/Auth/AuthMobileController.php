@@ -24,7 +24,7 @@ class AuthMobileController extends Controller
         }
 
         $pelanggan = new PelangganResource(Pelanggan::with(
-            'pdam:id,pdam,nama,kabupaten_id',
+            'pdam:id,pdam,nama,kabupaten_id',  //,lat,long
             'desa:id,desa',
             'golongan:id,golongan',
             'rute:id,rute',

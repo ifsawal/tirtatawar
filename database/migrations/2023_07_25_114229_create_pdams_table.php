@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('pdam');
             $table->string('nama')->nullable();
             $table->string('ttd')->nullable();
+            $table->string('lat')->nullable();
+            $table->string('long')->nullable();
             $table->unsignedBigInteger('kabupaten_id')->nullable();
             $table->foreign('kabupaten_id')->references('id')->on('kabupatens')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
