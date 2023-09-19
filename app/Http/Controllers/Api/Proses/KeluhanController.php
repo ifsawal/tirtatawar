@@ -136,7 +136,7 @@ class KeluhanController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly 
      */
     public function store(Request $request)
     {
