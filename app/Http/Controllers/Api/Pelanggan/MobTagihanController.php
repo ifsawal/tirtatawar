@@ -140,8 +140,8 @@ class MobTagihanController extends Controller
             }
 
 
-            // DB::commit();
-            DB::rollback();
+            DB::commit();
+            // DB::rollback();
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Sukses membuat tagihan...",
