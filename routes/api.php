@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\Master\TagihanController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
 use App\Http\Controllers\Api\Pelanggan\MobBankController;
+use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\MobTagihanController;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Proses\BayarController;
@@ -121,6 +122,7 @@ Route::get('/tampilphotoc/{tahun}/{bulan}/{photo}', [PhotoCatatanController::cla
 Route::group(['middleware' => ['auth:sanctum', 'abilities:pelanggan']], function () {
     Route::post('/logoutmobile', [AuthMobileController::class, 'logoutmobile']);
 
+    Route::post('/golongantarifpelanggan', [MobDetilPelangganController::class, 'golongantarifpelanggan']);
     Route::post('/mobtagihan', [MobPelangganTagihanController::class, 'daftartagihan']);
     Route::post('/daftarmeteran', [MobPelangganTagihanController::class, 'daftarmeteran']);
 
