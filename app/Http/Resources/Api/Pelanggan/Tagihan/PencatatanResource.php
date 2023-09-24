@@ -30,7 +30,7 @@ class PencatatanResource extends JsonResource
 
         $detiltagihan = new TagihanResource($tagihan);
         return [
-            // 'id' => $this->id,
+            'id' => encrypt($this->id),
             'awal' => $this->awal,
             'akhir' => $this->akhir,
             'pemakaian' => $this->pemakaian,

@@ -228,7 +228,8 @@ class PencatatanController extends Controller
             $harga = GolPenetapan::where('pelanggan_id', '=', $pelanggan_id)
                 ->where('aktif', '=', 'Y')
                 ->first();
-            $jumlah = $harga->harga;
+            $biaya = $golongan[0]->golongan->biaya;
+            $jumlah = $harga->harga + $biaya;
         } else if (isset($golongan[0]->golongan->goldetil)) {  //jika sesuai tarif
             foreach ($golongan[0]->golongan->goldetil as $detil) {
                 if ($pemakaian > $detil->awal_meteran && $pemakaian <= $detil->akhir_meteran && $detil->akhir_meteran <> 0) {
@@ -248,6 +249,8 @@ class PencatatanController extends Controller
 
         $tagihan->pencatatan_id = $pencatatan_id;
         $tagihan->jumlah = $jumlah;
+        $tagihan->biaya = $biaya;
+        $tagihan->subtotal = $jumlah;
         $tagihan->total = $jumlah;
         $tagihan->diskon = 0;
         $tagihan->denda = 0;

@@ -81,11 +81,23 @@ class MobTagihanController extends Controller
         if ($pelanggan->desa == NULL) $pelanggan->desa = "Desa Test";
 
         $bankdata = Bank::where('kode', $r->kode_bank)->first();
-        $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
-            ->whereRelation('pelanggan', 'id', '=', $r->nopel)
-            ->whereRelation('tagihan', 'status_bayar', '=', 'N')
-            ->orderBy('id', 'desc')
-            ->get();
+
+        if (isset($r->id)) {
+            $id = decrypt($r->id);
+            $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
+                ->whereRelation('pelanggan', 'id', '=', $r->nopel)
+                ->whereRelation('tagihan', 'status_bayar', '=', 'N')
+                ->whereRelation('tagihan', 'id', '=', $id)
+                ->orderBy('id', 'desc')
+                ->get();
+        } else {
+            $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
+                ->whereRelation('pelanggan', 'id', '=', $r->nopel)
+                ->whereRelation('tagihan', 'status_bayar', '=', 'N')
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+
 
         $total = 0;
         $id = array();
@@ -95,10 +107,11 @@ class MobTagihanController extends Controller
             $id[] = $catat->tagihan->id;
         }
 
+        ($bankdata->jenis == "wallet_account") ? $biaya_bank = ceil(($bankdata->biaya * $total) / 100) : $biaya_bank = $bankdata->biaya;
 
 
         $title = "Tagihan PDAM";
-        $jumlah = $total;
+        $jumlah = $total + $biaya_bank;
         $bank = $r->kode_bank;
         $nama = $pelanggan->nama;
         $email = $pelanggan->email;
@@ -127,8 +140,8 @@ class MobTagihanController extends Controller
             }
 
 
-            DB::commit();
-            // DB::rollback();
+            // DB::commit();
+            DB::rollback();
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Sukses membuat tagihan...",
