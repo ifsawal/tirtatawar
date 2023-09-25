@@ -118,6 +118,9 @@ class PelangganController extends Controller
             if (isset($request->terhapus)) {  //mencari data yang terhapus
                 $pelanggan = Pelanggan::with('hp_pelanggan')
                     ->where($tipe, $operator, $kata)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->withTrashed()->get();
+            } else if (isset($request->terakhirdaftar)) { //terakhir terdaftar
+                $pelanggan = Pelanggan::with('hp_pelanggan')
+                    ->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(20)->orderBy('id', 'desc')->get();
             } else {  //mencari data normal
                 $pelanggan = Pelanggan::with('hp_pelanggan')
                     ->where($tipe, $operator, $kata)->where('pdam_id', $user[0]->pdam->id)->offset(0)->limit(10)->get();
@@ -233,6 +236,7 @@ class PelangganController extends Controller
             'user_id' => 'required',
         ]);
 
+        $kode = rand(1000, 9999);
         $pelanggan = new Pelanggan;
         $pelanggan->nama = $request->nama;
         $pelanggan->nik = $request->nik;
@@ -241,6 +245,7 @@ class PelangganController extends Controller
         $pelanggan->pdam_id = $request->pdam_id;
         $pelanggan->desa_id = $request->desa_id;
         $pelanggan->user_id = $request->user_id;
+        $pelanggan->kode = $kode;
         if ($pelanggan->rute_id <> "") {
             $pelanggan->rute_id = $request->rute_id;
         }
@@ -262,6 +267,7 @@ class PelangganController extends Controller
             'sukses' => true,
             'pesan' => "Pendaftaran berhasil...",
             'id' => $pelanggan->id,
+            'kode' => $pelanggan->kode,
         ], 201);
     }
 
