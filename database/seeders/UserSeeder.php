@@ -142,6 +142,9 @@ class UserSeeder extends Seeder
 
 
         $role = Role::create(['name' => 'super_admin', 'guard_name' => 'web']);
+        $role_petugas = Role::create(['name' => 'petugas', 'guard_name' => 'web']);
+        $role_kasir = Role::create(['name' => 'kasir', 'guard_name' => 'web']);
+
 
         $permission = Permission::create(['name' => 'lihat users', 'guard_name' => 'web']);
         $permission_tambah = Permission::create(['name' => 'tambah users', 'guard_name' => 'web']);
