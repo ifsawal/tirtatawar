@@ -229,7 +229,7 @@ class PencatatanController extends Controller
                 ->where('aktif', '=', 'Y')
                 ->first();
             $biaya = $golongan[0]->golongan->biaya;
-            $jumlah = $harga->harga + $biaya;
+            $jumlah = $harga->harga;
         } else if (isset($golongan[0]->golongan->goldetil)) {  //jika sesuai tarif
             foreach ($golongan[0]->golongan->goldetil as $detil) {
                 if ($pemakaian > $detil->awal_meteran && $pemakaian <= $detil->akhir_meteran && $detil->akhir_meteran <> 0) {
@@ -243,15 +243,15 @@ class PencatatanController extends Controller
                 }
             }
             $biaya = $golongan[0]->golongan->biaya;
-            $jumlah = $biaya + $jumlah;
+            $jumlah = $jumlah;
         }
 
 
         $tagihan->pencatatan_id = $pencatatan_id;
         $tagihan->jumlah = $jumlah;
         $tagihan->biaya = $biaya;
-        $tagihan->subtotal = $jumlah;
-        $tagihan->total = $jumlah;
+        $tagihan->subtotal = $jumlah + $biaya;
+        $tagihan->total = $jumlah + $biaya;
         $tagihan->diskon = 0;
         $tagihan->denda = 0;
         $tagihan->status_bayar = 'N';

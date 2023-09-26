@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Master\Tagihan;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\Api\Pelanggan\Tagihan\TagihanResource;
 
 class TagihanController extends Controller
 {
@@ -16,6 +19,52 @@ class TagihanController extends Controller
 
     public function cari()
     {
+    }
+    public function cektagihandanupdate(Request $r)
+    {
+        $this->validate($r, [
+            'id' => 'required', //pencatatan id
+        ]);
+
+
+        $pencatatan = Pencatatan::where('id', $r->id)
+            ->first();
+        $tagihan = Tagihan::where('pencatatan_id', $pencatatan->id)
+            ->first();
+
+        if ($tagihan->status_bayar == "Y") {  //jika sudah bayar jangan di proses lagi
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Ditemukan...",
+                'tagihan' => $tagihan,
+            ], 202);
+        }
+
+        $pelanggan = Pelanggan::with('golongan:id,denda')
+            ->where('id', $pencatatan->pelanggan_id)->first();
+
+        $waktucatat = $pencatatan->tahun . '-' . $pencatatan->bulan . '-' . '1';
+        $kurangi1bulan = date('Y-m', strtotime(Carbon::create($pencatatan->tahun, $pencatatan->bulan, 1)->subMonths(1)));
+        $denda = TagihanResource::denda($waktucatat, $kurangi1bulan, $pelanggan->golongan->denda);
+
+        //proses simpan
+        $total = $tagihan->total;
+        if ($denda > 0 and $denda <> $tagihan->denda) {
+            //     $tagihan = Tagihan::findOrFail($this->id);
+            $tagihan->denda = $denda;
+            $tagihan->subtotal = $tagihan->total + $denda;
+            $tagihan->total = $tagihan->total + $denda;
+            // $total = $tagihan->total;
+            $tagihan->save();
+        }
+
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Ditemukan...",
+            // 'pencatatan' => $pencatatan,
+            'tagihan' => $tagihan,
+        ], 202);
     }
 
     public function index(Request $r)

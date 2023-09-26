@@ -22,6 +22,8 @@ class MobTagihanController extends Controller
     {
         //
     }
+
+
     public function cektagihan(Request $r)
     {
         $this->validate($r, [
@@ -111,13 +113,13 @@ class MobTagihanController extends Controller
 
 
         $title = "Tagihan PDAM";
-        $jumlah = $total + $biaya_bank;
+        $total_jumlah = $total + $biaya_bank;
         $bank = $r->kode_bank;
         $nama = $pelanggan->nama;
         $email = $pelanggan->email;
         $alamat = "";
 
-        $hasil = Flip::create($title, $jumlah, $bank, $nama, $email, $alamat, $bankdata->jenis);
+        $hasil = Flip::create($title, $total_jumlah, $bank, $nama, $email, $alamat, $bankdata->jenis);
         $hasil = json_decode($hasil);
 
 
@@ -132,7 +134,7 @@ class MobTagihanController extends Controller
                 $transfer->tipe = $hasil->bill_payment->receiver_bank_account->account_type;
                 $transfer->bank = $hasil->bill_payment->receiver_bank_account->bank_code;
                 $transfer->nama = $hasil->customer->name;
-                $transfer->jumlah = $total;
+                $transfer->jumlah = $total_jumlah;
                 $transfer->url = $hasil->payment_url;
                 $transfer->ket = "";
                 $transfer->tagihan_id = $catat->tagihan->id;
