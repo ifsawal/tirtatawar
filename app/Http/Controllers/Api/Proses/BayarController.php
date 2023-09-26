@@ -90,7 +90,7 @@ class BayarController extends Controller
 
             $pelangan = Pelanggan::with(
                 'user:id,nama',
-                'pdam:id,pdam',
+                'pdam:id,pdam,ttd',
                 'desa.kecamatan:id,kecamatan',
                 'golongan:id,golongan,biaya',
                 'rute:id,rute',
@@ -106,6 +106,7 @@ class BayarController extends Controller
                 "datatagihan" => $tagihan,
                 "penagih" =>  $userpenagih,
                 "setoran" =>  $tambahsetoran,
+                "tanggal" =>  date('d-m-Y'),
             ], 201);
         } catch (\Exception $e) {
             DB::rollback();

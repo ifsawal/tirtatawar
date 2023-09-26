@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Master\Tagihan;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Api\Pelanggan\Tagihan\TagihanResource;
@@ -47,24 +48,37 @@ class TagihanController extends Controller
         $kurangi1bulan = date('Y-m', strtotime(Carbon::create($pencatatan->tahun, $pencatatan->bulan, 1)->subMonths(1)));
         $denda = TagihanResource::denda($waktucatat, $kurangi1bulan, $pelanggan->golongan->denda);
 
-        //proses simpan
-        $total = $tagihan->total;
-        if ($denda > 0 and $denda <> $tagihan->denda) {
-            //     $tagihan = Tagihan::findOrFail($this->id);
-            $tagihan->denda = $denda;
-            $tagihan->subtotal = $tagihan->total + $denda;
-            $tagihan->total = $tagihan->total + $denda;
-            // $total = $tagihan->total;
-            $tagihan->save();
+        DB::beginTransaction();
+        try {
+            //proses simpan
+            $total = $tagihan->total;
+            if ($denda > 0 and $denda <> $tagihan->denda) {
+
+                $tagihan->denda = $denda;
+                $tagihan->subtotal = $tagihan->total + $denda;
+                $tagihan->total = $tagihan->total + $denda;
+
+                $tagihan->save();
+
+                DB::commit();
+                // DB::rollback();
+            }
+
+
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Ditemukan...",
+                // 'pencatatan' => $pencatatan,
+                'tagihan' => $tagihan,
+            ], 202);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Gagal cek dan update..." . $e,
+            ], 404);
         }
-
-
-        return response()->json([
-            "sukses" => true,
-            "pesan" => "Ditemukan...",
-            // 'pencatatan' => $pencatatan,
-            'tagihan' => $tagihan,
-        ], 202);
     }
 
     public function index(Request $r)
