@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer("jumlah");
             $table->integer("diskon");
             $table->integer("biaya")->default(0);
+            $table->integer("denda_perbulan")->default(0);
+            $table->integer("pajak")->default(0);
             $table->integer("denda");
             $table->integer("adm_bank")->nullable();
             $table->integer("subtotal");

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('pelanggan_id')->references('id')->on('pelanggans')->onDelete('restrict')->onUpdate('cascade');
             $table->string('aktif');
             $table->integer("harga");
+            $table->integer("pajak")->default(0);
             $table->dateTime("tgl_awal");
             $table->dateTime("tgl_akhir")->nullable();
             $table->unsignedBigInteger('user_id');

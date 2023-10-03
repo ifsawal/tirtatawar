@@ -47,6 +47,7 @@ class TagihanResource extends JsonResource
         $total = $this->total;
         if ($denda > 0 and $denda <> $this->denda) {
             $tagihan = Tagihan::findOrFail($this->id);
+            $tagihan->denda_perbulan = $this->denda_perbulan;
             $tagihan->denda = $denda;
             $tagihan->subtotal = $tagihan->total + $denda;
             $tagihan->total = $tagihan->total + $denda;

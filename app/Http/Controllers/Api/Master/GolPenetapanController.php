@@ -18,10 +18,11 @@ class GolPenetapanController extends Controller
     {
         $this->validate($request, [
             'id' => 'required',
+
         ]);
 
         $cek = GolPenetapan::where('pelanggan_id', '=', $request->id)
-            ->select('id', 'harga')
+            ->select('id', 'harga', 'pajak')
             ->where('aktif', '=', 'Y')
             ->first();
 
@@ -56,8 +57,10 @@ class GolPenetapanController extends Controller
         $this->validate($request, [
             'id' => 'required',
             'harga' => 'required',
+            'pajak' => 'required',
         ]);
         $user_id = Auth::user()->id;
+
 
         $sebelumnya = GolPenetapan::where('pelanggan_id', '=', $request->id)
             ->where('aktif', '=', 'Y')
@@ -77,8 +80,8 @@ class GolPenetapanController extends Controller
                 $penetapan = new GolPenetapan();
                 $penetapan->pelanggan_id = $request->id;
                 $penetapan->harga = $request->harga;
+                $penetapan->pajak = $request->pajak;
                 $penetapan->aktif = "Y";
-                $penetapan->harga = $request->harga;
                 $penetapan->tgl_awal = now();
                 $penetapan->user_id = $user_id;
                 $penetapan->save();
@@ -88,9 +91,11 @@ class GolPenetapanController extends Controller
                 $pel->save();
 
                 DB::commit();
+                // DB::rollback();
                 return response()->json([
                     'sukses' => true,
                     'pesan' => "Perubahan harga berhasil...",
+
                 ], 202);
             } catch (\Exception $e) {
                 DB::rollback();
@@ -106,6 +111,7 @@ class GolPenetapanController extends Controller
             $penetapan = new GolPenetapan();
             $penetapan->pelanggan_id = $request->id;
             $penetapan->harga = $request->harga;
+            $penetapan->pajak = $request->pajak;
             $penetapan->aktif = "Y";
             $penetapan->harga = $request->harga;
             $penetapan->tgl_awal = now();

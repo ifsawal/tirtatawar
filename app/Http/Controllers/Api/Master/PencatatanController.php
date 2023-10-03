@@ -217,7 +217,7 @@ class PencatatanController extends Controller
             $tagihan = Tagihan::where('pencatatan_id', '=', $pencatatan_id)->first();
         }
 
-        $golongan = Pelanggan::with('golongan:id,golongan,biaya', 'golongan.goldetil:id,nama,awal_meteran,akhir_meteran,harga,golongan_id')
+        $golongan = Pelanggan::with('golongan:id,golongan,biaya,pajak,denda', 'golongan.goldetil:id,nama,awal_meteran,akhir_meteran,harga,golongan_id')
             ->select('nama', 'golongan_id', 'penetapan')
             ->where('id', '=', $pelanggan_id)
             ->get();
@@ -229,7 +229,11 @@ class PencatatanController extends Controller
                 ->where('aktif', '=', 'Y')
                 ->first();
             $biaya = $golongan[0]->golongan->biaya;
+            $dasar_pajak = $golongan[0]->golongan->pajak;
+            $denda_perbulan = $golongan[0]->golongan->denda;
+
             $jumlah = $harga->harga;
+            $jumlah_pajak = $harga->pajak;
         } else if (isset($golongan[0]->golongan->goldetil)) {  //jika sesuai tarif
             foreach ($golongan[0]->golongan->goldetil as $detil) {
                 if ($pemakaian > $detil->awal_meteran && $pemakaian <= $detil->akhir_meteran && $detil->akhir_meteran <> 0) {
@@ -243,15 +247,21 @@ class PencatatanController extends Controller
                 }
             }
             $biaya = $golongan[0]->golongan->biaya;
+            $dasar_pajak = $golongan[0]->golongan->pajak;
+            $denda_perbulan = $golongan[0]->golongan->denda;
+
             $jumlah = $jumlah;
+            $jumlah_pajak = $pemakaian * $dasar_pajak;
         }
 
 
         $tagihan->pencatatan_id = $pencatatan_id;
         $tagihan->jumlah = $jumlah;
+        $tagihan->denda_perbulan = $denda_perbulan;
         $tagihan->biaya = $biaya;
-        $tagihan->subtotal = $jumlah + $biaya;
-        $tagihan->total = $jumlah + $biaya;
+        $tagihan->pajak = $jumlah_pajak;
+        $tagihan->subtotal = $jumlah + $biaya + $jumlah_pajak;
+        $tagihan->total = $jumlah + $biaya + $jumlah_pajak;
         $tagihan->diskon = 0;
         $tagihan->denda = 0;
         $tagihan->status_bayar = 'N';

@@ -41,12 +41,12 @@ class TagihanController extends Controller
             ], 202);
         }
 
-        $pelanggan = Pelanggan::with('golongan:id,denda')
-            ->where('id', $pencatatan->pelanggan_id)->first();
+        // $pelanggan = Pelanggan::with('golongan:id,denda')
+        //     ->where('id', $pencatatan->pelanggan_id)->first();
 
         $waktucatat = $pencatatan->tahun . '-' . $pencatatan->bulan . '-' . '1';
         $kurangi1bulan = date('Y-m', strtotime(Carbon::create($pencatatan->tahun, $pencatatan->bulan, 1)->subMonths(1)));
-        $denda = TagihanResource::denda($waktucatat, $kurangi1bulan, $pelanggan->golongan->denda);
+        $denda = TagihanResource::denda($waktucatat, $kurangi1bulan, $tagihan->denda_perbulan);
 
         DB::beginTransaction();
         try {

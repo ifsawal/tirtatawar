@@ -98,7 +98,8 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:4'
+            'password' => 'required|string|min:4',
+            'pdam' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors(),);
@@ -108,12 +109,14 @@ class AuthController extends Controller
             'nama' => $request->nama,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'j_permisi' => 0,
+            'j_permisi' => 1,
+            'pdam_id' => $request->pdam,
         ]);
 
         return response()->json([
             'sukses' => true,
             'pesan' => "Pendaftaran berhasil...",
+            'data' => $user,
         ], 201);
     }
 }
