@@ -109,7 +109,7 @@ class AuthController extends Controller
             'nama' => $request->nama,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'j_permisi' => 1,
+            'j_permisi' => 0,
             'pdam_id' => $request->pdam,
         ]);
 

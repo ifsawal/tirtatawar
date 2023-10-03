@@ -111,6 +111,8 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/datauser', [PenggunaController::class, 'datauser']);
     Route::post('/detiluser', [PenggunaController::class, 'detiluser']);
     Route::post('/tambahstatus', [PenggunaController::class, 'tambahstatus']);
+    Route::post('/terimakaryawan', [PenggunaController::class, 'terimakaryawan']);
+    Route::post('/nonaktifkaryawan', [PenggunaController::class, 'nonaktifkaryawan']);
 
 
 

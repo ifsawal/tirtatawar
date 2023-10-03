@@ -17,6 +17,39 @@ class PenggunaController extends Controller
     {
         //
     }
+    public function terimakaryawan(Request $r)
+    {
+        $this->validate($r, [
+            'id' => 'required',  //user id
+        ]);
+
+        $user = User::findOrFail($r->id);
+        $user->email_verified_at = now();
+        $user->save();
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Sukses mengaktifkan...",
+        ], 201);
+    }
+
+    public function nonaktifkaryawan(Request $r)
+    {
+        $this->validate($r, [
+            'id' => 'required',  //user id
+        ]);
+
+        $user = User::findOrFail($r->id);
+        $user->email_verified_at = NULL;
+        $user->save();
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Karyawan Nonaktif...",
+        ], 201);
+    }
+
+
     public function tambahstatus(Request $r)
     {
         $this->validate($r, [
@@ -58,11 +91,13 @@ class PenggunaController extends Controller
                 'sukses' => true,
                 'pesan' => "Data ditemukan...",
                 'role' => $role[0],
+                'verifikasi' => $user->email_verified_at,
             ], 202);
         } else {
             return response()->json([
                 'sukses' => true,
                 'pesan' => "Tidak terdaftar sebagai karyawan...",
+                'verifikasi' => $user->email_verified_at,
             ], 404);
         }
     }
