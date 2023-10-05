@@ -10,6 +10,7 @@ use App\Models\Master\Golongan;
 use App\Models\Master\Kabupaten;
 use App\Models\Master\Kecamatan;
 use App\Http\Controllers\Controller;
+use App\Models\Master\Pelanggan;
 use App\Models\Master\Wiljalan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -112,6 +113,43 @@ class AuthController extends Controller
             'j_permisi' => 0,
             'pdam_id' => $request->pdam,
         ]);
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Pendaftaran berhasil...",
+            'data' => $user,
+        ], 201);
+    }
+
+
+    public function daftarpelanggan(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255|unique:pelanggans',
+            'password' => 'required|string|min:4',
+            'kode' => 'required',
+            'nopelanggan' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 205);
+        }
+
+        $user = Pelanggan::where('id', $request->nopelanggan)
+            ->where('kode', $request->kode)
+            ->first();
+        if (!$user) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Tidak ditemukan...",
+                'data' => $user,
+            ], 204);
+        }
+
+        if ($user->email == NULL) {
+            $user->email = $request->email;
+            $user->password = bcrypt($request->password);
+            $user->save();
+        }
 
         return response()->json([
             'sukses' => true,

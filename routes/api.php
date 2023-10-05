@@ -51,6 +51,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/daftar', [AuthController::class, 'daftar']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/loginmobile', [AuthMobileController::class, 'loginmobile']);
+Route::post('/daftarpelanggan', [AuthController::class, 'daftarpelanggan']);
 
 
 

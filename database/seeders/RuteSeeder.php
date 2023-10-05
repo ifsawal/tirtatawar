@@ -23,10 +23,6 @@ class RuteSeeder extends Seeder
                 'pdam_id' => 1,
             ],
             [
-                'rute' => 'Arul Pestak',
-                'pdam_id' => 1,
-            ],
-            [
                 'rute' => 'IPA Lelabu',
                 'pdam_id' => 1,
             ],
@@ -35,7 +31,15 @@ class RuteSeeder extends Seeder
                 'pdam_id' => 1,
             ],
             [
+                'rute' => 'Sumber Air Lelemu IKK Pegasing',
+                'pdam_id' => 1,
+            ],
+            [
                 'rute' => 'SPAM IKK Celala',
+                'pdam_id' => 1,
+            ],
+            [
+                'rute' => 'Sumber Air Arul Pestak IKK Lut Tawar',
                 'pdam_id' => 1,
             ],
         ]);

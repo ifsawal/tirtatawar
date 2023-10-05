@@ -22,6 +22,7 @@ class WiljalanSeeder extends Seeder
                 'akhir' => 0,
                 'pdam_id' => 1,
             ],
+
             ['id' => 2,  'jalan' => 'Belang Kolak 1', 'user_id' =>  16, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],
             ['id' => 3,  'jalan' => 'Damar', 'user_id' =>           16, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],
             ['id' => 4,  'jalan' => 'Bale Atu', 'user_id' =>        16, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],

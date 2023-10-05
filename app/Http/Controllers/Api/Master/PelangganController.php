@@ -236,7 +236,7 @@ class PelangganController extends Controller
             'user_id' => 'required',
         ]);
 
-        $kode = rand(1000, 9999);
+        $kode = rand(10000, 99999);
         $pelanggan = new Pelanggan;
         $pelanggan->nama = $request->nama;
         $pelanggan->nik = $request->nik;
