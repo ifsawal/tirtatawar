@@ -57,7 +57,7 @@ class TagihanResource extends JsonResource
 
 
         return [
-            // 'id' => $this->id,
+            'id' => encrypt($this->id),
             'jumlah' => $this->jumlah,
             'diskon' => $this->diskon,
             'denda' => $denda,

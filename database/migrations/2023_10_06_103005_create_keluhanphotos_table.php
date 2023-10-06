@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('banks', function (Blueprint $table) {
+        Schema::create('keluhanphotos', function (Blueprint $table) {
             $table->id();
-            $table->string("vendor");
-            $table->string("kode");
-            $table->string("nama");
-            $table->string("biaya")->nullable();
-            $table->string("jenis")->nullable();
-            $table->string("ket")->nullable();
+            $table->unsignedBigInteger('keluhan_id');
+            $table->foreign('keluhan_id')->references('id')->on('keluhans')->onDelete('restrict')->onUpdate('cascade');
+            $table->string("photo")->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('banks');
+        Schema::dropIfExists('keluhanphotos');
     }
 };

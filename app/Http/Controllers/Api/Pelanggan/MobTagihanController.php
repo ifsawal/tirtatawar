@@ -59,6 +59,7 @@ class MobTagihanController extends Controller
             "pesan" => "Tagihan ditemukan...",
             "pelanggan" => new PelangganResource($pelanggan),
             "data" => $pencatatan,
+            "pajak" => 11,
         ], 202);
     }
 
@@ -109,7 +110,12 @@ class MobTagihanController extends Controller
             $id[] = $catat->tagihan->id;
         }
 
-        ($bankdata->jenis == "wallet_account") ? $biaya_bank = ceil(($bankdata->biaya * $total) / 100) : $biaya_bank = $bankdata->biaya;
+        if ($bankdata->jenis == "wallet_account") {
+            $biaya_bank = ($bankdata->biaya * $total) / 100;
+            $biaya_bank = ceil($biaya_bank + ($biaya_bank * 11) / 100); //pajak 11%
+        } else {
+            $biaya_bank = $bankdata->biaya;
+        }
 
 
         $title = "Tagihan PDAM";
