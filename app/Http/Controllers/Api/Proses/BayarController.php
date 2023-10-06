@@ -117,6 +117,67 @@ class BayarController extends Controller
         }
     }
 
+    public function cetak_ulang(Request $r)
+    {
+        $this->validate($r, [
+            'id' => 'required',
+            'pelanggan_id' => 'required',
+        ]);
+        $user_id = Auth::user()->id;
+
+
+        DB::beginTransaction();
+        try {
+            $tagihan = Tagihan::where('id', '=', $r->id)
+                ->where('status_bayar', '=', 'Y')
+                ->where('sistem_bayar', '=', 'Cash')
+                ->first();
+
+            if (!$tagihan) {
+                DB::rollback();
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Tagihan belum dibayar atau tidak melalui cash...",
+                ], 202);
+            }
+
+            $tagihan = Tagihan::findOrFail($r->id);
+
+
+
+
+
+            $userpenagih = Penagih::with('user:id,nama')
+                ->where('tagihan_id', '=', $tagihan->id)->first();
+
+            $pelangan = Pelanggan::with(
+                'user:id,nama',
+                'pdam:id,pdam,ttd',
+                'desa.kecamatan:id,kecamatan',
+                'golongan:id,golongan,biaya',
+                'rute:id,rute',
+            )->where('id', $r->pelanggan_id)->first();
+
+            DB::commit();
+            // DB::rollback();
+
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Pembayaran sukses...",
+                "pelanggan" => $pelangan,
+                "datatagihan" => $tagihan,
+                "penagih" =>  $userpenagih,
+                "tanggal" =>  date('d-m-Y'),
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Gagal menampilkan data...",
+            ], 404);
+        }
+    }
+
     /**
      * Display the specified resource.
      */
