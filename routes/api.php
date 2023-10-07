@@ -109,6 +109,9 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/listkeluhan', [KeluhanController::class, 'listkeluhan']);
     Route::post('/detilkeluhan', [KeluhanController::class, 'detilkeluhan']);
     Route::post('/simpanpetugas', [KeluhanController::class, 'simpan_petugas']);
+    Route::post('/pekerjaanselesai', [KeluhanController::class, 'pekerjaanselesai']);
+    Route::post('/simpan_poto_pekerjaan', [KeluhanController::class, 'simpan_poto_pekerjaan']);
+    Route::post('/photokeluhan', [KeluhanController::class, 'photokeluhan']);
 
     Route::post('/datauser', [PenggunaController::class, 'datauser']);
     Route::post('/detiluser', [PenggunaController::class, 'detiluser']);
@@ -124,6 +127,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
 
 Route::get('/tampilphoto/{folder}/{nama}', [PhotoRumahController::class, 'tampilphoto']);
 Route::get('/tampilphotoc/{tahun}/{bulan}/{photo}', [PhotoCatatanController::class, 'tampilphotoc']);
+Route::get('/tampilphotopengerjaan/{tanggal}/{photo}', [KeluhanController::class, 'tampilphotopengerjaan']);
 
 
 

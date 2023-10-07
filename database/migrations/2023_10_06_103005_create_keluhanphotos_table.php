@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('keluhan_id');
             $table->foreign('keluhan_id')->references('id')->on('keluhans')->onDelete('restrict')->onUpdate('cascade');
             $table->string("photo")->nullable();
+            $table->date("tanggal");
             $table->timestamps();
         });
     }

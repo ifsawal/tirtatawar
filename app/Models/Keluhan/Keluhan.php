@@ -21,6 +21,10 @@ class Keluhan extends Model
     {
         return $this->hasMany(Tim::class, 'keluhan_id', 'id');
     }
+    public function photokeluhan()
+    {
+        return $this->hasMany(Keluhanphoto::class, 'keluhan_id', 'id');
+    }
 
     public function pelanggan()
     {
