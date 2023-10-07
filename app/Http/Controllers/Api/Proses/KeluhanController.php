@@ -22,6 +22,27 @@ class KeluhanController extends Controller
     public function index()
     {
     }
+    public function simpan_keluhan(Request $r) //oleh petugas
+    {
+        $this->validate($r, [
+            'id' => 'required', //pelanggan id
+            'keluhan' => 'required',
+        ]);
+
+        $user_id = Auth::user()->id;
+
+        $keluhan = new Keluhan();
+        $keluhan->pelanggan_id = $r->id;
+        $keluhan->keluhan = $r->keluhan;
+        $keluhan->user_id = $user_id;
+        $keluhan->save();
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Tersimpan...",
+        ], 201);
+    }
+
     public function tampilphotopengerjaan($tanggal, $photo)
     {
         $tahun = date('Y', strtotime($tanggal));

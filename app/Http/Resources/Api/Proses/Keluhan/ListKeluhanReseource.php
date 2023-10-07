@@ -20,6 +20,7 @@ class ListKeluhanReseource extends JsonResource
             "keluhan" => $this->keluhan,
             "status" => $this->status,
             "ket" => $this->ket,
+            "user_id" => $this->user_id,
             "created_at" => date('d-m-Y', strtotime($this->created_at)),
             "pelanggan" => $this->pelanggan->nama,
         ];
