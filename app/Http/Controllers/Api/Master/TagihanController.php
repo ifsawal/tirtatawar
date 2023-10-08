@@ -54,10 +54,16 @@ class TagihanController extends Controller
             $total = $tagihan->total;
             if ($denda > 0 and $denda <> $tagihan->denda) {
 
-                $tagihan->denda = $denda;
-                $tagihan->subtotal = $tagihan->total + $denda;
-                $tagihan->total = $tagihan->total + $denda;
 
+                if ($tagihan->denda == 0) {
+                    $tagihan->subtotal = $tagihan->subtotal  + $denda;
+                    $tagihan->total = $tagihan->subtotal;
+                } else {
+                    //jika denda sudah diisi di tabel, maka di kurangi dulu denda kemudian jumlahkan dengan hitungan denda terbaru
+                    $tagihan->subtotal = ($tagihan->subtotal - $tagihan->denda) + $denda;
+                    $tagihan->total = $tagihan->subtotal;
+                }
+                $tagihan->denda = $denda;
                 $tagihan->save();
 
                 DB::commit();
@@ -96,7 +102,8 @@ class TagihanController extends Controller
 
         $catat = Pencatatan::with('tagihan:id,jumlah,diskon,total,status_bayar,created_at,pencatatan_id')
             ->where('pelanggan_id', '=', $r->id)
-            ->orderBy('id', 'desc')
+            ->orderBy('tahun', 'desc')
+            ->orderBy('bulan', 'desc')
             ->get();
 
         if (!$pelanggan) {

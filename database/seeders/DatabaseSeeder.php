@@ -15,6 +15,7 @@ use Database\Seeders\GoldetilSeeder;
 use Database\Seeders\GolonganSeeder;
 use Database\Seeders\WiljalanSeeder;
 use Database\Seeders\PelangganSeeder;
+use Database\Seeders\JenisbayarSeeder;
 use Database\Seeders\PencatatanSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -40,6 +41,7 @@ class DatabaseSeeder extends Seeder
         $this->call([WilayahSeeder::class]);
         $this->call([BankSeeder::class]);
         $this->call([KeluhanSeeder::class]);
+        $this->call([JenisbayarSeeder::class]);
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

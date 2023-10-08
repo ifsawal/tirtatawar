@@ -24,9 +24,38 @@ class BayarController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function simpan_diskon(Request $r)
     {
-        //
+        $this->validate($r, [
+            'id' => 'required', // tagihan id
+            'jumlah' => 'required',
+        ]);
+        $user_id = Auth::user()->id;
+
+        $tagihan = Tagihan::where('id', '=', $r->id)
+            ->first();
+        if ($tagihan->status_bayar === "Y") {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Sudah dibayar...",
+            ], 202);
+        }
+        if ($tagihan->diskon == 0) {
+            $tagihan->subtotal = $tagihan->subtotal - $r->jumlah;
+            $tagihan->total = $tagihan->subtotal;
+        } else {
+            //jika diskon sudah diisi di tabel, maka di kurangi dulu denda kemudian jumlahkan dengan hitungan denda terbaru
+            $tagihan->subtotal = ($tagihan->subtotal + $tagihan->diskon) - $r->jumlah;
+            $tagihan->total = $tagihan->subtotal;
+        }
+
+        $tagihan->diskon = $r->jumlah;
+        $tagihan->save();
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Sukses menambah diskon...",
+        ], 201);
     }
 
     /**

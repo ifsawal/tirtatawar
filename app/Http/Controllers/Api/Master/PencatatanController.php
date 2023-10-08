@@ -262,7 +262,7 @@ class PencatatanController extends Controller
         $tagihan->biaya = $biaya;
         $tagihan->pajak = $jumlah_pajak;
         $tagihan->subtotal = $jumlah + $biaya + $jumlah_pajak;
-        $tagihan->total = $jumlah + $biaya + $jumlah_pajak;
+        $tagihan->total = $tagihan->subtotal;
         $tagihan->diskon = 0;
         $tagihan->denda = 0;
         $tagihan->status_bayar = 'N';

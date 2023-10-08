@@ -38,31 +38,37 @@ class WebhookController extends Controller
         $transfer = Transfer::where('vendor_id', $data->bill_link_id)
             ->where('vendor', 'flip')
             ->get();
-        $tagihan_id = "";
-        DB::beginTransaction();
-        try {
-            foreach ($transfer as $tran) {
-                Transfer::where('id', $tran->id)
-                    ->update(['status_bayar' => $status_bayar, 'status_bayar_vendor' => $data->status]);
 
-                if ($status_bayar == 'Y') {
-                    Tagihan::where('id', $tran->tagihan_id)
-                        ->update(['status_bayar' => 'Y', 'sistem_bayar' => 'Transfer']);
+        //proses transfer Pendaftaran baru
+        if ($transfer->tabel_transfer == "Pelanggan") {
+        }
+        //proses transfer pelanggan
+        if ($transfer->tagihan_id <> NULL) {
+            DB::beginTransaction();
+            try {
+                foreach ($transfer as $tran) {
+                    Transfer::where('id', $tran->id)
+                        ->update(['status_bayar' => $status_bayar, 'status_bayar_vendor' => $data->status]);
+
+                    if ($status_bayar == 'Y') {
+                        Tagihan::where('id', $tran->tagihan_id)
+                            ->update(['status_bayar' => 'Y', 'sistem_bayar' => 'Transfer']);
+                    }
                 }
+
+
+                DB::commit();
+                return response()->json([
+                    "sukses" => true,
+                    "pesan" => "Sukses...",
+                ], 201);
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Gagal...",
+                ], 404);
             }
-
-
-            DB::commit();
-            return response()->json([
-                "sukses" => true,
-                "pesan" => "Sukses...",
-            ], 201);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json([
-                "sukses" => false,
-                "pesan" => "Gagal...",
-            ], 404);
         }
     }
 

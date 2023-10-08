@@ -27,8 +27,10 @@ return new class extends Migration
             $table->string("status_bayar")->default("N");
             $table->string("status_bayar_vendor")->nullable();
             $table->string("manual_by")->nullable();
-            $table->unsignedBigInteger('tagihan_id');
+            $table->unsignedBigInteger('tagihan_id')->nullable();
             $table->foreign('tagihan_id')->references('id')->on('tagihans')->onDelete('restrict')->onUpdate('cascade');
+            $table->string("tabel_transfer")->nullable();
+            $table->unsignedBigInteger('id_tabel')->nullable();
 
             $table->timestamps();
         });

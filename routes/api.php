@@ -100,6 +100,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/bayar', [BayarController::class, 'store']);
     Route::post('/batalbayar', [BayarController::class, 'destroy']);
     Route::post('/cetak_penagihan', [BayarController::class, 'cetak_ulang']);
+    Route::post('/diskon', [BayarController::class, 'simpan_diskon']);
 
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
     Route::post('/laporanpenerimaan', [LaporanBayarController::class, 'laporanpenerimaan']);
