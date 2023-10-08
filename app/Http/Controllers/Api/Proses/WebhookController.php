@@ -39,36 +39,43 @@ class WebhookController extends Controller
             ->where('vendor', 'flip')
             ->get();
 
-        //proses transfer Pendaftaran baru
-        if ($transfer->tabel_transfer == "Pelanggan") {
-        }
-        //proses transfer pelanggan
-        if ($transfer->tagihan_id <> NULL) {
-            DB::beginTransaction();
-            try {
-                foreach ($transfer as $tran) {
-                    Transfer::where('id', $tran->id)
-                        ->update(['status_bayar' => $status_bayar, 'status_bayar_vendor' => $data->status]);
 
-                    if ($status_bayar == 'Y') {
+
+
+        DB::beginTransaction();
+        try {
+            foreach ($transfer as $tran) {
+                Transfer::where('id', $tran->id)
+                    ->update(['status_bayar' => $status_bayar, 'status_bayar_vendor' => $data->status]);
+
+                if ($status_bayar == 'Y') {
+
+                    //proses transfer pelanggan
+                    if ($tran->tagihan_id <> NULL) {
                         Tagihan::where('id', $tran->tagihan_id)
                             ->update(['status_bayar' => 'Y', 'sistem_bayar' => 'Transfer']);
                     }
+
+                    //proses transfer Pendaftaran baru
+                    if ($tran->tabel_transfer == "Pelanggan") {
+                        //bayar laen
+
+                    }
                 }
-
-
-                DB::commit();
-                return response()->json([
-                    "sukses" => true,
-                    "pesan" => "Sukses...",
-                ], 201);
-            } catch (\Exception $e) {
-                DB::rollback();
-                return response()->json([
-                    "sukses" => false,
-                    "pesan" => "Gagal...",
-                ], 404);
             }
+
+
+            DB::commit();
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Sukses...",
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Gagal...",
+            ], 404);
         }
     }
 
