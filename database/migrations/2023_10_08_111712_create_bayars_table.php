@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign('jenisbayar_id')->references('id')->on('jenisbayars')->onDelete('restrict')->onUpdate('cascade');
             $table->string("status_bayar");
             $table->string("sistem_bayar");
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
         });

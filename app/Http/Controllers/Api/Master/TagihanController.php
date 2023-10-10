@@ -100,7 +100,7 @@ class TagihanController extends Controller
             ->where('id', '=', $r->id)
             ->first();
 
-        $catat = Pencatatan::with('tagihan:id,jumlah,diskon,total,status_bayar,created_at,pencatatan_id')
+        $catat = Pencatatan::with('tagihan:id,jumlah,diskon,total,status_bayar,sistem_bayar,created_at,pencatatan_id')
             ->where('pelanggan_id', '=', $r->id)
             ->orderBy('tahun', 'desc')
             ->orderBy('bulan', 'desc')

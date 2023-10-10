@@ -21,6 +21,8 @@ return new class extends Migration
             $table->date("tgl_nonaktif")->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->unsignedBigInteger('pdam_id');
+            $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
         });
     }

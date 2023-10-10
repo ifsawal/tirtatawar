@@ -17,17 +17,26 @@ class JenisbayarSeeder extends Seeder
             [
                 "kegunaan" => "Pendaftaran Baru",
                 "aktif" => "Y",
-                "jumlah" => 500000,
+                "jumlah" => 600000,
                 "tgl_aktif" => "2023-10-1",
                 'user_id' => 1,
+                'pdam_id' => 1,
             ],
             [
                 "kegunaan" => "Aktif Sambungan Lama",
                 "aktif" => "Y",
-                "jumlah" => 500000,
+                "jumlah" => 200000,
                 "tgl_aktif" => "2023-10-1",
-                'user_id' => 1
-
+                'user_id' => 1,
+                'pdam_id' => 1,
+            ],
+            [
+                "kegunaan" => "Denda 1",
+                "aktif" => "Y",
+                "jumlah" => 50000,
+                "tgl_aktif" => "2023-10-1",
+                'user_id' => 1,
+                'pdam_id' => 1,
             ],
 
         ]);

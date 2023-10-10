@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Data\DataPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarController;
 use App\Http\Controllers\Api\Master\HpPelangganController;
 use App\Http\Controllers\Api\Master\GolPenetapanController;
+use App\Http\Controllers\Api\Master\PembayaranController;
 use App\Http\Controllers\Api\Master\PhotoCatatanController;
 use App\Http\Controllers\Api\Master\SetoranController;
 use App\Http\Controllers\Api\Master\TagihanController;
@@ -120,6 +121,10 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/tambahstatus', [PenggunaController::class, 'tambahstatus']);
     Route::post('/terimakaryawan', [PenggunaController::class, 'terimakaryawan']);
     Route::post('/nonaktifkaryawan', [PenggunaController::class, 'nonaktifkaryawan']);
+
+    Route::post('/jenisbayar', [PembayaranController::class, 'jenisbayar']);
+    Route::post('/simpanbayar', [PembayaranController::class, 'simpanbayar']);
+    Route::post('/hapusbayar', [PembayaranController::class, 'hapusbayar']);
 
 
 
