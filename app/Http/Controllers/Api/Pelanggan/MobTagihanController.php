@@ -33,7 +33,6 @@ class MobTagihanController extends Controller
             'nopel' => 'required',
         ]);
         $id = $r->nopel;
-
         $potong = substr($r->nopel, 0, 2);
         if ($potong === "id") {
             $id = decrypt(substr($r->nopel, 2));
@@ -79,9 +78,14 @@ class MobTagihanController extends Controller
             'nopel' => 'required',
             'kode_bank' => 'required',
         ]);
+        $id = $r->nopel;
+        $potong = substr($r->nopel, 0, 2);
+        if ($potong === "id") {
+            $id = decrypt(substr($r->nopel, 2));
+        }
 
         $pelanggan = Pelanggan::with('desa:id,desa')
-            ->where('id', $r->nopel)->first();
+            ->where('id', $id)->first();
         if (!$pelanggan) {
             return response()->json([
                 "sukses" => false,
@@ -96,14 +100,14 @@ class MobTagihanController extends Controller
         if (isset($r->id)) {
             $id = decrypt($r->id);
             $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
-                ->whereRelation('pelanggan', 'id', '=', $r->nopel)
+                ->whereRelation('pelanggan', 'id', '=', $id)
                 ->whereRelation('tagihan', 'status_bayar', '=', 'N')
                 ->whereRelation('tagihan', 'id', '=', $id)
                 ->orderBy('id', 'desc')
                 ->get();
         } else {
             $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
-                ->whereRelation('pelanggan', 'id', '=', $r->nopel)
+                ->whereRelation('pelanggan', 'id', '=', $id)
                 ->whereRelation('tagihan', 'status_bayar', '=', 'N')
                 ->orderBy('id', 'desc')
                 ->get();
