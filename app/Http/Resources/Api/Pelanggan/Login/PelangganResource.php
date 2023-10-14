@@ -18,7 +18,7 @@ class PelangganResource extends JsonResource
         // $pdam = $this->whenLoaded('pdam');
         // $desa = $this->whenLoaded('desa');
         return [
-            "id" => bcrypt($this->id),
+            "id" => encrypt($this->id),
             "nama" => $this->nama,
             "nik" => $this->nik,
             "kk" => $this->kk,

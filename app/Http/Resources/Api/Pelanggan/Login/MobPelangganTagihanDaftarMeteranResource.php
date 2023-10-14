@@ -15,6 +15,7 @@ class MobPelangganTagihanDaftarMeteranResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+
             "awal" => $this->awal,
             "akhir" => $this->akhir,
             "pemakaian" => $this->pemakaian,

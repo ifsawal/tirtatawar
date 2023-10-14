@@ -12,6 +12,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Pelanggan\Tagihan\PelangganResource;
 use App\Http\Resources\Api\Pelanggan\Tagihan\PencatatanResource;
 use App\Models\Master\Bank;
+use Illuminate\Contracts\Encryption\DecryptException;
+
+use function PHPUnit\Framework\returnSelf;
 
 class MobTagihanController extends Controller
 {
@@ -29,10 +32,15 @@ class MobTagihanController extends Controller
         $this->validate($r, [
             'nopel' => 'required',
         ]);
+        $id = $r->nopel;
 
+        $potong = substr($r->nopel, 0, 2);
+        if ($potong === "id") {
+            $id = decrypt(substr($r->nopel, 2));
+        }
 
         $pelanggan = Pelanggan::with('golongan:id,denda')
-            ->where('id', $r->nopel)->first();
+            ->where('id', $id)->first();
         if (!$pelanggan) {
             return response()->json([
                 "sukses" => false,
@@ -41,7 +49,7 @@ class MobTagihanController extends Controller
         }
 
         $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
-            ->whereRelation('pelanggan', 'id', '=', $r->nopel)
+            ->whereRelation('pelanggan', 'id', '=', $id)
             ->whereRelation('tagihan', 'status_bayar', '=', 'N')
             ->orderBy('id', 'desc')
             ->get();
@@ -59,7 +67,7 @@ class MobTagihanController extends Controller
             "pesan" => "Tagihan ditemukan...",
             "pelanggan" => new PelangganResource($pelanggan),
             "data" => $pencatatan,
-            "pajak" => 11,
+            // "pajak" => 11,
         ], 202);
     }
 
