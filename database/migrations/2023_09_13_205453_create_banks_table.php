@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string("nama");
             $table->string("biaya")->nullable();
             $table->string("jenis")->nullable();
+            $table->string("aktif")->default("N");
             $table->string("ket")->nullable();
             $table->timestamps();
         });

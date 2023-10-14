@@ -20,6 +20,7 @@ class BankSeeder extends Seeder
                 'nama' => "BSI",
                 'jenis' => "virtual_account",
                 'biaya' => "3330",
+                'aktif' => "Y",
             ],
             // [
             //     'kode' => 'aceh',
@@ -32,6 +33,7 @@ class BankSeeder extends Seeder
                 'nama' => "BRI",
                 'jenis' => "virtual_account",
                 'biaya' => "3330",
+                'aktif' => "Y",
             ],
             [
                 'vendor' => 'flip',
@@ -39,6 +41,7 @@ class BankSeeder extends Seeder
                 'nama' => "BCA",
                 'jenis' => "virtual_account",
                 'biaya' => "4440",
+                'aktif' => "Y",
             ],
             [
                 'vendor' => 'flip',
@@ -46,6 +49,7 @@ class BankSeeder extends Seeder
                 'nama' => "Mandiri",
                 'jenis' => "virtual_account",
                 'biaya' => "3330",
+                'aktif' => "Y",
             ],
             [
                 'vendor' => 'flip',
@@ -53,6 +57,7 @@ class BankSeeder extends Seeder
                 'nama' => "BNI",
                 'jenis' => "virtual_account",
                 'biaya' => "3330",
+                'aktif' => "Y",
             ],
             [
                 'vendor' => 'flip',
@@ -60,6 +65,7 @@ class BankSeeder extends Seeder
                 'nama' => "OVO",
                 'jenis' => "wallet_account",
                 'biaya' => "3.5",
+                'aktif' => "N",
             ],
             [
                 'vendor' => 'flip',
@@ -67,6 +73,7 @@ class BankSeeder extends Seeder
                 'nama' => "QRIS",
                 'jenis' => "wallet_account",
                 'biaya' => "0.7",
+                'aktif' => "N",
             ],
             [
                 'vendor' => 'flip',
@@ -74,6 +81,7 @@ class BankSeeder extends Seeder
                 'nama' => "LinkAja",
                 'jenis' => "wallet_account",
                 'biaya' => "3.5",
+                'aktif' => "N",
             ],
 
 

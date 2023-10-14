@@ -41,34 +41,35 @@ class TagihanController extends Controller
             ], 202);
         }
 
-        // $pelanggan = Pelanggan::with('golongan:id,denda')
-        //     ->where('id', $pencatatan->pelanggan_id)->first();
 
-        $waktucatat = $pencatatan->tahun . '-' . $pencatatan->bulan . '-' . '1';
-        $kurangi1bulan = date('Y-m', strtotime(Carbon::create($pencatatan->tahun, $pencatatan->bulan, 1)->subMonths(1)));
-        $denda = TagihanResource::denda($waktucatat, $kurangi1bulan, $tagihan->denda_perbulan);
+
+        // $waktucatat = $pencatatan->tahun . '-' . $pencatatan->bulan . '-' . '1';
+        // $kurangi1bulan = date('Y-m', strtotime(Carbon::create($pencatatan->tahun, $pencatatan->bulan, 1)->subMonths(1)));
+        // $denda = TagihanResource::denda($waktucatat, $kurangi1bulan, $tagihan->denda_perbulan);
+
+
 
         DB::beginTransaction();
         try {
             //proses simpan
-            $total = $tagihan->total;
-            if ($denda > 0 and $denda <> $tagihan->denda) {
+            // $total = $tagihan->total;
+            // if ($denda > 0 and $denda <> $tagihan->denda) {
 
+            //     if ($tagihan->denda == 0) {
+            //         $tagihan->subtotal = $tagihan->subtotal  + $denda;
+            //         $tagihan->total = $tagihan->subtotal;
+            //     } else {
+            //         //jika denda sudah diisi di tabel, maka di kurangi dulu denda kemudian jumlahkan dengan hitungan denda terbaru
+            //         $tagihan->subtotal = ($tagihan->subtotal - $tagihan->denda) + $denda;
+            //         $tagihan->total = $tagihan->subtotal;
+            //     }
+            //     $tagihan->denda = $denda;
+            //     $tagihan->save();
+            $update_denda = TagihanResource::simpan_denda($pencatatan->bulan, $pencatatan->tahun, $tagihan->denda_perbulan, $tagihan->denda, $tagihan->id, $tagihan->total);
+            $tagihan = $update_denda;
+            DB::commit();
+            // DB::rollback();
 
-                if ($tagihan->denda == 0) {
-                    $tagihan->subtotal = $tagihan->subtotal  + $denda;
-                    $tagihan->total = $tagihan->subtotal;
-                } else {
-                    //jika denda sudah diisi di tabel, maka di kurangi dulu denda kemudian jumlahkan dengan hitungan denda terbaru
-                    $tagihan->subtotal = ($tagihan->subtotal - $tagihan->denda) + $denda;
-                    $tagihan->total = $tagihan->subtotal;
-                }
-                $tagihan->denda = $denda;
-                $tagihan->save();
-
-                DB::commit();
-                // DB::rollback();
-            }
 
 
             return response()->json([

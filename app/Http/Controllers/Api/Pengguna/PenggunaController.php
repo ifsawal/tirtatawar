@@ -38,15 +38,24 @@ class PenggunaController extends Controller
         $this->validate($r, [
             'id' => 'required',  //user id
         ]);
+        $user_id = Auth::user()->id;
 
         $user = User::findOrFail($r->id);
+        if ($user_id == $user->id) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Tidak dapat menonaktifkan akun sendiri...",
+            ], 202);
+        }
+
+
         $user->email_verified_at = NULL;
         $user->save();
 
         return response()->json([
             'sukses' => true,
             'pesan' => "Karyawan Nonaktif...",
-        ], 201);
+        ], 204);
     }
 
 
