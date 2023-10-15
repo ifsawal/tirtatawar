@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string("keluhan");
             $table->string("status")->nullable();
             $table->string("ket")->nullable();
+            $table->integer("kirim_petugas")->nullable();
             $table->integer("rating")->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');

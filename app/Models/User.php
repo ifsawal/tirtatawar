@@ -27,6 +27,7 @@ class User extends Authenticatable
         'email',
         'password',
         'j_permisi',
+        'nohp',
         'pdam_id',
     ];
 

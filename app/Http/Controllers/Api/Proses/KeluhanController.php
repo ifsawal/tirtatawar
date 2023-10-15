@@ -184,6 +184,7 @@ class KeluhanController extends Controller
             'pelanggan.desa.kecamatan:id,kecamatan',
             'pelanggan.rute:id,rute',
             'pelanggan.wiljalan:id,jalan',
+            'tim.user:id,nama'
         )
             ->Where('id',  $r->id)
             ->first();
@@ -277,6 +278,11 @@ class KeluhanController extends Controller
             $tim->user_id = $r->user_id;
             $tim->status = $r->jabatan;
             $tim->save();
+
+            if ($keluhan->kirim_petugas == NULL) {
+                $keluhan->kirim_petugas = 1;
+                $keluhan->save();
+            }
 
             DB::commit();
 

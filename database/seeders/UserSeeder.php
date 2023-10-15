@@ -188,6 +188,8 @@ class UserSeeder extends Seeder
         $pelanggan_setujui = Permission::create(['name' => 'setujui pelanggan', 'guard_name' => 'web']);
         $pelanggan_setujui = Permission::create(['name' => 'penetapan', 'guard_name' => 'web']);
 
+        $pelanggan_setujui = Permission::create(['name' => 'kirim petugas', 'guard_name' => 'web']);
+
 
         //pembayaran
         $pelanggan = Permission::create(['name' => 'lihat pembayaran', 'guard_name' => 'web']);
