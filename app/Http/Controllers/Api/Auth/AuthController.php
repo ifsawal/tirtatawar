@@ -38,6 +38,7 @@ class AuthController extends Controller
                 ], 401);
         }
 
+        // $user->givePermissionTo(['pencatatan manual']);
         $role = $user->getRoleNames();
         $col = collect($user->getAllPermissions());
         $permisi = $col->map(function ($col) {

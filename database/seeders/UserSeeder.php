@@ -197,6 +197,9 @@ class UserSeeder extends Seeder
         //diskon
         $pelanggan = Permission::create(['name' => 'lihat diskon', 'guard_name' => 'web']);
 
+        //pencatatan
+        $pencatatan = Permission::create(['name' => 'pencatatan manual', 'guard_name' => 'web']);
+
         $role->givePermissionTo(Permission::all());
 
 

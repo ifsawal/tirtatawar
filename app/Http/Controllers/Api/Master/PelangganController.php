@@ -88,6 +88,7 @@ class PelangganController extends Controller
             'user_perubahan:id,nama'
         )->where('id', $id)->where('pdam_id', $user[0]->pdam->id)->withTrashed()->get();
 
+
         return response()->json([
             'sukses' => true,
             'pesan' => "Data ditemukan...",
@@ -288,7 +289,13 @@ class PelangganController extends Controller
      */
     public function show(string $id)
     {
-        $pel = Pelanggan::findOrFail($id);
+        $pel = Pelanggan::find($id);
+        if (!$pel) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Data tidak ditemukan...",
+            ], 404);
+        }
         return response()->json([
             'sukses' => true,
             'pesan' => "Detemukan...",

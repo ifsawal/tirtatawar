@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->unsignedBigInteger('pelanggan_id');
             $table->foreign('pelanggan_id')->references('id')->on('pelanggans')->onDelete('restrict')->onUpdate('cascade');
+            $table->integer('manual')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
 

@@ -70,8 +70,11 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::get('/potoc/{id}', [PhotoCatatanController::class, 'potocatatan']);
 
 
+
     Route::post('/datameteran', [PencatatanController::class, 'index']);
+    Route::post('/datameteranmanual', [PencatatanController::class, 'datameteranmanual']);
     Route::post('/catat', [PencatatanController::class, 'store']);
+    Route::post('/catatmanual', [PencatatanController::class, 'catat_manual']);
 
     Route::post('/delete/gambar/rumah', [PelangganController::class, 'deletegambarrumah']);
     Route::post('/upload/gambar/rumah/{id}', [PelangganController::class, 'uploadgambarrumah']);

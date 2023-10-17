@@ -19,6 +19,7 @@ class BankSeeder extends Seeder
                 'kode' => 'bsm',
                 'nama' => "BSI",
                 'jenis' => "virtual_account",
+                'ppn' => 11,
                 'biaya' => "3330",
                 'aktif' => "Y",
             ],
