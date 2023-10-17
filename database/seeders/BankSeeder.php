@@ -19,8 +19,8 @@ class BankSeeder extends Seeder
                 'kode' => 'bsm',
                 'nama' => "BSI",
                 'jenis' => "virtual_account",
-                'ppn' => 11,
                 'biaya' => "3330",
+                'ppn' => 11,
                 'aktif' => "Y",
             ],
             // [
@@ -34,6 +34,7 @@ class BankSeeder extends Seeder
                 'nama' => "BRI",
                 'jenis' => "virtual_account",
                 'biaya' => "3330",
+                'ppn' => 11,
                 'aktif' => "Y",
             ],
             [
@@ -42,6 +43,7 @@ class BankSeeder extends Seeder
                 'nama' => "BCA",
                 'jenis' => "virtual_account",
                 'biaya' => "4440",
+                'ppn' => 11,
                 'aktif' => "Y",
             ],
             [
@@ -50,6 +52,7 @@ class BankSeeder extends Seeder
                 'nama' => "Mandiri",
                 'jenis' => "virtual_account",
                 'biaya' => "3330",
+                'ppn' => 11,
                 'aktif' => "Y",
             ],
             [
@@ -58,6 +61,7 @@ class BankSeeder extends Seeder
                 'nama' => "BNI",
                 'jenis' => "virtual_account",
                 'biaya' => "3330",
+                'ppn' => 11,
                 'aktif' => "Y",
             ],
             [
@@ -66,6 +70,7 @@ class BankSeeder extends Seeder
                 'nama' => "OVO",
                 'jenis' => "wallet_account",
                 'biaya' => "3.5",
+                'ppn' => 11,
                 'aktif' => "N",
             ],
             [
@@ -74,6 +79,7 @@ class BankSeeder extends Seeder
                 'nama' => "QRIS",
                 'jenis' => "wallet_account",
                 'biaya' => "0.7",
+                'ppn' => 11,
                 'aktif' => "N",
             ],
             [
@@ -82,6 +88,7 @@ class BankSeeder extends Seeder
                 'nama' => "LinkAja",
                 'jenis' => "wallet_account",
                 'biaya' => "3.5",
+                'ppn' => 11,
                 'aktif' => "N",
             ],
 
