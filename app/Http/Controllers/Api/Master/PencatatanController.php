@@ -10,19 +10,25 @@ use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
 use App\Models\Master\GolPenetapan;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Spatie\Permission\Models\Role;
 
 class PencatatanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request)  //datameteran
     {
         $this->validate($request, [
             'pelanggan_id' => 'required',
         ]);
+
+        $user_id = Auth::user()->id;
+        $user = User::findOrFail($user_id);
+        $user->hasDirectPermission('pencatatan manual') ? $akses = 1 : $akses = 0;;
 
         $pelanggan = Pelanggan::where('id', '=', $request->pelanggan_id)->first('nama');
         if (!$pelanggan) {
@@ -46,6 +52,7 @@ class PencatatanController extends Controller
             "pesan" => "Data ditemukan...",
             "pelanggan" => $pelanggan->nama,
             "data" => $pencatatan,
+            "manual" => $akses,
         ], 200);
     }
 

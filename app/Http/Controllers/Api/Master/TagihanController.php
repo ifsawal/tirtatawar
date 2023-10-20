@@ -32,7 +32,6 @@ class TagihanController extends Controller
             ->first();
 
 
-
         return response()->json([
             "sukses" => true,
             "pesan" => "Ditemukan...",

@@ -149,7 +149,13 @@ class MobTagihanController extends Controller
 
         DB::beginTransaction();
         try {
+            $i = 0;
             foreach ($pencatatan as $catat) {
+                $i++;
+                if ($i == 1) {
+                    $kode_transfer = $catat->bulan . $catat->tahun . $pelanggan->id;
+                }
+
                 $transfer = new Transfer();
                 $transfer->vendor = "flip";
                 $transfer->vendor_id = $hasil->link_id;
@@ -161,6 +167,7 @@ class MobTagihanController extends Controller
                 $transfer->jumlah = $total_jumlah;
                 $transfer->url = $hasil->payment_url;
                 $transfer->ket = "";
+                $transfer->kode_transfer = $kode_transfer;
                 $transfer->tagihan_id = $catat->tagihan->id;
                 $transfer->save();
             }

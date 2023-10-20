@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string("manual_by")->nullable();
             $table->unsignedBigInteger('tagihan_id')->nullable();
             $table->foreign('tagihan_id')->references('id')->on('tagihans')->onDelete('restrict')->onUpdate('cascade');
+            $table->integer("kode_transfer")->nullable();
             $table->string("tabel_transfer")->nullable();
             $table->unsignedBigInteger('id_tabel')->nullable();
 
