@@ -96,6 +96,12 @@ class MobTagihanController extends Controller
         if ($pelanggan->desa == NULL) $pelanggan->desa = "Desa Test";
 
         $bankdata = Bank::where('kode', $r->kode_bank)->first();
+        if ($bankdata->aktif == "N") {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Bank dipilih belum bisa melakukan pembayaran...",
+            ], 404);
+        }
 
         if (isset($r->id)) {
             $id = decrypt($r->id);

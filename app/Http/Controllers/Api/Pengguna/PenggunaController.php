@@ -17,6 +17,56 @@ class PenggunaController extends Controller
     {
         //
     }
+
+    public function aksesinputmanual(Request $r)
+    {
+        $this->validate($r, [
+            'id' => 'required',  //user id
+        ]);
+        $user = User::findOrFail($r->id);
+
+        $user_id = Auth::user()->id;
+        $user = User::findOrFail($r->id);
+        if ($user_id == $user->id) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Tidak dapat merubah permisi...",
+            ], 202);
+        }
+
+        $user->givePermissionTo(['pencatatan manual']);
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Sukses menambahkan akses...",
+            'akses' => $user->getDirectPermissions(),
+        ], 201);
+    }
+
+    public function hapusaksesinputmanual(Request $r)
+    {
+        $this->validate($r, [
+            'id' => 'required',  //user id
+        ]);
+
+        $user_id = Auth::user()->id;
+        $user = User::findOrFail($r->id);
+        if ($user_id == $user->id) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Tidak dapat merubah permisi...",
+            ], 202);
+        }
+
+        $user->revokePermissionTo('pencatatan manual');
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Sukses membatalkan akses...",
+        ], 201);
+    }
+
+
     public function terimakaryawan(Request $r)
     {
         $this->validate($r, [
@@ -100,6 +150,7 @@ class PenggunaController extends Controller
                 'sukses' => true,
                 'pesan' => "Data ditemukan...",
                 'role' => $role[0],
+                "permisi" => $user->getDirectPermissions(),
                 'verifikasi' => $user->email_verified_at,
             ], 202);
         } else {

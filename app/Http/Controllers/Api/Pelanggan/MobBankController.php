@@ -34,8 +34,7 @@ class MobBankController extends Controller
         }
 
 
-        $bank = Bank::where('aktif', 'Y')
-            ->select('kode', 'nama', 'biaya', 'jenis')
+        $bank = Bank::select('kode', 'nama', 'biaya', 'jenis', 'aktif')
             ->get();
         return response()->json([
             "sukses" => true,
