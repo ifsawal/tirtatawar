@@ -1,37 +1,38 @@
 <?php
 
+use App\Models\Master\Bank;
 use Illuminate\Http\Request;
+use App\Models\Keluhan\Keluhan;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\GolPenetapan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Auth\AuthMobileController;
 use App\Http\Controllers\Api\Master\DesaController;
 use App\Http\Controllers\Api\Master\UserController;
-use App\Http\Controllers\Api\Master\PelangganController;
-use App\Http\Controllers\Api\Master\PencatatanController;
-use App\Http\Controllers\Api\Master\PhotoRumahController;
-use App\Http\Controllers\Api\Data\DataPelangganController;
-use App\Http\Controllers\Api\Laporan\LaporanBayarController;
-use App\Http\Controllers\Api\Master\HpPelangganController;
-use App\Http\Controllers\Api\Master\GolPenetapanController;
-use App\Http\Controllers\Api\Master\PembayaranController;
-use App\Http\Controllers\Api\Master\PhotoCatatanController;
+use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Controllers\Api\Master\SetoranController;
 use App\Http\Controllers\Api\Master\TagihanController;
+use App\Http\Controllers\Api\Proses\KeluhanController;
+use App\Http\Controllers\Api\Proses\WebhookController;
+use App\Http\Controllers\Api\Auth\AuthMobileController;
+use App\Http\Controllers\Api\Master\PelangganController;
+use App\Http\Controllers\Api\Master\PembayaranController;
+use App\Http\Controllers\Api\Master\PencatatanController;
+use App\Http\Controllers\Api\Master\PhotoRumahController;
+use App\Http\Controllers\Api\Pelanggan\MobBankController;
+use App\Http\Controllers\Api\Pengguna\PenggunaController;
+use App\Http\Controllers\Api\Data\DataPelangganController;
+use App\Http\Controllers\Api\Master\HpPelangganController;
+use App\Http\Controllers\Api\Master\GolPenetapanController;
+use App\Http\Controllers\Api\Master\PhotoCatatanController;
+use App\Http\Controllers\Api\Laporan\LaporanBayarController;
+use App\Http\Controllers\Api\Pelanggan\MobTagihanController;
+use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
+use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
+use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
+use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
-use App\Http\Controllers\Api\Pelanggan\MobBankController;
-use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
-use App\Http\Controllers\Api\Pelanggan\MobTagihanController;
-use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
-use App\Http\Controllers\Api\Pengguna\PenggunaController;
-use App\Http\Controllers\Api\Proses\BayarController;
-use App\Http\Controllers\Api\Proses\KeluhanController;
-use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
-use App\Http\Controllers\Api\Proses\WebhookController;
-use App\Models\Keluhan\Keluhan;
-use App\Models\Master\Bank;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,10 +102,14 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
 
     Route::post('/tagihan', [TagihanController::class, 'index']);
     Route::post('/cektagihandanupdate', [TagihanController::class, 'cektagihandanupdate']);
+    Route::post('/infotransfer', [TagihanController::class, 'infotransfer']);
+
     Route::post('/bayar', [BayarController::class, 'store']);
     Route::post('/batalbayar', [BayarController::class, 'destroy']);
     Route::post('/cetak_penagihan', [BayarController::class, 'cetak_ulang']);
     Route::post('/diskon', [BayarController::class, 'simpan_diskon']);
+
+    Route::post('/laporanbayarbank', [LaporanBayarBankController::class, 'laporanbayarbank']);
 
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
     Route::post('/laporanpenerimaan', [LaporanBayarController::class, 'laporanpenerimaan']);

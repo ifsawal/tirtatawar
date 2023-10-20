@@ -328,7 +328,7 @@ class PencatatanController extends Controller
         $bulan = $waktu->month;
         $tahun = $waktu->year;
         $nama_gambar = config('external.nama_gambar');
-        $file = md5($nama_gambar . $bulan . $tahun) . ".jpg";
+        $file = md5($nama_gambar . $bulan . $tahun . $request->pelanggan_id) . ".jpg";
 
         if (!File::isDirectory(public_path() . '/files2/pencatatan/' . $tahun . '/' . $bulan)) {
             File::makeDirectory(public_path() . '/files2/pencatatan/' . $tahun . '/' . $bulan, 0777, true, true);

@@ -124,7 +124,7 @@ class MobTagihanController extends Controller
 
         if ($bankdata->jenis == "wallet_account") {
             $biaya_bank = ($bankdata->biaya * $total) / 100;
-            $biaya_bank = ceil($biaya_bank + ($biaya_bank * 11) / 100); //pajak 11%
+            $biaya_bank = ceil($biaya_bank + (($biaya_bank * $bankdata->ppn) / 100)); //pajak 11%
         } else {
             $biaya_bank = $bankdata->biaya;
         }

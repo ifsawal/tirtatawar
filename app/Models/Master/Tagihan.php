@@ -2,6 +2,7 @@
 
 namespace App\Models\Master;
 
+use App\Models\Master\Transfer;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use Illuminate\Database\Eloquent\Model;
@@ -18,5 +19,10 @@ class Tagihan extends Model
     public function pelanggan()
     {
         return $this->belongsTo(Pelanggan::class, 'pelanggan_id', 'id');
+    }
+
+    public function transfer()
+    {
+        return $this->hasMany(Transfer::class, 'tagihan_id', 'id');
     }
 }

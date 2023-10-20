@@ -27,6 +27,7 @@ return new class extends Migration
             $table->integer("total");
             $table->string("status_bayar");
             $table->string("sistem_bayar")->nullable();
+            $table->dateTime("tgl_bayar")->nullable();
             $table->unsignedBigInteger('user_id_perubahan')->nullable();
             $table->foreign('user_id_perubahan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();

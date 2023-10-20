@@ -87,6 +87,7 @@ class BayarController extends Controller
             $tagihan = Tagihan::findOrFail($r->id);
             $tagihan->status_bayar = "Y";
             $tagihan->sistem_bayar = "Cash";
+            $tagihan->tgl_bayar = date('Y-m-d H:i:s');
             $tagihan->save();
 
             $penagih = new Penagih();

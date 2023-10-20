@@ -79,7 +79,7 @@ class BankSeeder extends Seeder
                 'nama' => "QRIS",
                 'jenis' => "wallet_account",
                 'biaya' => "0.7",
-                'ppn' => 11,
+                'ppn' => 0,
                 'aktif' => "N",
             ],
             [

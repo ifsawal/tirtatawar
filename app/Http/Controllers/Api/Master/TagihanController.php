@@ -21,6 +21,28 @@ class TagihanController extends Controller
     public function cari()
     {
     }
+    public function infotransfer(Request $r)
+    {
+        $this->validate($r, [
+            'id' => 'required', //tagihan id
+        ]);
+
+        $tagihan = Tagihan::with('transfer')
+            ->where('id', $r->id)
+            ->first();
+
+
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Ditemukan...",
+            'tagihan' => $tagihan,
+        ], 202);
+    }
+
+
+
+
     public function cektagihandanupdate(Request $r)
     {
         $this->validate($r, [
@@ -88,7 +110,7 @@ class TagihanController extends Controller
         }
     }
 
-    public function index(Request $r)
+    public function index(Request $r) //tagihan
     {
         $this->validate($r, [
             'id' => 'required',

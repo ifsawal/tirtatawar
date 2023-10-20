@@ -71,6 +71,7 @@ class PembayaranController extends Controller
         $bayar->jenisbayar_id = $r->jenisbayar_id;
         $bayar->status_bayar = "Y";
         $bayar->sistem_bayar = "Cash";
+        $bayar->tgl_bayar = date('Y-m-d H:i:s');
         $bayar->user_id = $user_id;
         $bayar->save();
 
