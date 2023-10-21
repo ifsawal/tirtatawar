@@ -76,7 +76,6 @@ class PelangganController extends Controller
     {
         $user_id = Auth::user()->id;
         $user = User::with('pdam:id,pdam')->where('id', $user_id)->get();
-
         $id = $request->id;
         $pel = Pelanggan::with(
             'user:id,nama',
