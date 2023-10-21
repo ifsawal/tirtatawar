@@ -70,14 +70,14 @@ class WiljalanSeeder extends Seeder
             ['id' => 45,  'jalan' => 'Buntul Bujang', 'user_id' =>  20, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],
             ['id' => 46,  'jalan' => 'Asir-Asir Bawah', 'user_id' => 20, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],
             ['id' => 47,  'jalan' => 'Kampung Bale', 'user_id' =>   21, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],
-            ['id' => 48,  'jalan' => 'Kedelah', 'user_id' =>        NULL, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,], //
-            ['id' => 49,  'jalan' => 'Belang Bebangka', 'user_id' => NULL, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,], //
+            ['id' => 48,  'jalan' => 'Kedelah', 'user_id' =>        24, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,], //
+            ['id' => 49,  'jalan' => 'Belang Bebangka', 'user_id' => 24, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,], //
             ['id' => 50,  'jalan' => 'Pendere', 'user_id' =>        22, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],
-            ['id' => 51,  'jalan' => 'Jalan Betung', 'user_id' =>   NULL, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,], //
-            ['id' => 52,  'jalan' => 'Jalan Berawang Gading', 'user_id' =>      NULL, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,], //
-            ['id' => 53,  'jalan' => 'Jalan Angkup', 'user_id' =>   NULL, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,], //
-            ['id' => 54,  'jalan' => 'Sengeda 2', 'user_id' =>      24, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],
-            ['id' => 55,  'jalan' => 'Sengeda 3', 'user_id' =>      14, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],
+            ['id' => 51,  'jalan' => 'Jalan Betung', 'user_id' =>   25, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,], //
+            ['id' => 52,  'jalan' => 'Jalan Berawang Gading', 'user_id' =>      25, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,], //
+            ['id' => 53,  'jalan' => 'Jalan Angkup', 'user_id' =>   25, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,], //
+            ['id' => 54,  'jalan' => 'Sengeda 2', 'user_id' =>      NULL, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],
+            ['id' => 55,  'jalan' => 'Sengeda 3', 'user_id' =>      NULL, 'mulai' => 0, 'akhir' => 0, 'pdam_id' => 1,],
 
 
         ]);

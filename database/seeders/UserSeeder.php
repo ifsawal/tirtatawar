@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
         $user11 = User::create([
             'id' => 11,
             'nama' => 'Ramhlah',
-            'email' => 'user1@gmail.com',
+            'email' => 'ramlahtkn73@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
         $user12 = User::create([
             'id' => 12,
             'nama' => 'Candrawati',
-            'email' => 'user2@gmail.com',
+            'email' => 'candrawati.tkn@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
         $user13 = User::create([
             'id' => 13,
             'nama' => 'Sumardiani',
-            'email' => 'user3@gmail.com',
+            'email' => 'Sumardani0201@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
         $user14 = User::create([
             'id' => 14,
             'nama' => 'Susianti',
-            'email' => 'user4@gmail.com',
+            'email' => 'Santisusantisanti.1992@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -61,7 +61,7 @@ class UserSeeder extends Seeder
         $user15 = User::create([
             'id' => 15,
             'nama' => 'Maulina Sari',
-            'email' => 'user5@gmail.com',
+            'email' => 'maulinaasarii03@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -69,7 +69,7 @@ class UserSeeder extends Seeder
         $user16 = User::create([
             'id' => 16,
             'nama' => 'Lisa Ivania',
-            'email' => 'user6@gmail.com',
+            'email' => 'lisaivania0908@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -77,7 +77,7 @@ class UserSeeder extends Seeder
         $user17 = User::create([
             'id' => 17,
             'nama' => 'Mahdi Putra',
-            'email' => 'user7@gmail.com',
+            'email' => 'mahdiputra073@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -85,7 +85,7 @@ class UserSeeder extends Seeder
         $user18 = User::create([
             'id' => 18,
             'nama' => 'Hamisah',
-            'email' => 'user8@gmail.com',
+            'email' => 'hamisahi897@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -101,7 +101,7 @@ class UserSeeder extends Seeder
         $user20 = User::create([
             'id' => 20,
             'nama' => 'Yunika Putri Bintang',
-            'email' => 'user10@gmail.com',
+            'email' => 'yunicaputri37@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -109,7 +109,7 @@ class UserSeeder extends Seeder
         $user21 = User::create([
             'id' => 21,
             'nama' => 'Sukria',
-            'email' => 'user11@gmail.com',
+            'email' => 'sukriaramadhani02@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -117,7 +117,7 @@ class UserSeeder extends Seeder
         $user22 = User::create([
             'id' => 22,
             'nama' => 'Evia Fitriani',
-            'email' => 'user12@gmail.com',
+            'email' => 'eviafitriana11@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
@@ -125,15 +125,23 @@ class UserSeeder extends Seeder
         $user23 = User::create([
             'id' => 23,
             'nama' => 'Putra Abadi',
-            'email' => 'user13@gmail.com',
+            'email' => 'abadiputra744@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,
         ]);
         $user24 = User::create([
             'id' => 24,
-            'nama' => 'Putra Abadi',
-            'email' => 'user14@gmail.com',
+            'nama' => 'Itawarni',
+            'email' => 'itaaitawarni@gmail.com',
+            'password' => bcrypt('1234'),
+            'j_permisi' => 10,
+            'pdam_id' => 1,
+        ]);
+        $user24 = User::create([
+            'id' => 25,
+            'nama' => 'Sahida',
+            'email' => 'watiisnaini264@gmail.com',
             'password' => bcrypt('1234'),
             'j_permisi' => 10,
             'pdam_id' => 1,

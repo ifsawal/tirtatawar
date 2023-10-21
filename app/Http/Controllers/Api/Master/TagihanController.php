@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Api\Pelanggan\Tagihan\TagihanResource;
+use App\Models\Master\Transfer;
 
 class TagihanController extends Controller
 {
@@ -21,6 +22,28 @@ class TagihanController extends Controller
     public function cari()
     {
     }
+
+    public function detilinfotransfer(Request $r)
+    {
+        $this->validate($r, [
+            'id' => 'required', //tagihan transfer
+        ]);
+
+        $transfer = Transfer::findOrFail($r->id);
+        $transfer = Transfer::with('tagihan:id,total,pencatatan_id', 'tagihan.pencatatan:id,bulan,tahun')
+            ->select(['id', 'tagihan_id'])
+            ->where('kode_transfer', $transfer->kode_transfer)
+            ->where('status_bayar', "Y")
+            ->get();
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Ditemukan...",
+            'data' => $transfer,
+        ], 202);
+    }
+
+
     public function infotransfer(Request $r)
     {
         $this->validate($r, [

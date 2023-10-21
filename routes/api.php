@@ -103,6 +103,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/tagihan', [TagihanController::class, 'index']);
     Route::post('/cektagihandanupdate', [TagihanController::class, 'cektagihandanupdate']);
     Route::post('/infotransfer', [TagihanController::class, 'infotransfer']);
+    Route::post('/detilinfotransfer', [TagihanController::class, 'detilinfotransfer']);
 
     Route::post('/bayar', [BayarController::class, 'store']);
     Route::post('/batalbayar', [BayarController::class, 'destroy']);
