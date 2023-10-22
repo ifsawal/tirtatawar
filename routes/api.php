@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\Pelanggan\MobTagihanController;
 use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
+use App\Http\Controllers\Api\Laporan\LaporanBulananController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
@@ -111,6 +112,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/diskon', [BayarController::class, 'simpan_diskon']);
 
     Route::post('/laporanbayarbank', [LaporanBayarBankController::class, 'laporanbayarbank']);
+    Route::post('/laporanbulanan', [LaporanBulananController::class, 'laporan_bulanan']);
 
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
     Route::post('/laporanpenerimaan', [LaporanBayarController::class, 'laporanpenerimaan']);

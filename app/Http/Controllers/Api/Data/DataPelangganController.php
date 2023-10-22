@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api\Data;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\Data\DataPelangganResource;
-use App\Models\Master\Pelanggan;
 use Illuminate\Http\Request;
+use App\Models\Master\Pelanggan;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\Api\Data\DataPelangganResource;
 
 class DataPelangganController extends Controller
 {
@@ -19,9 +20,19 @@ class DataPelangganController extends Controller
             'sumber' => 'required',
         ]);
 
-        $pel = Pelanggan::where($request->sumber, '=', $request->id)
-            ->paginate(50);
-        $pel = new DataPelangganResource($pel);
+        $pel = Pelanggan::query();
+        if (isset($request->byuser)) {
+            $user = Auth::user()->id;
+            $pel->with('wiljalan:id,user_id,jalan');
+            $pel->whereHas('wiljalan', function ($q) use ($user) {
+                $q->where('user_id', '=', $user);
+            });
+        }
+        $pel->where($request->sumber, '=', $request->id);
+
+
+        $pel->get();
+        $pel = new DataPelangganResource($pel->paginate((50)));
 
         return response()->json([
             'sukses' => true,
