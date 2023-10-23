@@ -69,7 +69,7 @@ class WebhookController extends Controller
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Sukses...",
-            ], 201);
+            ], 200);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
