@@ -13,7 +13,7 @@ class DataPelangganController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request)  //laporan survey
     {
         $this->validate($request, [
             'id' => 'required',
@@ -29,9 +29,8 @@ class DataPelangganController extends Controller
             });
         }
         $pel->where($request->sumber, '=', $request->id);
-
-
         $pel->get();
+
         $pel = new DataPelangganResource($pel->paginate((50)));
 
         return response()->json([

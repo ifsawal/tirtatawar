@@ -46,6 +46,13 @@ class PencatatanController extends Controller
             ->limit(24)
             ->get();
 
+        if (count($pencatatan) == 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Data tidak ditemukan...",
+            ], 404);
+        }
+
 
         return response()->json([
             "sukses" => true,
@@ -63,6 +70,15 @@ class PencatatanController extends Controller
         ]);
 
         $pelanggan = Pelanggan::where('id', '=', $request->pelanggan_id)->first('nama');
+        if (!$pelanggan) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pelanggan tidak ditemukan...",
+                "kode" => 1,
+            ], 404);
+        }
+
+
         $pencatatan = Pencatatan::with('user:id,nama', 'user_perubahan:id,nama')
             ->where('pelanggan_id', '=', $request->pelanggan_id)
             ->where('manual', 1)
@@ -71,6 +87,15 @@ class PencatatanController extends Controller
             ->orderBy('bulan', 'desc')
             ->limit(50)
             ->get();
+
+        if (count($pencatatan) == 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pencatatan tidak ditemukan...",
+                "kode" => 2,
+            ], 404);
+        }
+
         return response()->json([
             "sukses" => true,
             "pesan" => "Data ditemukan...",
