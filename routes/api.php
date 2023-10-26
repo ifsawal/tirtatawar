@@ -35,6 +35,7 @@ use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
+use App\Http\Controllers\Api\Singel\InfoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -164,6 +165,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:pelanggan']], function
     Route::post('/keluhan', [KeluhansimController::class, 'tampil_keluhan']);
 });
 
+Route::get('/info', [InfoController::class, 'info']);
 
 Route::get('/cek/{nopel}', [PelangganMobController::class, 'cek']);
 Route::post('/cektagihan', [MobTagihanController::class, 'cektagihan']);
