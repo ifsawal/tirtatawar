@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string("status_bayar");
             $table->string("sistem_bayar")->nullable();
             $table->dateTime("tgl_bayar")->nullable();
+            $table->unsignedBigInteger('gol_penetapan_id')->nullable();
+            $table->foreign('gol_penetapan_id')->references('id')->on('gol_penetapans')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id_perubahan')->nullable();
             $table->foreign('user_id_perubahan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();

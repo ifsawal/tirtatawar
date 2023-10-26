@@ -188,6 +188,7 @@ class PencatatanController extends Controller
         $tagihan->total = $tagihan->subtotal;
         $tagihan->diskon = 0;
         $tagihan->denda = 0;
+        isset($harga->id) ? $tagihan->gol_penetapan_id = $harga->id : ""; //isi id gol_penetapan jika terdaftar sebagai penetapan
         $tagihan->status_bayar = 'N';
         $tagihan->save();
     }
