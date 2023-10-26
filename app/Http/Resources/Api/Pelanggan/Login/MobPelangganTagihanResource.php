@@ -34,6 +34,7 @@ class MobPelangganTagihanResource extends JsonResource
             "tahun" => $this->tahun,
             "photo" => $this->photo,
             // "tagihan" => {
+            "no_tagihan" => $this->tagihan->id,
             "jumlah" => $this->tagihan->jumlah,
             "diskon" => $this->tagihan->diskon,
             "denda" => $denda,
@@ -43,6 +44,7 @@ class MobPelangganTagihanResource extends JsonResource
             "total" => $total,
             "status_bayar" => $this->tagihan->status_bayar == "N" ? "Belum bayar" : "Sudah dibayar",
             "sistem_bayar" => $this->tagihan->sistem_bayar,
+
 
         ];
     }

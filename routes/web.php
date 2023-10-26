@@ -7,7 +7,9 @@ use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\Master\PdamController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\AlamatController;
+use App\Http\Controllers\Master\DownloadController;
 use App\Http\Controllers\Role\HakaksesController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +23,7 @@ use App\Http\Controllers\Role\HakaksesController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('singel.perawatan');
 });
 
 Route::get('/role', function () {
@@ -93,3 +95,9 @@ Route::middleware('auth')->group(function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+//download
+Route::get('/download/admintirtatawar', [DownloadController::class, 'downloadadmin']);
+Route::get('/download', [DownloadController::class, 'downloadpelanggan']);
+Route::get('/download/pelanggan', [DownloadController::class, 'downloadpelangganolehadmin']);

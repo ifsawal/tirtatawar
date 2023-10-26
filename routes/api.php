@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
 use App\Http\Controllers\Api\Laporan\LaporanBulananController;
+use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;

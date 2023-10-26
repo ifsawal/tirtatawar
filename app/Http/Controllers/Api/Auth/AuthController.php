@@ -142,7 +142,7 @@ class AuthController extends Controller
             return response()->json([
                 'sukses' => false,
                 'pesan' => "Tidak ditemukan...",
-                'data' => $user,
+                // 'data' => $user,
             ], 204);
         }
 
@@ -152,10 +152,12 @@ class AuthController extends Controller
             $user->save();
         }
 
+
+
         return response()->json([
             'sukses' => true,
             'pesan' => "Pendaftaran berhasil...",
-            'data' => $user,
+            // 'data' => $user,
         ], 201);
     }
 }

@@ -136,7 +136,7 @@ class MobTagihanController extends Controller
         }
 
 
-        $title = "Tagihan PDAM";
+        $title = "Tagihan PDAM ";
         $total_jumlah = $total + $biaya_bank;
         $bank = $r->kode_bank;
         $nama = $pelanggan->nama;

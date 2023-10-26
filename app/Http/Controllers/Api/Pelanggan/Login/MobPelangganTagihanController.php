@@ -31,7 +31,8 @@ class MobPelangganTagihanController extends Controller
         return response()->json([
             "sukses" => true,
             "pesan" => "Data ditemukan...",
-            "data" => $pencatatan
+            "data" => $pencatatan,
+            "nomor_pelanggan" => $user_id,
         ], 202);
     }
 
