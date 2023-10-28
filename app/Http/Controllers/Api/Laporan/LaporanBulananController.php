@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\Laporan;
 
-use App\Http\Controllers\Controller;
-use App\Models\Master\Pencatatan;
 use Illuminate\Http\Request;
+use App\Models\Master\Pencatatan;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanBayarBulananExport;
 
 class LaporanBulananController extends Controller
 {
@@ -15,47 +17,71 @@ class LaporanBulananController extends Controller
     {
         //
     }
+    public static function filter($r, $cetak = "N")
+    {
+
+        $catat = Pencatatan::query();
+
+        if ($cetak == "cetak") {
+            $catat->select(
+                'pelanggans.nama',
+                'golongans.golongan',
+                'pencatatans.bulan',
+                'pencatatans.tahun',
+                'tagihans.total',
+                'tagihans.status_bayar',
+                'tagihans.sistem_bayar',
+                'tagihans.tgl_bayar',
+            );
+        } else {
+            $catat->select(
+                'tagihans.id',
+                'pencatatans.bulan',
+                'pencatatans.tahun',
+                'tagihans.total',
+                'tagihans.status_bayar',
+                'tagihans.sistem_bayar',
+                'tagihans.tgl_bayar',
+                'pelanggans.nama'
+            );
+        }
+
+        $catat->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
+        $catat->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+        $cetak == "cetak" ? $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id') : "";
+        // $cetak == "cetak" ? $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id') : "";
+        $catat->where('pencatatans.tahun', '=', $r->tahun);
+        $catat->where('pencatatans.bulan', '=', $r->bulan);
+
+        isset($r->golongan_id) ? $catat->where('pelanggans.golongan_id', '=', $r->golongan_id) : '';
+        isset($r->wiljalan_id) ? $catat->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : '';
+        isset($r->status_bayar) ? $catat->where('tagihans.status_bayar', '=', $r->status_bayar) : '';
+
+        isset($r->waktu_bayar) ? $catat->whereYear('tagihans.tgl_bayar', '=', date('Y', strtotime($r->waktu_bayar))) : '';
+        isset($r->waktu_bayar) ? $catat->whereMonth('tagihans.tgl_bayar', '=', date('m', strtotime($r->waktu_bayar))) : '';
+
+        if ($cetak == "cetak") {
+            return $catat->get();
+        }
+        return $catat->paginate(50);
+    }
+
 
     public function laporan_bulanan(Request $r)
     {
         $this->validate($r, [
             'bulan' => 'required',
             'tahun' => 'required',
-
         ]);
 
-        $catat = Pencatatan::query();
-        $catat->select(
-            'tagihans.id',
-            'pencatatans.bulan',
-            'pencatatans.tahun',
-            'tagihans.total',
-            'tagihans.status_bayar',
-            'tagihans.sistem_bayar',
-            'tagihans.tgl_bayar',
-            'pelanggans.nama'
+        $catatan = self::filter($r);
 
-        );
-        $catat->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
-        $catat->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
-        $catat->where('pencatatans.bulan', '=', $r->bulan);
-        $catat->where('pencatatans.tahun', '=', $r->tahun);
-
-        isset($r->golongan_id) ? $catat->where('pelanggans.golongan_id', '=', $r->golongan_id) : '';
-        isset($r->wiljalan_id) ? $catat->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : '';
-        isset($r->status_bayar) ? $catat->where('tagihans.status_bayar', '=', $r->status_bayar) : '';
-
-
-        $catat->get();
-
-        $catatan = $catat->paginate(50);
         if (count($catatan) == 0) {
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Data tidak ditemukan...",
             ], 404);
         }
-
 
         return response()->json([
             "sukses" => true,
@@ -64,6 +90,10 @@ class LaporanBulananController extends Controller
         ], 202);
     }
 
+    public function laporanbayarbulananexport(Request $r)
+    {
+        return Excel::download(new LaporanBayarBulananExport($r), 'laporan.xlsx');
+    }
 
     /**
      * Show the form for creating a new resource.

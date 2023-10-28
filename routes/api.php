@@ -113,6 +113,8 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/cetak_penagihan', [BayarController::class, 'cetak_ulang']);
     Route::post('/diskon', [BayarController::class, 'simpan_diskon']);
 
+    Route::get('/laporanbayarbulananexport', [LaporanBulananController::class, 'laporanbayarbulananexport']);
+
     Route::post('/laporanbayarbank', [LaporanBayarBankController::class, 'laporanbayarbank']);
     Route::post('/laporanbulanan', [LaporanBulananController::class, 'laporan_bulanan']);
 
