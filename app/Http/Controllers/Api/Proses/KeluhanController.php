@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Api\Proses\Keluhan\ListKeluhanReseource;
 use App\Models\Keluhan\Keluhanphoto;
+use App\Models\Master\Daftarkeluhan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 
@@ -41,6 +42,10 @@ class KeluhanController extends Controller
             "sukses" => true,
             "pesan" => "Tersimpan...",
         ], 201);
+    }
+
+    public function daftarkeluhan() //list jenis keluhan 
+    {
     }
 
     public function tampilphotopengerjaan($tanggal, $photo)
@@ -231,10 +236,14 @@ class KeluhanController extends Controller
                 ->limit(50)
                 ->get());
         }
+
+
+        $daftarkeluhan = Daftarkeluhan::all();
         return response()->json([
             "sukses" => true,
             "pesan" => "Data ditemukan...",
             "data" => $kel,
+            "daftar_keluhan" => $daftarkeluhan,
         ], 202);
     }
 
