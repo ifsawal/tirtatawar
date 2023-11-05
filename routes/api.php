@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
 use App\Http\Controllers\Api\Laporan\LaporanBulananController;
+use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
 use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
@@ -79,6 +80,8 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/datameteranmanual', [PencatatanController::class, 'datameteranmanual']);
     Route::post('/catat', [PencatatanController::class, 'store']);
     Route::post('/catatmanual', [PencatatanController::class, 'catat_manual']);
+    Route::post('/laporanpencatatan', [LaporanPencatatanController::class, 'laporanpencatatan']);
+    Route::post('/laporanpencatatanexport', [LaporanPencatatanController::class, 'laporanpencatatanexport']);
 
     Route::post('/delete/gambar/rumah', [PelangganController::class, 'deletegambarrumah']);
     Route::post('/upload/gambar/rumah/{id}', [PelangganController::class, 'uploadgambarrumah']);

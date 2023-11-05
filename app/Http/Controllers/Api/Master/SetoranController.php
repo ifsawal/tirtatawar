@@ -35,16 +35,25 @@ class SetoranController extends Controller
 
     public function rubah(Request $r)
     {
-        $setoran = Setoran::findOrFail($r->id);
-        $setoran->user_id_diserahkan = $r->user;
-        $setoran->save();
 
-        if ($setoran->deterima == 1) {
+        $this->validate($r, [
+            'id' => 'required',  //id setoran
+        ]);
+
+
+        $setoran = Setoran::findOrFail($r->id);
+        if ($setoran->diterima == "1") {
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Gagal karena Uang sudah diserahkan sebelumnya...",
             ], 404);
         }
+
+
+        $setoran->user_id_diserahkan = $r->user;
+        $setoran->save();
+
+
 
         return response()->json([
             "sukses" => true,
