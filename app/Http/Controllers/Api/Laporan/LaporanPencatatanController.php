@@ -33,6 +33,7 @@ class LaporanPencatatanController extends Controller
         return Excel::download(new LaporanPencatatanExport($r, $user_id), 'laporan_pencatatan.xlsx');
     }
 
+
     public static function filter($r, $user_id = "", $cetak = "N")
     {
         $catat = Pencatatan::query();
@@ -46,6 +47,9 @@ class LaporanPencatatanController extends Controller
                 'pencatatans.pemakaian',
                 'pencatatans.manual',
                 'users.nama as pencatat',
+                'golongans.golongan',
+                'desas.desa',
+                'wiljalans.jalan',
             );
         } else {
             $catat->select(
@@ -57,11 +61,17 @@ class LaporanPencatatanController extends Controller
                 'pencatatans.pemakaian',
                 'pencatatans.manual',
                 'users.nama as pencatat',
+
             );
         }
         $catat->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
         $catat->join('users', 'users.id', '=', 'pencatatans.user_id');
-        $cetak == "cetak" ? $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id') : "";
+        if ($cetak == "cetak") {
+            $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id');
+            $catat->leftjoin('desas', 'pelanggans.desa_id', '=', 'desas.id');
+            $catat->leftjoin('wiljalans', 'pelanggans.wiljalan_id', '=', 'wiljalans.id');
+        }
+
         $catat->where('pencatatans.tahun', '=', $r->tahun);
         $catat->where('pencatatans.bulan', '=', $r->bulan);
         $user_id == "" ? '' : $catat->where('pencatatans.user_id', '=', $user_id);

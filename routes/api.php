@@ -81,7 +81,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/catat', [PencatatanController::class, 'store']);
     Route::post('/catatmanual', [PencatatanController::class, 'catat_manual']);
     Route::post('/laporanpencatatan', [LaporanPencatatanController::class, 'laporanpencatatan']);
-    Route::post('/laporanpencatatanexport', [LaporanPencatatanController::class, 'laporanpencatatanexport']);
+    Route::get('/laporanpencatatanexport', [LaporanPencatatanController::class, 'laporanpencatatanexport']);
 
     Route::post('/delete/gambar/rumah', [PelangganController::class, 'deletegambarrumah']);
     Route::post('/upload/gambar/rumah/{id}', [PelangganController::class, 'uploadgambarrumah']);
