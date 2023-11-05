@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer("jumlah");
             $table->unsignedBigInteger('user_id_diserahkan')->nullable();
             $table->foreign('user_id_diserahkan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->integer("diterima")->default(0);
             $table->unique(array('user_id', 'tanggal'));
             $table->timestamps();
         });

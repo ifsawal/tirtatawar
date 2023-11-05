@@ -122,6 +122,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/laporanpenerimaan', [LaporanBayarController::class, 'laporanpenerimaan']);
     Route::post('/laporanditerima', [LaporanBayarController::class, 'laporanditerima']);
     Route::post('/simpanpenyerahan', [SetoranController::class, 'rubah']);
+    Route::post('/setujuiditerima', [SetoranController::class, 'setujuiditerima']);
 
     Route::post('/listkeluhan', [KeluhanController::class, 'listkeluhan']);
     Route::post('/detilkeluhan', [KeluhanController::class, 'detilkeluhan']);
