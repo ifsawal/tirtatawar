@@ -179,6 +179,8 @@ class MobTagihanController extends Controller
                 "sukses" => true,
                 "pesan" => "Sukses membuat tagihan...",
                 "data" => $hasil,
+                "data_server" => $bankdata->setVisible(['nama', 'jenis', 'ket']),
+
             ], 202);
         } catch (\Exception $e) {
             DB::rollback();

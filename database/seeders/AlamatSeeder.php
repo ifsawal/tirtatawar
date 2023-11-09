@@ -201,6 +201,9 @@ class AlamatSeeder extends Seeder
             ['desa' => 'Kelupak Mata', 'kecamatan_id' => 7],
             ['desa' => 'Paya Reje Tamidelem', 'kecamatan_id' => 7],
             ['desa' => 'Paya Tumpi', 'kecamatan_id' => 7],
+            ['desa' => 'Bukit', 'kecamatan_id' => 7],
+            ['desa' => 'Gunung Balohen', 'kecamatan_id' => 7],
+            ['desa' => 'Paya Tumpi Baru', 'kecamatan_id' => 7],
 
             ['desa' => 'Bah', 'kecamatan_id' => 11],
             ['desa' => 'Belang Mancung', 'kecamatan_id' => 11],

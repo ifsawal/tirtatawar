@@ -20,7 +20,7 @@ return new class extends Migration
             $table->double("ppn")->nullable();
             $table->string("jenis")->nullable();
             $table->string("aktif")->default("N");
-            $table->string("ket")->nullable();
+            $table->text("ket")->nullable();
             $table->timestamps();
         });
     }

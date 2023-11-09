@@ -22,6 +22,15 @@ class BankSeeder extends Seeder
                 'biaya' => "3330",
                 'ppn' => 11,
                 'aktif' => "Y",
+                'ket' => "Aplikasi BSI<br>
+                1. Pilih menu Pembayaran.<br>
+                2. Pilih menu E-Commerce.<br>
+                3. Pilih “DOKU”.<br>
+                4. Pilih nomor rekening.<br>
+                5. Masukkan nomor bayar. Nomor bayar adalah nomor Virtual Account <br>
+                6. Pastikan jumlah transfernya sudah sesuai<br>
+                7. Masukkan PIN BSI Mobile.<br>
+                8. Transaksi selesai.<br>",
             ],
             // [
             //     'kode' => 'aceh',
