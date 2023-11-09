@@ -45,6 +45,7 @@ class BankSeeder extends Seeder
                 'biaya' => "3330",
                 'ppn' => 11,
                 'aktif' => "Y",
+                'ket' => NULL,
             ],
             [
                 'vendor' => 'flip',
@@ -54,6 +55,7 @@ class BankSeeder extends Seeder
                 'biaya' => "4440",
                 'ppn' => 11,
                 'aktif' => "Y",
+                'ket' => NULL,
             ],
             [
                 'vendor' => 'flip',
@@ -63,6 +65,7 @@ class BankSeeder extends Seeder
                 'biaya' => "3330",
                 'ppn' => 11,
                 'aktif' => "Y",
+                'ket' => NULL,
             ],
             [
                 'vendor' => 'flip',
@@ -72,6 +75,7 @@ class BankSeeder extends Seeder
                 'biaya' => "3330",
                 'ppn' => 11,
                 'aktif' => "Y",
+                'ket' => NULL,
             ],
             [
                 'vendor' => 'flip',
@@ -81,6 +85,7 @@ class BankSeeder extends Seeder
                 'biaya' => "3.5",
                 'ppn' => 11,
                 'aktif' => "N",
+                'ket' => NULL,
             ],
             [
                 'vendor' => 'flip',
@@ -90,6 +95,7 @@ class BankSeeder extends Seeder
                 'biaya' => "0.7",
                 'ppn' => 0,
                 'aktif' => "N",
+                'ket' => NULL,
             ],
             [
                 'vendor' => 'flip',
@@ -99,6 +105,7 @@ class BankSeeder extends Seeder
                 'biaya' => "3.5",
                 'ppn' => 11,
                 'aktif' => "N",
+                'ket' => NULL,
             ],
 
 
