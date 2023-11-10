@@ -20,8 +20,8 @@ class PelangganMobController extends Controller
     {
         $pelanggan = Pelanggan::where('id', $nopel)
             ->select('nama')->first();
-        $pelanggan->nama = substr($pelanggan->nama, 0, 3) . '******';
         if ($pelanggan) {
+            $pelanggan->nama = substr($pelanggan->nama, 0, 3) . '******';
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Data ditemukan...",
