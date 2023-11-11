@@ -9,7 +9,7 @@ use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\AlamatController;
 use App\Http\Controllers\Master\DownloadController;
 use App\Http\Controllers\Role\HakaksesController;
-
+use App\Http\Controllers\SingelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +95,9 @@ Route::middleware('auth')->group(function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//privasi
+Route::get('/privacy ', [SingelController::class, 'privacy']);
 
 
 //download
