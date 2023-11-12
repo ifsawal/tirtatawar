@@ -19,7 +19,7 @@ class InfoController extends Controller
         <br>
         <br>
         atau dapat berpesan ke email<br>
-        info@tirtatawar@gmail.com<br>
+        admin@tirtatawar.com<br>
         <br>
 
         Info kendala tekhnis <br>
