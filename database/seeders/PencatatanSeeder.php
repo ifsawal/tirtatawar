@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Http\Controllers\Api\Master\PencatatanController;
 use App\Models\Master\Pencatatan;
 use App\Models\Master\Tagihan;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -14,6 +15,21 @@ class PencatatanSeeder extends Seeder
      */
     public function run(): void
     {
+
+        // for ($i = 10; $i <= 9000; $i++) {
+
+        //     $cek = new Pencatatan();
+        //     $cek->awal = 8; //
+        //     $cek->akhir = 10; //
+        //     $cek->pemakaian = 2; //
+        //     $cek->bulan = 11; //
+        //     $cek->tahun = 2023; //
+        //     $cek->pelanggan_id = $i;
+        //     $cek->user_id = 20; //
+        //     $cek->save();
+
+        //     PencatatanController::simpanTagihanStatic($cek->id, $i, $cek->pemakaian);
+        // }
         Pencatatan::insert([
             [
                 'awal' => 0,

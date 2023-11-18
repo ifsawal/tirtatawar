@@ -94,6 +94,7 @@ class TagihanResource extends JsonResource
             'id' => encrypt($this->id),
             'jumlah' => $this->jumlah,
             'diskon' => $this->diskon,
+            'pajak' => $this->pajak,
             'denda' => $perubahan_denda->denda,
             'biaya' => $this->biaya,
             'subtotal' => $perubahan_denda->total,

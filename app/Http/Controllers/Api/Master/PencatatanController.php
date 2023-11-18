@@ -195,6 +195,14 @@ class PencatatanController extends Controller
 
 
 
+    public static function simpanTagihanStatic($pencatatan_id2, $pelanggan_id2, $pemakaian2)
+    {
+        self::simpanTagihan($pencatatan_id2, $pelanggan_id2,  $pemakaian2);
+    }
+
+
+
+
     //simpan catatan manual
     public function catat_manual(Request $r)
     {

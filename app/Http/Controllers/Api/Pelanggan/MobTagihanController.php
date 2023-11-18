@@ -48,7 +48,7 @@ class MobTagihanController extends Controller
         }
 
         $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
-            ->whereRelation('pelanggan', 'id', '=', $id)
+            ->where('pelanggan_id', $id)
             ->whereRelation('tagihan', 'status_bayar', '=', 'N')
             ->orderBy('id', 'desc')
             ->get();
@@ -84,17 +84,6 @@ class MobTagihanController extends Controller
             $id = decrypt(substr($r->nopel, 2));
         }
 
-        $pelanggan = Pelanggan::with('desa:id,desa')
-            ->where('id', $id)->first();
-        if (!$pelanggan) {
-            return response()->json([
-                "sukses" => false,
-                "pesan" => "Pelanggan tidak ditemukan...",
-            ], 404);
-        }
-        if ($pelanggan->email == NULL) $pelanggan->email = "pdamtirtatawar@gmail.com";
-        if ($pelanggan->desa == NULL) $pelanggan->desa = "Desa Test";
-
         $bankdata = Bank::where('kode', $r->kode_bank)->first();
         if ($bankdata->aktif == "N") {
             return response()->json([
@@ -103,17 +92,29 @@ class MobTagihanController extends Controller
             ], 404);
         }
 
-        if (isset($r->id)) {
-            $id = decrypt($r->id);
+
+        $pelanggan = Pelanggan::with('desa:id,desa')->where('id', $id)->first();
+        if (!$pelanggan) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pelanggan tidak ditemukan...",
+            ], 404);
+        }
+        if ($pelanggan->email == NULL) $pelanggan->email = "tirtatawar1@gmail.com";
+        if ($pelanggan->desa == NULL) $pelanggan->desa = "Desa Test";
+
+
+        if (isset($r->id)) {  //jika tagihan.a satu2
+            $id_tagihan = decrypt($r->id);
             $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
-                ->whereRelation('pelanggan', 'id', '=', $id)
+                ->where('pelanggan_id', $id)
                 ->whereRelation('tagihan', 'status_bayar', '=', 'N')
-                ->whereRelation('tagihan', 'id', '=', $id)
+                ->whereRelation('tagihan', 'id', '=', $id_tagihan)
                 ->orderBy('id', 'desc')
                 ->get();
         } else {
             $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
-                ->whereRelation('pelanggan', 'id', '=', $id)
+                ->where('pelanggan_id', $id)
                 ->whereRelation('tagihan', 'status_bayar', '=', 'N')
                 ->orderBy('id', 'desc')
                 ->get();
@@ -194,10 +195,7 @@ class MobTagihanController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.

@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 
 use Illuminate\Database\Seeder;
+use App\Models\Master\Pelanggan;
 use Database\Seeders\BankSeeder;
 use Database\Seeders\RuteSeeder;
 use Database\Seeders\UserSeeder;
@@ -33,6 +34,8 @@ class DatabaseSeeder extends Seeder
         $this->call([GolonganSeeder::class]);
         $this->call([RuteSeeder::class]);
         $this->call([WiljalanSeeder::class]);
+
+
         // $this->call([PelangganSeeder::class]);
         $this->call([PelangganDataAsliSeeder::class]);
         $this->call([PelangganDataAslike2Seeder::class]);

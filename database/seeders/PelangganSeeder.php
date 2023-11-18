@@ -14,6 +14,7 @@ class PelangganSeeder extends Seeder
      */
     public function run(): void
     {
+        // Pelanggan::factory(9000)->create();
         $pelanggan =  new Pelanggan;
         $pelanggan->nama = "Sawaludin";
         $pelanggan->nik = "11224546456";

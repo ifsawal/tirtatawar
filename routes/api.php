@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Master\DesaController;
 use App\Http\Controllers\Api\Master\UserController;
+use App\Http\Controllers\Api\Singel\InfoController;
 use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Controllers\Api\Master\SetoranController;
 use App\Http\Controllers\Api\Master\TagihanController;
 use App\Http\Controllers\Api\Proses\KeluhanController;
 use App\Http\Controllers\Api\Proses\WebhookController;
 use App\Http\Controllers\Api\Auth\AuthMobileController;
+use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Master\PelangganController;
 use App\Http\Controllers\Api\Master\PembayaranController;
 use App\Http\Controllers\Api\Master\PencatatanController;
@@ -28,15 +30,14 @@ use App\Http\Controllers\Api\Master\PhotoCatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarController;
 use App\Http\Controllers\Api\Pelanggan\MobTagihanController;
 use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
+use App\Http\Controllers\Api\Laporan\LaporanBulananController;
+use App\Http\Controllers\Api\Pelanggan\MobTagihan10Controller;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
-use App\Http\Controllers\Api\Laporan\LaporanBulananController;
 use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
-use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
-use App\Http\Controllers\Api\Singel\InfoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -175,9 +176,12 @@ Route::get('/info', [InfoController::class, 'info']);
 
 Route::get('/cek/{nopel}', [PelangganMobController::class, 'cek']);
 Route::post('/cektagihan', [MobTagihanController::class, 'cektagihan']);
+Route::post('/cektagihan10', [MobTagihan10Controller::class, 'cektagihan10']);
 Route::get('/bank', [MobBankController::class, 'pilihbank']);
 Route::get('/cekbank/{bank}', [MobBankController::class, 'cekbank']);
 
 Route::post('/buattagihan', [MobTagihanController::class, 'buattagihan']);
+Route::post('/buattagihan10', [MobTagihan10Controller::class, 'buattagihan10']);
 
+//untuk flip
 Route::post('/callbacktirtatawar', [WebhookController::class, 'callback']);
