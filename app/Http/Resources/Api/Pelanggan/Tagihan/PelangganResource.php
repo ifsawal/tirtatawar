@@ -17,7 +17,7 @@ class PelangganResource extends JsonResource
     {
         return [
             'no_pel' => $this->id,
-            'nama' => substr($this->nama, 0, 3) . '******',
+            'nama' => substr($this->nama, 0, 3) . '******' . substr($this->nama, -2),
             // 'pencatatan' => PencatatanResource::collection($this->whenLoaded('pencatatan')),
             // 'users' => UserResource::collection($this->whenLoaded('users')),
         ];

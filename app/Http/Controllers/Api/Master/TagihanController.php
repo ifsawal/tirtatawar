@@ -30,10 +30,10 @@ class TagihanController extends Controller
         ]);
 
         $transfer = Transfer::findOrFail($r->id);
-        $transfer = Transfer::with('tagihan:id,total,pencatatan_id', 'tagihan.pencatatan:id,bulan,tahun')
+        $transfer = Transfer::with('tagihan:id,total,pencatatan_id', 'tagihan.pencatatan:id,bulan,tahun,pelanggan_id', 'tagihan.pencatatan.pelanggan:id,nama')
             ->select(['id', 'tagihan_id'])
             ->where('kode_transfer', $transfer->kode_transfer)
-            ->where('status_bayar', "Y")
+            ->where('status_bayar', "Y")  //hanya boleh yg udah bayar, kalo tidak banyak yang muncul
             ->get();
 
         return response()->json([
