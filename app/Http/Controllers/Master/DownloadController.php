@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Master;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
 class DownloadController extends Controller
@@ -15,7 +16,10 @@ class DownloadController extends Controller
     }
     public function downloadpelanggan()
     {
-        return view('singel.download');
+        return Redirect::to('https://play.google.com/store/apps/details?id=com.pdam.pdam');
+        // return view('singel.download');
+
+
         // $path = public_path() . '/files2/down/PDAM.apk';
         // return Response::download($path);
     }
