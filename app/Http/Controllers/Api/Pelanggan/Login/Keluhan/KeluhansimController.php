@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Api\Pelanggan\Login\Keluhan;
 use Illuminate\Http\Request;
 use App\Models\Keluhan\Keluhan;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\Pelanggan\Login\Keluhan\KeluhanResource;
+use App\Models\Master\Daftarkeluhan;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\Api\Pelanggan\Login\Keluhan\KeluhanResource;
 
 class KeluhansimController extends Controller
 {
@@ -21,11 +22,14 @@ class KeluhansimController extends Controller
             ->orderBy('id', 'desc')
             ->limit(10)
             ->get());
+
+        $daftarkeluhan = Daftarkeluhan::all();
         if (count($keluhan) == 0) {
             return response()->json([
                 "sukses" => false,
-                "pesan" => "Tidak detemukan...",
+                "pesan" => "Belum ada keluhan...",
                 "kode" => 1,
+                "daftarkeluhan" =>  $daftarkeluhan->setVisible(['keluhan']),
             ], 404);
         }
 
@@ -33,6 +37,7 @@ class KeluhansimController extends Controller
             "sukses" => true,
             "pesan" => "ditemukan...",
             "data" => $keluhan,
+            "daftarkeluhan" =>  $daftarkeluhan->setVisible(['keluhan']),
         ], 202);
     }
     public function simpan_keluhan(Request $r)

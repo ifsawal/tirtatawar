@@ -173,6 +173,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:pelanggan']], function
 });
 
 Route::get('/info', [InfoController::class, 'info']);
+Route::get('/versi', [InfoController::class, 'versipelanggan']);
 
 Route::get('/cek/{nopel}', [PelangganMobController::class, 'cek']);
 Route::post('/cektagihan', [MobTagihanController::class, 'cektagihan']);

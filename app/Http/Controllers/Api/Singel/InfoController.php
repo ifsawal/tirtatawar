@@ -35,4 +35,14 @@ class InfoController extends Controller
             "data" => $pes,
         ], 200);
     }
+
+
+    public function versipelanggan()
+    {
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Data ditemukan...",
+            "versi" => 2,
+        ], 202);
+    }
 }
