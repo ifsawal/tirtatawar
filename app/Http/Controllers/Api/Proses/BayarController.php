@@ -138,7 +138,7 @@ class BayarController extends Controller
                 "setoran" =>  $tambahsetoran,
                 "tanggal" =>  date('d-m-Y'),
                 "nohp" =>  "082223550421",
-                "link" =>  "https://www.tirtatawar.com/download",
+                "link" =>  "https://www.tirtatawar.com/playstore",
 
             ], 201);
         } catch (\Exception $e) {
@@ -202,7 +202,7 @@ class BayarController extends Controller
                 "penagih" =>  $userpenagih,
                 "tanggal" =>  date('d-m-Y'),
                 "nohp" =>  "082223550421",
-                "link" =>  "https://www.tirtatawar.com/download",
+                "link" =>  "https://www.tirtatawar.com/playstore",
             ], 201);
         } catch (\Exception $e) {
             DB::rollback();

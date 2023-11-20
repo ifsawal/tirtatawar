@@ -17,10 +17,11 @@ class DownloadController extends Controller
     public function downloadpelanggan()
     {
         return Redirect::to('https://play.google.com/store/apps/details?id=com.pdam.pdam');
-        // return view('singel.download');
+
+        // return view('singel.download'); //menuju ke link halaman
 
 
-        // $path = public_path() . '/files2/down/PDAM.apk';
+        // $path = public_path() . '/files2/down/PDAM.apk'; //jika download dari website
         // return Response::download($path);
     }
 

@@ -103,4 +103,5 @@ Route::get('/privacy ', [SingelController::class, 'privacy']);
 //download
 Route::get('/download/admintirtatawar', [DownloadController::class, 'downloadadmin']);
 Route::get('/download', [DownloadController::class, 'downloadpelanggan']);
+Route::get('/playstore', [DownloadController::class, 'downloadpelanggan']);
 Route::get('/download/pelanggan', [DownloadController::class, 'downloadpelangganolehadmin']);
