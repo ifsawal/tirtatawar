@@ -10,7 +10,7 @@ class InfoController extends Controller
     public function info()
     {
         $pes = "
-        <b>Aplikasi PDAM Versi 1</b>
+        <b>Aplikasi PDAM Versi 2</b>
         <br><br>
         Kritik dan saran <br>
         dapat disampaikan ke Kantor PDAM Tirta Tawar
