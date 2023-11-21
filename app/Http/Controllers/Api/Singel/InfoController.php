@@ -10,7 +10,7 @@ class InfoController extends Controller
     public function info()
     {
         $pes = "
-        <b>Aplikasi PDAM Versi 2</b>
+        <b>Aplikasi PDAM Versi 3</b>
         <br><br>
         Kritik dan saran <br>
         dapat disampaikan ke Kantor PDAM Tirta Tawar
@@ -42,7 +42,7 @@ class InfoController extends Controller
         return response()->json([
             "sukses" => true,
             "pesan" => "Data ditemukan...",
-            "versi" => 2,
+            "versi" => 3,
         ], 202);
     }
 }
