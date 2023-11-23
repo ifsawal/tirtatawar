@@ -50,6 +50,8 @@ class MobTagihan10Controller extends Controller
                 ->orderBy('id', 'desc')
                 ->get();
 
+            $pencatatan = PencatatanResource::customCollection($pencatatan, $pelanggan->golongan->denda);
+
             //hitung total
             $total_bayar_perpelanggan = 0;
             foreach ($pencatatan as $hit) {
@@ -57,11 +59,10 @@ class MobTagihan10Controller extends Controller
             }
             $total_tagih = $total_tagih + $total_bayar_perpelanggan;
 
-            $pencatatan = PencatatanResource::customCollection($pencatatan, $pelanggan->golongan->denda);
             array_push($pel, (object)[
                 'pel' => new PelangganResource($pelanggan),
                 'catat' => $pencatatan,
-                'total' => $total_bayar_perpelanggan,
+                'total' => $total_tagih,
             ]);
 
 
