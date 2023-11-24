@@ -31,7 +31,7 @@ class PencatatanResource extends JsonResource
         $tagihan->denda_perbulan = self::$data;
 
         $detiltagihan = new TagihanResource($tagihan);
-
+        // $clone_detiltagihan = clone $detiltagihan;
         return [
             'id'        => encrypt($this->id),
             'awal'      => $this->awal,
@@ -42,7 +42,7 @@ class PencatatanResource extends JsonResource
             'denda_perbulan' => self::$data,
             // 'dsd' => $this->meta->denda,
             'tagihan'   => $detiltagihan,
-            // 'total'     => $tagihan->total,
+            // 'total'     => $clone_detiltagihan,
 
 
         ];
