@@ -3,8 +3,9 @@
 namespace App\Http\Resources\Api\Pelanggan\Tagihan;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\Master\Tagihan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class PencatatanResource extends JsonResource
 {
@@ -30,17 +31,19 @@ class PencatatanResource extends JsonResource
         $tagihan->denda_perbulan = self::$data;
 
         $detiltagihan = new TagihanResource($tagihan);
+
         return [
-            'id' => encrypt($this->id),
-            'awal' => $this->awal,
-            'akhir' => $this->akhir,
+            'id'        => encrypt($this->id),
+            'awal'      => $this->awal,
+            'akhir'     => $this->akhir,
             'pemakaian' => $this->pemakaian,
-            'bulan' => $this->bulan,
-            'tahun' => $this->tahun,
+            'bulan'     => $this->bulan,
+            'tahun'     => $this->tahun,
             'denda_perbulan' => self::$data,
             // 'dsd' => $this->meta->denda,
             'tagihan'   => $detiltagihan,
-            // 'total'   => $detiltagihan,
+            // 'total'     => $tagihan->total,
+
 
         ];
     }

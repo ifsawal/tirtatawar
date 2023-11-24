@@ -52,12 +52,19 @@ class MobTagihan10Controller extends Controller
 
             $pencatatan = PencatatanResource::customCollection($ambil_pencatatan, $pelanggan->golongan->denda);
 
-            //hitung total
+            $ambil_pencatatan_ulang = Pencatatan::with('tagihan')
+                ->where('pelanggan_id', $no)
+                ->whereRelation('tagihan', 'status_bayar', '=', 'N')
+                ->orderBy('id', 'desc')
+                ->get();
+
+
             $total_bayar_perpelanggan = 0;
-            foreach ($pencatatan as $hit) {
+            foreach ($ambil_pencatatan_ulang as $hit) { //hitung total
                 $total_bayar_perpelanggan = $total_bayar_perpelanggan + $hit->tagihan->total;
             }
             $total_tagih = $total_tagih + $total_bayar_perpelanggan;
+
 
             array_push($pel, (object)[
                 'pel' => new PelangganResource($pelanggan),
