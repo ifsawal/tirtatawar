@@ -27,75 +27,63 @@ class MobTagihan10Controller extends Controller
 
         $urut = 0;
         $total_tagih = 0;
-        DB::beginTransaction();
-        try {
-            foreach (explode('-', $r->nopel) as $no) {
-                if ($urut > 9) continue; //batas proses
 
-                if ($no == '' or $no == 0) continue;
-                if (!is_numeric($no)) continue;
+        foreach (explode('-', $r->nopel) as $no) {
+            if ($urut > 9) continue; //batas proses
 
-                //jika doble maka hapus salah satu
-                $cari = in_array($no, $tampung_nopel);
-                if ($cari) continue;
-                $tampung_nopel[] = $no;
+            if ($no == '' or $no == 0) continue;
+            if (!is_numeric($no)) continue;
 
-                $pelanggan = Pelanggan::with('golongan:id,denda')
-                    ->where('id', $no)->first();
-                if (!$pelanggan) continue; //jika tidak ditemukan lanjut
+            //jika doble maka hapus salah satu
+            $cari = in_array($no, $tampung_nopel);
+            if ($cari) continue;
+            $tampung_nopel[] = $no;
 
-
-                $ambil_pencatatan = Pencatatan::with('tagihan', 'pelanggan')
-                    ->where('pelanggan_id', $no)
-                    ->whereRelation('tagihan', 'status_bayar', '=', 'N')
-                    ->orderBy('id', 'desc')
-                    ->get();
-
-                $pencatatan = PencatatanResource::customCollection($ambil_pencatatan, $pelanggan->golongan->denda);
-
-                //hitung total
-                $total_bayar_perpelanggan = 0;
-                foreach ($pencatatan as $hit) {
-                    $total_bayar_perpelanggan = $total_bayar_perpelanggan + $hit->tagihan->total;
-                }
-                $total_tagih = $total_tagih + $total_bayar_perpelanggan;
-
-                array_push($pel, (object)[
-                    'pel' => new PelangganResource($pelanggan),
-                    'catat' => $pencatatan,
-                    'total' => $total_tagih,
-                ]);
+            $pelanggan = Pelanggan::with('golongan:id,denda')
+                ->where('id', $no)->first();
+            if (!$pelanggan) continue; //jika tidak ditemukan lanjut
 
 
-                $urut++; //urut terakhir for
+            $ambil_pencatatan = Pencatatan::with('tagihan', 'pelanggan')
+                ->where('pelanggan_id', $no)
+                ->whereRelation('tagihan', 'status_bayar', '=', 'N')
+                ->orderBy('id', 'desc')
+                ->get();
+
+            $pencatatan = PencatatanResource::customCollection($ambil_pencatatan, $pelanggan->golongan->denda);
+
+            //hitung total
+            $total_bayar_perpelanggan = 0;
+            foreach ($pencatatan as $hit) {
+                $total_bayar_perpelanggan = $total_bayar_perpelanggan + $hit->tagihan->total;
             }
+            $total_tagih = $total_tagih + $total_bayar_perpelanggan;
 
-            // DB::commit();
-            DB::rollback();
+            array_push($pel, (object)[
+                'pel' => new PelangganResource($pelanggan),
+                'catat' => $pencatatan,
+                'total' => $total_tagih,
+            ]);
 
 
-            if ($urut == 0) {
-                return response()->json([
-                    "sukses" => false,
-                    "pesan" => "Pelanggan tidak ditemukan...",
-                ], 404);
-            }
-
-            return response()->json([
-                "sukses" => true,
-                "pesan" => "Data ditemukan...",
-                "data" => $pel,
-                "total_tagih" => $total_tagih,
-            ], 202);
-        } catch (\Exception $e) {
-            DB::rollback();
-            if ($urut == 0) {
-                return response()->json([
-                    "sukses" => false,
-                    "pesan" => "Error ditemukan...",
-                ], 404);
-            }
+            $urut++; //urut terakhir for
         }
+
+
+
+        if ($urut == 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pelanggan tidak ditemukan...",
+            ], 404);
+        }
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Data ditemukan...",
+            "data" => $pel,
+            "total_tagih" => $total_tagih,
+        ], 202);
     }
 
 

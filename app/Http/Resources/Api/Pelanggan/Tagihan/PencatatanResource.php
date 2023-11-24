@@ -4,6 +4,7 @@ namespace App\Http\Resources\Api\Pelanggan\Tagihan;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class PencatatanResource extends JsonResource
 {
@@ -38,9 +39,9 @@ class PencatatanResource extends JsonResource
             'tahun' => $this->tahun,
             'denda_perbulan' => self::$data,
             // 'dsd' => $this->meta->denda,
+            'tagihan'   => $detiltagihan,
+            // 'total'   => $detiltagihan,
 
-            'tagihan' => $detiltagihan,
-            'total' => $detiltagihan->total,
         ];
     }
 }
