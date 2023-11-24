@@ -41,33 +41,33 @@ class TagihanResource extends JsonResource
 
     public static function simpan_denda($bulan, $tahun, $dendaperbulan, $denda_saatini, $tagihan_id, $total)
     {
-        DB::beginTransaction();
-        try {
-            $waktucatat = $tahun . '-' . $bulan . '-' . '1';
-            $kurangi1bulan = date('Y-m', strtotime(Carbon::create($tahun, $bulan, 1)->subMonths(1)));
+        // DB::beginTransaction();
+        // try {
+        $waktucatat = $tahun . '-' . $bulan . '-' . '1';
+        $kurangi1bulan = date('Y-m', strtotime(Carbon::create($tahun, $bulan, 1)->subMonths(1)));
 
-            $tagihan = Tagihan::findOrFail($tagihan_id);
+        $tagihan = Tagihan::findOrFail($tagihan_id);
 
-            $denda = self::denda($waktucatat, $kurangi1bulan, $dendaperbulan);
-            if ($denda > 0 and $denda <> $denda_saatini) { //jika hasil penghitungan > 0; dan $denda tidak sama dengan denda di tabel tagihan
-                if ($denda_saatini == 0) {
-                    $tagihan->subtotal = $tagihan->total + $denda;
-                    $tagihan->total = $tagihan->subtotal;
-                } else {
-                    $tagihan->subtotal = ($tagihan->total - $denda_saatini) + $denda;
-                    $tagihan->total = $tagihan->subtotal;
-                }
-                $total = $tagihan->total;
-
-                $tagihan->denda = $denda;
-                $tagihan->save();
+        $denda = self::denda($waktucatat, $kurangi1bulan, $dendaperbulan);
+        if ($denda > 0 and $denda <> $denda_saatini) { //jika hasil penghitungan > 0; dan $denda tidak sama dengan denda di tabel tagihan
+            if ($denda_saatini == 0) {
+                $tagihan->subtotal = $tagihan->total + $denda;
+                $tagihan->total = $tagihan->subtotal;
+            } else {
+                $tagihan->subtotal = ($tagihan->total - $denda_saatini) + $denda;
+                $tagihan->total = $tagihan->subtotal;
             }
-            return $tagihan;
-            // DB::commit();
-            DB::rollback();
-        } catch (\Exception $e) {
-            DB::rollback();
+            $total = $tagihan->total;
+
+            $tagihan->denda = $denda;
+            $tagihan->save();
         }
+        return $tagihan;
+        //     // DB::commit();
+        //     DB::rollback();
+        // } catch (\Exception $e) {
+        //     DB::rollback();
+        // }
     }
 
     public function toArray(Request $request): array
