@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('long')->nullable();
             $table->string('email')->nullable()->unique();
             $table->string('password')->nullable();
-            $table->integer('nolama')->nullable()->unique();
+            $table->string('nolama')->nullable()->unique();
             $table->unsignedBigInteger('pdam_id');
             $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('desa_id')->nullable();
