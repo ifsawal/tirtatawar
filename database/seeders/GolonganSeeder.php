@@ -16,7 +16,7 @@ class GolonganSeeder extends Seeder
 
         Golongan::insert([
             [
-                'golongan' => 'Golongan Sosial 1',
+                'golongan' => 'Golongan Sosial 1',   //1
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
@@ -25,7 +25,7 @@ class GolonganSeeder extends Seeder
                 'pdam_id' => 1,
             ],
             [
-                'golongan' => 'Golongan Sosial 2',
+                'golongan' => 'Golongan Sosial 2',  //2
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
@@ -34,7 +34,7 @@ class GolonganSeeder extends Seeder
                 'pdam_id' => 1,
             ],
             [
-                'golongan' => 'RT Rumah Sederhana',
+                'golongan' => 'RT Rumah Sederhana',  //3
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
@@ -43,7 +43,7 @@ class GolonganSeeder extends Seeder
                 'pdam_id' => 1,
             ],
             [
-                'golongan' => 'RT Rumah Mewah',
+                'golongan' => 'RT Rumah Mewah',  //4
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
@@ -52,7 +52,7 @@ class GolonganSeeder extends Seeder
                 'pdam_id' => 1,
             ],
             [
-                'golongan' => 'Instansi Pemerintahan',
+                'golongan' => 'Instansi Pemerintahan',  //5
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
@@ -61,7 +61,7 @@ class GolonganSeeder extends Seeder
                 'pdam_id' => 1,
             ],
             [
-                'golongan' => 'Niaga Kecil',
+                'golongan' => 'Niaga Kecil',  //6
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
@@ -70,7 +70,7 @@ class GolonganSeeder extends Seeder
                 'pdam_id' => 1,
             ],
             [
-                'golongan' => 'Niaga Menengah',
+                'golongan' => 'Niaga Menengah',  //7
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,
@@ -80,7 +80,7 @@ class GolonganSeeder extends Seeder
                 'pdam_id' => 1,
             ],
             [
-                'golongan' => 'Niaga Besar',
+                'golongan' => 'Niaga Besar',  //8
                 'jenis' => 'm3',
                 'harga' => 0,
                 'biaya' => 7500,

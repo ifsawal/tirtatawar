@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
     {
         $user1 = User::create([
             'id' => 1,
-            'nama' => 'Sawal',
+            'nama' => 'super admin',
             'email' => 'ifsawal@gmail.com',
             'password' => bcrypt('1'),
             'j_permisi' => 10,
