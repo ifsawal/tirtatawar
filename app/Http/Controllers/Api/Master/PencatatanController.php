@@ -162,6 +162,7 @@ class PencatatanController extends Controller
             foreach ($golongan[0]->golongan->goldetil as $detil) {
                 if ($pemakaian == 0) {
                     $jumlah = $jumlah + 0;
+                    break;
                 } else if ($pemakaian > $detil->awal_meteran && $pemakaian <= $detil->akhir_meteran && $detil->akhir_meteran <> 0) {
                     $jumlah = $jumlah + ($detil->harga * ($pemakaian - $detil->awal_meteran));
                     break;
