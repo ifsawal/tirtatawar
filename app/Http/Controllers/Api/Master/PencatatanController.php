@@ -160,7 +160,9 @@ class PencatatanController extends Controller
             $jumlah_pajak = $harga->pajak;
         } else if (isset($golongan[0]->golongan->goldetil)) {  //jika sesuai tarif
             foreach ($golongan[0]->golongan->goldetil as $detil) {
-                if ($pemakaian > $detil->awal_meteran && $pemakaian <= $detil->akhir_meteran && $detil->akhir_meteran <> 0) {
+                if ($pemakaian == 0) {
+                    $jumlah = $jumlah + 0;
+                } else if ($pemakaian > $detil->awal_meteran && $pemakaian <= $detil->akhir_meteran && $detil->akhir_meteran <> 0) {
                     $jumlah = $jumlah + ($detil->harga * ($pemakaian - $detil->awal_meteran));
                     break;
                 } else if ($detil->akhir_meteran == 0) {
