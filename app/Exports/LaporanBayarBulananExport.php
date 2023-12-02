@@ -29,6 +29,7 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
     public function headings(): array
     {
         return [
+            "No Pel",
             "Nama",
             "Golongan",
             "Nama Jalan",
@@ -47,18 +48,19 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
     public function columnWidths(): array
     {
         return [
-            'A' => 28,
-            'B' => 23,
+            'A' => 8,
+            'B' => 28,
             'C' => 23,
-            'D' => 8,
+            'D' => 23,
             'E' => 8,
-            'F' => 14,
-            'G' => 10,
+            'F' => 8,
+            'G' => 14,
             'H' => 10,
-            'I' => 12,
-            'J' => 7,
-            'K' => 15,
+            'I' => 10,
+            'J' => 12,
+            'K' => 7,
             'L' => 15,
+            'M' => 15,
         ];
     }
 }

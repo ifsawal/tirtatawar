@@ -24,6 +24,7 @@ class LaporanBulananController extends Controller
 
         if ($cetak == "cetak") {
             $catat->select(
+                'pelanggans.id',
                 'pelanggans.nama',
                 'golongans.golongan',
                 'wiljalans.jalan',
