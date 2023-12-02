@@ -30,6 +30,8 @@ class LaporanBulananController extends Controller
                 'pencatatans.bulan',
                 'pencatatans.tahun',
                 'tagihans.jumlah',
+                'tagihans.biaya',
+                'tagihans.pajak',
                 'tagihans.total',
                 'tagihans.status_bayar',
                 'tagihans.sistem_bayar',
