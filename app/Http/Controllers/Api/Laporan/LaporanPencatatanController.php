@@ -39,6 +39,7 @@ class LaporanPencatatanController extends Controller
         $catat = Pencatatan::query();
         if ($cetak == "cetak") {
             $catat->select(
+                'pelanggans.id',
                 'pelanggans.nama',
                 'pencatatans.bulan',
                 'pencatatans.tahun',

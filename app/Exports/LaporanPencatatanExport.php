@@ -31,6 +31,7 @@ class LaporanPencatatanExport implements FromCollection, WithHeadings, WithColum
     public function headings(): array
     {
         return [
+            "No Pelanggan",
             "Nama",
             "Bulan",
             "Tahun",
@@ -48,17 +49,18 @@ class LaporanPencatatanExport implements FromCollection, WithHeadings, WithColum
     public function columnWidths(): array
     {
         return [
-            'A' => 28,
-            'B' => 8,
+            'A' => 8,
+            'B' => 28,
             'C' => 8,
-            'D' => 15,
+            'D' => 8,
             'E' => 15,
             'F' => 15,
-            'G' => 5,
-            'H' => 15,
-            'I' => 25,
+            'G' => 15,
+            'H' => 5,
+            'I' => 15,
             'J' => 25,
-            'K' => 30,
+            'K' => 25,
+            'L' => 30,
         ];
     }
 }
