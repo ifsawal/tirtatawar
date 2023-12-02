@@ -31,8 +31,10 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
         return [
             "Nama",
             "Golongan",
+            "Nama Jalan",
             "Bulan",
             "Tahun",
+            "Tagihan Pemakaian",
             "Total Bayar",
             "Status Bayar",
             "Sistem Bayar",
@@ -45,12 +47,14 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
         return [
             'A' => 28,
             'B' => 23,
-            'C' => 8,
+            'C' => 23,
             'D' => 8,
-            'E' => 10,
-            'F' => 7,
-            'G' => 15,
-            'H' => 15,
+            'E' => 8,
+            'F' => 10,
+            'G' => 10,
+            'H' => 7,
+            'i' => 15,
+            'J' => 15,
         ];
     }
 }

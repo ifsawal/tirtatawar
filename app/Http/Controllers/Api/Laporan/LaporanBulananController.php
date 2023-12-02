@@ -26,8 +26,10 @@ class LaporanBulananController extends Controller
             $catat->select(
                 'pelanggans.nama',
                 'golongans.golongan',
+                'wiljalans.jalan',
                 'pencatatans.bulan',
                 'pencatatans.tahun',
+                'tagihans.jumlah',
                 'tagihans.total',
                 'tagihans.status_bayar',
                 'tagihans.sistem_bayar',
@@ -50,6 +52,7 @@ class LaporanBulananController extends Controller
         $catat->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
         if ($cetak == "cetak") {
             $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id');
+            $catat->join('wiljalans', 'pelanggans.wiljalan_id', '=', 'wiljalans.id');
         }
         // $cetak == "cetak" ? $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id') : "";
         $catat->where('pencatatans.tahun', '=', $r->tahun);

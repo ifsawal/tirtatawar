@@ -45,4 +45,13 @@ class InfoController extends Controller
             "versi" => 6,
         ], 202);
     }
+
+    public function versiadmin()
+    {
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Data ditemukan...",
+            "versi" => 1,
+        ], 202);
+    }
 }
