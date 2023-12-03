@@ -353,9 +353,8 @@ class PelangganController extends Controller
         $pelanggan->nama = $request->nama;
         $pelanggan->nik = $request->nik;
         $pelanggan->kk = $request->kk;
-        $pelanggan->golongan_id = $request->golongan_id;
-        // $pelanggan->lat = $request->lat;
-        // $pelanggan->long = $request->long;
+        // $pelanggan->golongan_id = $request->golongan_id;
+
         $pelanggan->desa_id = $request->desa_id;
         $pelanggan->rute_id = $request->rute_id;
         $pelanggan->user_id_perubahan = Auth::user()->id;
