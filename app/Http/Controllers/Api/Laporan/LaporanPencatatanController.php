@@ -54,6 +54,7 @@ class LaporanPencatatanController extends Controller
             );
         } else {
             $catat->select(
+                'pelanggans.id',
                 'pelanggans.nama',
                 'pencatatans.bulan',
                 'pencatatans.tahun',
@@ -66,6 +67,8 @@ class LaporanPencatatanController extends Controller
             );
         }
         $catat->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+
+
         $catat->join('users', 'users.id', '=', 'pencatatans.user_id');
         if ($cetak == "cetak") {
             $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id');
