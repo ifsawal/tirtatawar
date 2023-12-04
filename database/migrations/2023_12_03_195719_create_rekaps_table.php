@@ -18,13 +18,14 @@ return new class extends Migration
             $table->integer('bulan');
             $table->integer('tahun');
             $table->integer('jumlah_pel');
+            $table->integer('jumlah_pel_catat');
             $table->integer('pemakaian');
+            $table->integer('harga_air');
             $table->integer('adm');
             $table->integer('pajak');
             $table->integer('total');
-            $table->integer('harga_air');
-            $table->integer('total');
-            $table->unique('wiljalan_id', 'bulan', 'tahun');
+            $table->integer('status_update')->default(0);
+            $table->unique(['wiljalan_id', 'bulan', 'tahun']);
 
             $table->timestamps();
         });

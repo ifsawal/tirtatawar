@@ -213,6 +213,7 @@ class UserSeeder extends Seeder
 
         //pencatatan
         $pelanggan = Permission::create(['name' => 'rekap pencatatan semua user', 'guard_name' => 'web']);
+        $pelanggan = Permission::create(['name' => 'laporan rekap bulanan', 'guard_name' => 'web']);
 
 
 

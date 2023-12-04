@@ -49,7 +49,7 @@ class AuthController extends Controller
 
         $kec = Kecamatan::where('kabupaten_id', $user->pdam->kabupaten_id)->get(['id', 'kecamatan']);
         $golongan = Golongan::where('pdam_id', $user->pdam->id)->get(['id', 'golongan']);
-        $wiljalan = Wiljalan::where('pdam_id', $user->pdam->id)->get(['id', 'jalan']);
+        $wiljalan = Wiljalan::where('pdam_id', $user->pdam->id)->orderBy('jalan')->get(['id', 'jalan']);
         $rute = Rute::where('pdam_id', $user->pdam->id)->get(['id', 'rute']);
 
         $jumlah_permisi = count($col);

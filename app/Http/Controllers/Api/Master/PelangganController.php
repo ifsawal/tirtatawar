@@ -353,7 +353,9 @@ class PelangganController extends Controller
         $pelanggan->nama = $request->nama;
         $pelanggan->nik = $request->nik;
         $pelanggan->kk = $request->kk;
-        // $pelanggan->golongan_id = $request->golongan_id;
+        if ($pelanggan->golongan_id <> $request->golongan_id) {
+            // $pelanggan->golongan_id = $request->golongan_id;
+        }
 
         $pelanggan->desa_id = $request->desa_id;
         $pelanggan->rute_id = $request->rute_id;
