@@ -25,6 +25,8 @@ return new class extends Migration
             $table->integer('pajak');
             $table->integer('total');
             $table->integer('status_update')->default(0);
+            $table->unsignedBigInteger('pdam_id');
+            $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
             $table->unique(['wiljalan_id', 'bulan', 'tahun']);
 
             $table->timestamps();

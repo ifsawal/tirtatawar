@@ -83,7 +83,6 @@ class LaporanPencatatanController extends Controller
         isset($r->golongan_id) ? $catat->where('pelanggans.golongan_id', '=', $r->golongan_id) : '';
         isset($r->wiljalan_id) ? $catat->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : '';
 
-
         if ($cetak == "cetak") {
             return $catat->get();
         }
@@ -96,11 +95,8 @@ class LaporanPencatatanController extends Controller
             'bulan' => 'required',
             'tahun' => 'required',
         ]);
-
         isset($r->semuaakun) ? $user_id = '' : $user_id = Auth::user()->id;
-
         $catatan = self::filter($r, $user_id);
-
 
         if (count($catatan) == 0) {
             return response()->json([

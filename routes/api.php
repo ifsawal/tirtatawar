@@ -1,5 +1,6 @@
 <?php
 
+use App\Exports\LaporanRekapBulananExport;
 use App\Models\Master\Bank;
 use Illuminate\Http\Request;
 use App\Models\Keluhan\Keluhan;
@@ -119,10 +120,11 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/diskon', [BayarController::class, 'simpan_diskon']);
 
     Route::get('/laporanbayarbulananexport', [LaporanBulananController::class, 'laporanbayarbulananexport']);
+    Route::get('/laporanrekapbulananexport', [LaporanRekapBulananController::class, 'laporanrekapbulananexport']);
 
     Route::post('/laporanbayarbank', [LaporanBayarBankController::class, 'laporanbayarbank']);
     Route::post('/laporanbulanan', [LaporanBulananController::class, 'laporan_bulanan']);
-    Route::post('/laporanrekapbulanan', [LaporanRekapBulananController::class, 'rekap']);
+    Route::post('/laporanrekapbulanan', [LaporanRekapBulananController::class, 'ambil_rekap']);
     Route::post('/prosesrekap', [LaporanRekapBulananController::class, 'proses_rekap']);
 
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
