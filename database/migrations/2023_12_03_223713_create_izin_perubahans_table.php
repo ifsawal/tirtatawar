@@ -24,6 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id_penyetuju')->nullable();
             $table->foreign('user_id_penyetuju')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->integer('status')->default(0);
+            $table->text('ket');
             $table->unsignedBigInteger('pdam_id');
             $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();

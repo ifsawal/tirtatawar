@@ -37,6 +37,7 @@ use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
 use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
+use App\Http\Controllers\Api\Master\IzinController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
@@ -152,6 +153,8 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/jenisbayar', [PembayaranController::class, 'jenisbayar']);
     Route::post('/simpanbayar', [PembayaranController::class, 'simpanbayar']);
     Route::post('/hapusbayar', [PembayaranController::class, 'hapusbayar']);
+
+    Route::post('/dataizin', [IzinController::class, 'data_izin']);
 
 
 
