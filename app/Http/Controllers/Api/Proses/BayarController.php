@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Penagih;
+use App\Models\Master\PenagihHapus;
 use App\Models\Master\Setoran;
 use App\Models\Master\Tagihan;
 use Illuminate\Support\Facades\Auth;
@@ -275,14 +276,29 @@ class BayarController extends Controller
                 ], 404);
             }
 
-            $penagih->delete();
+            $pindah = new PenagihHapus();
+            $pindah->user_id = $penagih->user_id;
+            $pindah->jumlah = $penagih->jumlah;
+            $pindah->waktu = $penagih->waktu;
+            $pindah->tagihan_id = $penagih->tagihan_id;
+            $pindah->user_id_penghapus = $user_id;
+            $pindah->save();
 
+            $penagih->delete();  //hapus
 
             $setoran = Setoran::whereDate('tanggal', '=', date('Y-m-d', strtotime($tanggal)))
                 ->where('user_id', '=', $user_id)
                 ->first();
 
-            $setoran->jumlah = $setoran->jumlah  + $jumlah;
+            if ($setoran->diterima == 1) {
+                DB::rollback();
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Gagal membatalkan karena setoran ini sudah diserahkan dan disetujui...",
+                ], 404);
+            }
+
+            $setoran->jumlah = $setoran->jumlah - $jumlah;
             $setoran->save();
 
 
@@ -300,6 +316,7 @@ class BayarController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Gagal membatalkan...",
+                // "pesan_e" => $e,
             ], 404);
         }
     }

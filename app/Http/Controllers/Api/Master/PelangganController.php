@@ -11,6 +11,7 @@ use App\Models\Master\PhotoRumah;
 use App\Models\Master\HpPelanggan;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Master\IzinPerubahan;
 use App\Models\Master\PelangganHapus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -288,7 +289,8 @@ class PelangganController extends Controller
      */
     public function show(string $id)
     {
-        $pel = Pelanggan::find($id);
+        $cl = "App\Models\Master\Pelanggan";
+        $pel = $cl::find($id);
         if (!$pel) {
             return response()->json([
                 'sukses' => false,
@@ -354,6 +356,18 @@ class PelangganController extends Controller
         $pelanggan->nik = $request->nik;
         $pelanggan->kk = $request->kk;
         if ($pelanggan->golongan_id <> $request->golongan_id) {
+            $user_id = Auth::user()->id;
+            $izin = new IzinPerubahan();
+            $izin->tabel = "App\Models\Master\Pelanggan";
+            $izin->fild = "golongan_id";
+            $izin->id_dirubah = $pelanggan->id;
+            $izin->dasar = $pelanggan->golongan_id;
+            $izin->final = $request->golongan_id;
+            $izin->relasi = "golongans";
+            $izin->user_id = $user_id;
+            $izin->pdam_id = Auth::user()->pdam_id;
+            $izin->save();
+
             // $pelanggan->golongan_id = $request->golongan_id;
         }
 

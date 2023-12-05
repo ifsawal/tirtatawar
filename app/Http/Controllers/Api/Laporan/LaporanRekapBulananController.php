@@ -169,7 +169,10 @@ class LaporanRekapBulananController extends Controller
             ];
         }
 
-
-        return $tampung;
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Sukses, data ditemukan...",
+            "data" => $tampung,
+        ], 201);
     }
 }
