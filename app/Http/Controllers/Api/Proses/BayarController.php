@@ -262,7 +262,8 @@ class BayarController extends Controller
 
             $tagihan = Tagihan::findOrFail($r->id);
             $tagihan->status_bayar = "N";
-            $tagihan->sistem_bayar = "";
+            $tagihan->sistem_bayar = NULL;
+            $tagihan->tgl_bayar = NULL;
             $tagihan->save();
 
             $penagih = Penagih::where('tagihan_id', $tagihan->id)->first();
