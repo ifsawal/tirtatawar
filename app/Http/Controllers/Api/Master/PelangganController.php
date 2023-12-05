@@ -11,6 +11,7 @@ use App\Models\Master\PhotoRumah;
 use App\Models\Master\HpPelanggan;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Master\Golongan;
 use App\Models\Master\IzinPerubahan;
 use App\Models\Master\PelangganHapus;
 use Illuminate\Support\Facades\Auth;
@@ -356,15 +357,20 @@ class PelangganController extends Controller
         $pelanggan->nik = $request->nik;
         $pelanggan->kk = $request->kk;
         if ($pelanggan->golongan_id <> $request->golongan_id) {
-            $user_id = Auth::user()->id;
+
+            $goldasar = Golongan::find($pelanggan->golongan_id);
+            $golfinal = Golongan::find($request->golongan_id);
+
+            $user = Auth::user();
             $izin = new IzinPerubahan();
-            $izin->tabel = "App\Models\Master\Pelanggan";
+            $izin->tabel = "pelanggans";
             $izin->fild = "golongan_id";
             $izin->id_dirubah = $pelanggan->id;
             $izin->dasar = $pelanggan->golongan_id;
             $izin->final = $request->golongan_id;
             $izin->relasi = "golongans";
-            $izin->user_id = $user_id;
+            $izin->user_id = $user->id;
+            $izin->ket = "Perubahan Golongan Pelanggan<br>dari <b>" . $goldasar->golongan . "</b> ke <b>" . $golfinal->golongan . "</b><br>Oleh " . $user->nama;
             $izin->pdam_id = Auth::user()->pdam_id;
             $izin->save();
 
