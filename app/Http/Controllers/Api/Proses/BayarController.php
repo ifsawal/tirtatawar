@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api\Proses;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\Master\Pelanggan;
 use App\Models\Master\Penagih;
-use App\Models\Master\PenagihHapus;
 use App\Models\Master\Setoran;
 use App\Models\Master\Tagihan;
+use App\Models\Master\Pelanggan;
+use Illuminate\Support\Facades\DB;
+use App\Models\Master\PenagihHapus;
+use App\Http\Controllers\Controller;
+use App\Models\Master\IzinPerubahan;
 use Illuminate\Support\Facades\Auth;
 
 class BayarController extends Controller
@@ -241,14 +242,14 @@ class BayarController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $r)
+    public function destroy(Request $r)  //hapus berdasarkan no tagihna
     {
         $user_id = Auth::user()->id;
 
 
         DB::beginTransaction();
         try {
-            $tagihan = Tagihan::where('id', '=', $r->id)
+            $tagihan = Tagihan::where('id', '=', $r->id)  //id tagihan
                 ->where('status_bayar', '=', 'Y')
                 // ->where('sistem_bayar', '=', 'Cash')
                 ->first();
@@ -261,10 +262,6 @@ class BayarController extends Controller
             }
 
             $tagihan = Tagihan::findOrFail($r->id);
-            $tagihan->status_bayar = "N";
-            $tagihan->sistem_bayar = NULL;
-            $tagihan->tgl_bayar = NULL;
-            $tagihan->save();
 
             $penagih = Penagih::where('tagihan_id', $tagihan->id)->first();
             $jumlah = $penagih->jumlah;
@@ -277,11 +274,63 @@ class BayarController extends Controller
                 ], 404);
             }
 
+
+            if ($penagih->user_id_izinhapus == NULL) {
+
+                $data = Tagihan::with('pencatatan', 'pencatatan.pelanggan')
+                    ->where('id', $tagihan->id)
+                    ->first();
+
+
+                // $user = Auth::user();
+                $cek_izin = IzinPerubahan::where('id_dirubah', $penagih->id)
+                    ->where('status', 0)
+                    ->first();
+                if ($cek_izin) {
+                    return response()->json([
+                        "sukses" => false,
+                        "pesan" => "Izin pembatalan sebelumnya belum disetujui...",
+                    ], 404);
+                }
+
+                $izin = new IzinPerubahan();
+                $izin->tabel = "penagihs";
+                $izin->fild = "user_id_izinhapus";
+                $izin->id_dirubah = $penagih->id;
+                $izin->dasar = "";
+                $izin->final = 1;
+                $izin->user_id = $user_id;
+                $izin->ket = "<font color=red>Pembatalan Pembayaran </font><br>Nopel " . $data->pencatatan->pelanggan->id .
+                    " - " . $data->pencatatan->pelanggan->nama . "<br>" .
+                    " Sejumlah Rp.  " . $data->total . "- periode " . $data->pencatatan->bulan . "-" . $data->pencatatan->tahun . "<br>"
+                    . "<br>Oleh " . Auth::user()->nama;
+                $izin->pdam_id = Auth::user()->pdam_id;
+                $izin->save();
+
+                DB::commit();
+                // DB::rollback();
+                return response()->json([
+                    "sukses" => true,
+                    "pesan" => "Pembatalan menunggu izin...",
+                ], 202);
+            }
+
+
+
+            $tagihan->status_bayar = "N";
+            $tagihan->sistem_bayar = NULL;
+            $tagihan->tgl_bayar = NULL;
+            $tagihan->save();
+
+
+
+
             $pindah = new PenagihHapus();
             $pindah->user_id = $penagih->user_id;
             $pindah->jumlah = $penagih->jumlah;
             $pindah->waktu = $penagih->waktu;
             $pindah->tagihan_id = $penagih->tagihan_id;
+            $pindah->user_id_izinhapus = $penagih->user_id_izinhapus;
             $pindah->user_id_penghapus = $user_id;
             $pindah->save();
 
@@ -317,7 +366,7 @@ class BayarController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Gagal membatalkan...",
-                // "pesan_e" => $e,
+                "pesan_e" => $e,
             ], 404);
         }
     }

@@ -19,6 +19,9 @@ return new class extends Migration
             $table->dateTime("waktu");
             $table->unsignedBigInteger('tagihan_id');
             $table->foreign('tagihan_id')->references('id')->on('tagihans')->onDelete('restrict')->onUpdate('cascade');
+            $table->unsignedBigInteger('user_id_izinhapus')->nullable();
+            $table->foreign('user_id_izin_hapus')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+
 
 
             $table->timestamps();

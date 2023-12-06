@@ -21,6 +21,8 @@ return new class extends Migration
             $table->foreign('tagihan_id')->references('id')->on('tagihans')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id_penghapus');
             $table->foreign('user_id_penghapus')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->unsignedBigInteger('user_id_izinhapus');
+            $table->foreign('user_id_izinhapus')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();
         });
     }
