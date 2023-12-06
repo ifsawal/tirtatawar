@@ -10,6 +10,36 @@ use Illuminate\Support\Facades\Auth;
 
 class IzinController extends Controller
 {
+    public function histori_izin()
+    {
+        $data = IzinPerubahan::with('user_penyetuju:id,nama')
+            ->where('status', 1)
+            ->select([
+                "id",
+                "ket",
+                "created_at",
+                "user_id_penyetuju",
+            ])
+            ->orderBy('created_at', "DESC")
+            ->limit(70)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    "id" => $item->id,
+                    "ket" => $item->ket,
+                    "tanggal" => date('d-m-Y H:i:s', strtotime($item->created_at)),
+                    "disetujui" => $item->user_penyetuju->nama,
+                ];
+            });
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Perubahan berhasil...",
+            'data' => $data,
+        ], 202);
+    }
+
+
     public function data_izin()
     {
         $data = IzinPerubahan::where('status', 0)
@@ -38,7 +68,13 @@ class IzinController extends Controller
 
     public function hapus_izin(Request $r)
     {
-        $data = IzinPerubahan::findOrFail($r->id);
+        $data = IzinPerubahan::find($r->id);
+        if ($data && $data->status == 1) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Gagal...Data sudah disetujui terlebih dahulu..",
+            ], 404);
+        }
         $data->delete();
         return response()->json([
             'sukses' => true,

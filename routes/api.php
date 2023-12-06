@@ -154,6 +154,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/simpanbayar', [PembayaranController::class, 'simpanbayar']);
     Route::post('/hapusbayar', [PembayaranController::class, 'hapusbayar']);
 
+    Route::post('/historiizin', [IzinController::class, 'histori_izin']);
     Route::post('/dataizin', [IzinController::class, 'data_izin']);
     Route::post('/izindisetujui', [IzinController::class, 'izin_di_setujui']);
     Route::post('/hapusizin', [IzinController::class, 'hapus_izin']);
