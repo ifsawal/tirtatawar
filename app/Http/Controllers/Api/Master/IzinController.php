@@ -12,7 +12,22 @@ class IzinController extends Controller
 {
     public function data_izin()
     {
-        $data = IzinPerubahan::where('status', 0)->get(['id', 'ket']);
+        $data = IzinPerubahan::where('status', 0)
+            ->select([
+                "id",
+                "ket",
+                "created_at"
+            ])
+            ->orderBy('created_at', "DESC")
+            ->get()
+            ->map(function ($item) {
+                return [
+                    "id" => $item->id,
+                    "ket" => $item->ket,
+                    "tanggal" => date('d-m-Y H:i:s', strtotime($item->created_at)),
+                ];
+            });
+
         return response()->json([
             'sukses' => true,
             'pesan' => "Perubahan berhasil...",

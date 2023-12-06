@@ -370,7 +370,7 @@ class PelangganController extends Controller
             $izin->final = $request->golongan_id;
             $izin->relasi = "golongans";
             $izin->user_id = $user->id;
-            $izin->ket = "Perubahan Golongan Pelanggan<br>dari <b>" . $goldasar->golongan . "</b> ke <b>" . $golfinal->golongan . "</b><br>Oleh " . $user->nama;
+            $izin->ket = "Perubahan Golongan Pelanggan <br>Nopel " . $pelanggan->id . "- An. " . $pelanggan->nama . "<br>dari <b>" . $goldasar->golongan . "</b> ke <b>" . $golfinal->golongan . "</b><br>Oleh " . $user->nama;
             $izin->pdam_id = Auth::user()->pdam_id;
             $izin->save();
 
