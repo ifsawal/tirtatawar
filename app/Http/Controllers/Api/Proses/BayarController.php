@@ -266,6 +266,17 @@ class BayarController extends Controller
             $penagih = Penagih::where('tagihan_id', $tagihan->id)->first();
             $jumlah = $penagih->jumlah;
             $tanggal = $penagih->waktu;
+
+
+
+            if ($penagih->user_id <> $user_id) {
+                DB::rollback();
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Anda tidak berhak membatalkan pembayaran ini...",
+                ], 202);
+            }
+
             if (date('Y-m-d', strtotime($tanggal)) <> date('Y-m-d')) {
                 DB::rollback();
                 return response()->json([
