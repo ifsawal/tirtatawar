@@ -51,13 +51,17 @@ class LaporanBulananController extends Controller
             );
         }
 
+
+
         $catat->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
         $catat->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+
+
         if ($cetak == "cetak") {
             $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id');
             $catat->join('wiljalans', 'pelanggans.wiljalan_id', '=', 'wiljalans.id');
         }
-        // $cetak == "cetak" ? $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id') : "";
+
         $catat->where('pencatatans.tahun', '=', $r->tahun);
         $catat->where('pencatatans.bulan', '=', $r->bulan);
 
