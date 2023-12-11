@@ -86,9 +86,26 @@ class LaporanBayarController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function rekap_setoran(Request $r)
     {
-        //
+        $tanggal = now();
+        isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
+        $setoran = Setoran::with('user:id,nama', 'user_diserahkan:id,nama')
+            ->whereDate('tanggal', $tanggal)
+            ->limit(100)->orderBy('id', "DESC")->get();
+
+        if (count($setoran) == 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Setoran tidak ditemukan...",
+            ], 404);
+        }
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Ditemukan...",
+            'setoran' => $setoran,
+        ], 202);
     }
 
     /**
