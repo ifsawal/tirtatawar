@@ -101,10 +101,17 @@ class LaporanBayarController extends Controller
             ], 404);
         }
 
+        $total = 0;
+        foreach ($setoran as $d) {
+            $total = $total + $d->jumlah;
+        }
+
+
         return response()->json([
             "sukses" => true,
             "pesan" => "Ditemukan...",
             'setoran' => $setoran,
+            'total' => $total,
         ], 202);
     }
 

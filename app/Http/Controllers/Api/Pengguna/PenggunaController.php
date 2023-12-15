@@ -162,14 +162,19 @@ class PenggunaController extends Controller
         }
     }
 
-    public function datauser()
+    public function datauser(Request $r)
     {
         $user_id = Auth::user()->id;
         $user = User::where('id', $user_id)->first();
 
+        $kata = 2;
+        isset($r->status) ? $kata = $r->status : "";
 
         $pengguna = User::with('roles:id,name')
             ->where('pdam_id', $user->pdam_id)->withTrashed()
+            ->whereHas('roles', function ($q) use ($kata) {
+                $q->where('id', '=', $kata);
+            })
             ->get();
         $role = Role::all();
 
