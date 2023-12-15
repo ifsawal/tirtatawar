@@ -155,7 +155,7 @@ class BayarController extends Controller
     public function cetak_ulang(Request $r)
     {
         $this->validate($r, [
-            'id' => 'required',
+            'id' => 'required',  //id tagihan
             'pelanggan_id' => 'required',
         ]);
         $user_id = Auth::user()->id;
@@ -202,7 +202,7 @@ class BayarController extends Controller
                 "pelanggan" => $pelangan,
                 "datatagihan" => $tagihan,
                 "penagih" =>  $userpenagih,
-                "tanggal" =>  date('d-m-Y'),
+                "tanggal" =>  date($userpenagih->waktu),
                 "nohp" =>  "082223550421",
                 "link" =>  "https://www.tirtatawar.com/playstore",
             ], 201);
