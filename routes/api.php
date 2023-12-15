@@ -35,6 +35,7 @@ use App\Http\Controllers\Api\Laporan\LaporanBulananController;
 use App\Http\Controllers\Api\Pelanggan\MobTagihan10Controller;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
+use App\Http\Controllers\Api\Laporan\LaporanPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
 use App\Http\Controllers\Api\Master\IzinController;
@@ -120,9 +121,11 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/cetak_penagihan', [BayarController::class, 'cetak_ulang']);
     Route::post('/diskon', [BayarController::class, 'simpan_diskon']);
 
+    Route::get('/laporanpelangganexport', [LaporanPelangganController::class, 'laporanpelangganexport']);
     Route::get('/laporanbayarbulananexport', [LaporanBulananController::class, 'laporanbayarbulananexport']);
     Route::get('/laporanrekapbulananexport', [LaporanRekapBulananController::class, 'laporanrekapbulananexport']);
 
+    Route::post('/laporanpelanggan', [LaporanPelangganController::class, 'laporan_pelanggan']);
     Route::post('/laporanbayarbank', [LaporanBayarBankController::class, 'laporanbayarbank']);
     Route::post('/laporanbulanan', [LaporanBulananController::class, 'laporan_bulanan']);
     Route::post('/laporanrekapbulanan', [LaporanRekapBulananController::class, 'ambil_rekap']);
