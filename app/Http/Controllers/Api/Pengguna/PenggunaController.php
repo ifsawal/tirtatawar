@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PenggunaController extends Controller
 {
@@ -58,7 +59,10 @@ class PenggunaController extends Controller
             ], 202);
         }
 
-        $user->revokePermissionTo('pencatatan manual');
+        $user->revokePermissionTo('pencatatan manual'); //hapus izin dari pengguna
+        DB::table('personal_access_tokens')
+            ->where('tokenable_id', $user->id)
+            ->delete();
 
         return response()->json([
             'sukses' => true,
