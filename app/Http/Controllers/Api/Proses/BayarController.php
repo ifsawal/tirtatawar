@@ -202,7 +202,7 @@ class BayarController extends Controller
                 "pelanggan" => $pelangan,
                 "datatagihan" => $tagihan,
                 "penagih" =>  $userpenagih,
-                "tanggal" =>  date($userpenagih->waktu),
+                "tanggal" =>  date('d-m-Y', strtotime($userpenagih->waktu)),
                 "nohp" =>  "082223550421",
                 "link" =>  "https://www.tirtatawar.com/playstore",
             ], 201);
