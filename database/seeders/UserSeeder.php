@@ -231,6 +231,7 @@ class UserSeeder extends Seeder
 
 
         $role_admin = Role::create(['name' => 'admin', 'guard_name' => 'web']);
+        $role_admin = Role::create(['name' => 'lapangan', 'guard_name' => 'web']);
 
         $role_admin->givePermissionTo($permission);
         $permission->assignRole($role_admin);

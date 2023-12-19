@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer("pajak")->default(0);
             $table->dateTime("tgl_awal");
             $table->dateTime("tgl_akhir")->nullable();
+            $table->string('alasan')->nullable();
+            $table->string('ket')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id_perubahan')->nullable();

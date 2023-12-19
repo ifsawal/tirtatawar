@@ -44,6 +44,10 @@ return [
             'driver' => 'session',
             'provider' => 'pelanggan',
         ],
+        'client' => [
+            'driver' => 'session',
+            'provider' => 'client',
+        ],
     ],
 
     /*
@@ -72,6 +76,11 @@ return [
         'pelanggan' => [
             'driver' => 'eloquent',
             'model' => App\Models\Master\Pelanggan::class,
+        ],
+
+        'client' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Master\Client::class,
         ],
 
         // 'users' => [

@@ -28,14 +28,19 @@ class PencatatanController extends Controller
 
         $user_id = Auth::user()->id;
         $user = User::findOrFail($user_id);
-        $user->hasDirectPermission('pencatatan manual') ? $akses = 1 : $akses = 0;;
+        $user->hasDirectPermission('pencatatan manual') ? $akses = 1 : $akses = 0;
 
-        $pelanggan = Pelanggan::where('id', '=', $request->pelanggan_id)->first('nama');
+        $pelanggan = Pelanggan::where('id', '=', $request->pelanggan_id)->first(['nama', 'penetapan']);
         if (!$pelanggan) {
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Pelanggan tidak ditemukan...",
             ], 404);
+        }
+
+        $penetapan = "";
+        if ($pelanggan->penetapan == "1") {
+            $penetapan = GolPenetapan::where('pelanggan_id', $request->pelanggan_id)->where('aktif', 'Y')->first();
         }
 
         $pencatatan = Pencatatan::with('user:id,nama', 'user_perubahan:id,nama')
@@ -58,6 +63,7 @@ class PencatatanController extends Controller
             "sukses" => true,
             "pesan" => "Data ditemukan...",
             "pelanggan" => $pelanggan->nama,
+            "penetapan" => $penetapan,
             "data" => $pencatatan,
             "manual" => $akses,
         ], 200);

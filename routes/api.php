@@ -1,6 +1,7 @@
 <?php
 
 use App\Exports\LaporanRekapBulananExport;
+use App\Http\Controllers\Api\Auth\AuthClientController;
 use App\Models\Master\Bank;
 use Illuminate\Http\Request;
 use App\Models\Keluhan\Keluhan;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Api\Master\TagihanController;
 use App\Http\Controllers\Api\Proses\KeluhanController;
 use App\Http\Controllers\Api\Proses\WebhookController;
 use App\Http\Controllers\Api\Auth\AuthMobileController;
+use App\Http\Controllers\Api\Bank\BSI\BsiController;
 use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Master\PelangganController;
 use App\Http\Controllers\Api\Master\PembayaranController;
@@ -202,3 +204,19 @@ Route::post('/buattagihan10', [MobTagihan10Controller::class, 'buattagihan10']);
 
 //untuk flip
 Route::post('/callbacktirtatawar', [WebhookController::class, 'callback']);
+
+
+
+
+
+Route::prefix('v1')->group(function () {
+    Route::post('/login', [AuthClientController::class, 'login']);
+    Route::post('/daftarclient', [AuthClientController::class, 'daftarclient']);
+
+    Route::group(['middleware' => ['auth:sanctum', 'abilities:client']], function () {
+    });
+
+    Route::get('/bsi/inquiry', [BsiController::class, 'inquiry']);
+    Route::get('/bsi/payment', [BsiController::class, 'payment']);
+    Route::get('/bsi/reversal', [BsiController::class, 'reversal']);
+});
