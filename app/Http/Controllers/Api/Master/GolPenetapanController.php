@@ -218,7 +218,7 @@ class GolPenetapanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function data_izin_penetapan()
+    public function data_izin_penetapan()  //DAFTAR IZIN MENUNGGU PERSETUJUAN SUPER ADMIN
     {
         $rekap = IzinPenetapan::query();
         $rekap->select(
@@ -238,10 +238,15 @@ class GolPenetapanController extends Controller
         $rekap->join('users', 'users.id', '=', 'izin_penetapans.user_id');
         $rekap->where('izin_penetapans.status', '=', '0');
 
-
+        if (count($rekap->get()) == 0) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Data tidak ditemukan...",
+            ], 404);
+        }
         return response()->json([
             'sukses' => true,
-            'pesan' => "Perubahan berhasil...",
+            'pesan' => "Data ditemukan...",
             'data' => $rekap->get(),
         ], 202);
     }

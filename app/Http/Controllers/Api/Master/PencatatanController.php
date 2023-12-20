@@ -334,7 +334,6 @@ class PencatatanController extends Controller
 
 
         $this->validate($request, [
-            'akhir' => 'required|integer',
             'photo' => 'required',
             'pelanggan_id' => 'required',
         ]);
@@ -351,16 +350,25 @@ class PencatatanController extends Controller
         $sebelumnya = Pencatatan::where('pelanggan_id', '=', $request->pelanggan_id)
             ->orderBy('tahun', 'desc')
             ->orderBy('bulan', 'desc')
-            ->first('akhir', 'created_at');
+            ->first(['akhir', 'created_at', 'awal']);
+
 
         //jika input pertama kali
         if (!$sebelumnya) {
+            if (isset($request->sama_dengam_bulan_lalu)) {  //JIKA AKHIR METERAN TIDAK DI ISI
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Meteran akhir belum diisi...",
+                    "kode" => 0,
+                ], 404);
+            }
+
             if (isset($request->awal)) {
                 $meteranSebelumnya = $request->awal;
             } else {
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Meteran awal tidak ditemukan",
+                    "pesan" => "Meteran awal belum diisi",
                     "kode" => 0,
                 ], 404);
             }
@@ -368,28 +376,40 @@ class PencatatanController extends Controller
             $meteranSebelumnya = $sebelumnya->akhir;
         }
 
+        if (isset($request->tanggal)) $waktu = Carbon::create($request->tanggal);
+        else $waktu = Carbon::now();
+        $bulan = $waktu->month;
+        $tahun = $waktu->year;
+
+        $cek = Pencatatan::with('tagihan:id,status_bayar,pencatatan_id') //PASTIKAN APAKAH UPDATE ATAU DAFTAR BARU
+            ->where('pelanggan_id', '=', $request->pelanggan_id)
+            ->where('bulan', '=', $bulan)
+            ->where('tahun', '=', $tahun)
+            ->first();
+
+
+        if (isset($request->sama_dengam_bulan_lalu)) {  //JIKA SAMA DENGAN BULAN LALU ANGKA METERAN
+            if ($cek) {
+                $request->akhir = $sebelumnya->awal;
+            } else {
+                $request->akhir = $sebelumnya->akhir;
+            }
+        } else {
+            $this->validate($request, [
+                'akhir' => 'required|integer',
+            ]);
+        }
+
+
 
         $pemakaian = $this->hitung($meteranSebelumnya, $request->akhir);
 
-
-        if (isset($request->tanggal)) $waktu = Carbon::create($request->tanggal);
-        else $waktu = Carbon::now();
-
-        $bulan = $waktu->month;
-        $tahun = $waktu->year;
         $nama_gambar = config('external.nama_gambar');
         $file = md5($nama_gambar . $bulan . $tahun . $request->pelanggan_id) . ".jpg";
 
         if (!File::isDirectory(public_path() . '/files2/pencatatan/' . $tahun . '/' . $bulan)) {
             File::makeDirectory(public_path() . '/files2/pencatatan/' . $tahun . '/' . $bulan, 0777, true, true);
         }
-
-        $cek = Pencatatan::with('tagihan:id,status_bayar,pencatatan_id')
-            ->where('pelanggan_id', '=', $request->pelanggan_id)
-            ->where('bulan', '=', $bulan)
-            ->where('tahun', '=', $tahun)
-            ->first();
-
 
 
         //update
@@ -433,7 +453,7 @@ class PencatatanController extends Controller
 
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Gagal merubah data...",
+                    "pesan" => "Gagal merubah data... $e",
                 ], 404);
             }
             exit;
