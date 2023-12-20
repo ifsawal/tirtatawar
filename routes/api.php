@@ -105,6 +105,10 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/penetapan', [GolPenetapanController::class, 'store']);
     Route::post('/cekpenetapan', [GolPenetapanController::class, 'index']);
     Route::post('/nonaktifpenetapan', [GolPenetapanController::class, 'destroy']);
+    Route::post('/penetapanizin', [GolPenetapanController::class, 'simpan_penetapan_dari_catatan']);
+    Route::post('/dataizinpenetapan', [GolPenetapanController::class, 'data_izin_penetapan']);
+    Route::post('/setujuipenetapan', [GolPenetapanController::class, 'setujuipenetapan']);
+    Route::post('/hapusizinpenetapan', [GolPenetapanController::class, 'hapus_izin_penetapan']);
 
     Route::post('/setujui', [PelangganController::class, 'setujui']);
     Route::resource('/pelanggan', PelangganController::class);

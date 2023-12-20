@@ -7,6 +7,7 @@ use App\Models\Master\Pelanggan;
 use Illuminate\Support\Facades\DB;
 use App\Models\Master\GolPenetapan;
 use App\Http\Controllers\Controller;
+use App\Models\Master\IzinPenetapan;
 use Illuminate\Support\Facades\Auth;
 
 class GolPenetapanController extends Controller
@@ -52,21 +53,22 @@ class GolPenetapanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+
+    public function simpan_inti($id, $harga, $pajak, $alasan, $ket)
     {
-        $this->validate($request, [
-            'id' => 'required',
-            'harga' => 'required',
-            'pajak' => 'required',
-        ]);
         $user_id = Auth::user()->id;
 
+        $pelanggan = Pelanggan::where('id', $id)->first();
+        if (!$pelanggan) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pelanggan tidak ditemukan..."
+            ], 404);
+        }
 
-        $sebelumnya = GolPenetapan::where('pelanggan_id', '=', $request->id)
+        $sebelumnya = GolPenetapan::where('pelanggan_id', '=', $id)
             ->where('aktif', '=', 'Y')
             ->first();
-
-
 
         if ($sebelumnya) {
 
@@ -78,15 +80,17 @@ class GolPenetapanController extends Controller
                 $sebelumnya->save();
 
                 $penetapan = new GolPenetapan();
-                $penetapan->pelanggan_id = $request->id;
-                $penetapan->harga = $request->harga;
-                $penetapan->pajak = $request->pajak;
+                $penetapan->pelanggan_id = $id;
+                $penetapan->harga = $harga;
+                $penetapan->pajak = $pajak;
                 $penetapan->aktif = "Y";
                 $penetapan->tgl_awal = now();
+                $penetapan->alasan = $alasan;
+                $penetapan->ket = $ket;
                 $penetapan->user_id = $user_id;
                 $penetapan->save();
 
-                $pel = Pelanggan::findOrFail($request->id);
+                $pel = Pelanggan::findOrFail($id);
                 $pel->penetapan = 1;
                 $pel->save();
 
@@ -109,23 +113,98 @@ class GolPenetapanController extends Controller
         DB::beginTransaction();
         try {
             $penetapan = new GolPenetapan();
-            $penetapan->pelanggan_id = $request->id;
-            $penetapan->harga = $request->harga;
-            $penetapan->pajak = $request->pajak;
+            $penetapan->pelanggan_id = $id;
+            $penetapan->harga = $harga;
+            $penetapan->pajak = $pajak;
             $penetapan->aktif = "Y";
-            $penetapan->harga = $request->harga;
             $penetapan->tgl_awal = now();
+            $penetapan->alasan = $alasan;
+            $penetapan->ket = $ket;
             $penetapan->user_id = $user_id;
             $penetapan->save();
 
-            $pel = Pelanggan::findOrFail($request->id);
+            $pel = Pelanggan::findOrFail($id);
             $pel->penetapan = 1;
             $pel->save();
 
             DB::commit();
             return response()->json([
                 'sukses' => true,
-                'pesan' => "Penambahan harga tetap berhasil...",
+                'pesan' => "Penetapan harga tetap berhasil...",
+            ], 202);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Erorr..."
+            ], 404);
+        }
+    }
+
+    public function store(Request $r) //penetapan dari menu pelanggan
+    {
+        $this->validate($r, [
+            'id' => 'required',
+            'harga' => 'required',
+            'pajak' => 'required',
+            'alasan' => 'required',
+
+        ]);
+
+        return $this->simpan_inti($r->id, $r->harga, $r->pajak, $r->alasan, $r->ket);
+    }
+
+
+
+    public function simpan_penetapan_dari_catatan(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required',
+            'harga' => 'required',
+            'pajak' => 'required',
+            'alasan' => 'required',
+
+        ]);
+        $user = Auth::user();
+
+        $pelanggan = Pelanggan::where('id', $request->id)->first();
+        if (!$pelanggan) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pelanggan tidak ditemukan..."
+            ], 404);
+        }
+
+        $sebelumnya = IzinPenetapan::where('pelanggan_id', '=', $request->id)
+            ->where('status', '=', 0)
+            ->first();
+        if ($sebelumnya) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Izin sebelumnya belum disetujui..."
+            ], 404);
+        }
+
+
+        DB::beginTransaction();
+        try {
+            $penetapan = new IzinPenetapan();
+            $penetapan->pelanggan_id = $request->id;
+            $penetapan->harga = $request->harga;
+            $penetapan->pajak = $request->pajak;
+            $penetapan->aktif = "Y";
+            $penetapan->harga = $request->harga;
+            $penetapan->tgl_awal = now();
+            $penetapan->alasan = $request->alasan;
+            $penetapan->ket = $request->ket;
+            $penetapan->user_id = $user->id;
+            $penetapan->pdam_id = $user->pdam_id;
+            $penetapan->save();
+
+            DB::commit();
+            return response()->json([
+                'sukses' => true,
+                'pesan' => "Permintaan izin penetapan harga tetap berhasil...",
             ], 202);
         } catch (\Exception $e) {
             DB::rollback();
@@ -139,25 +218,85 @@ class GolPenetapanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function data_izin_penetapan()
     {
-        //
+        $rekap = IzinPenetapan::query();
+        $rekap->select(
+            'izin_penetapans.id',
+            'izin_penetapans.harga',
+            'izin_penetapans.pajak',
+            'izin_penetapans.tgl_awal',
+            'izin_penetapans.alasan',
+            'izin_penetapans.ket',
+            'pelanggans.id as pel_id',
+            'pelanggans.nama',
+            'users.id as user_id',
+            'users.nama as user',
+
+        );
+        $rekap->join('pelanggans', 'pelanggans.id', '=', 'izin_penetapans.pelanggan_id');
+        $rekap->join('users', 'users.id', '=', 'izin_penetapans.user_id');
+        $rekap->where('izin_penetapans.status', '=', '0');
+
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Perubahan berhasil...",
+            'data' => $rekap->get(),
+        ], 202);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function setujuipenetapan(Request $r)
     {
-        //
+        $this->validate($r, [
+            'id' => 'required',  //ID IZIN PENETAPAN
+        ]);
+
+        $data = IzinPenetapan::where('id', $r->id)
+            ->where('status', '0')
+            ->first();
+
+        if (!$data) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Data ini sudah diproses..."
+            ], 404);
+        }
+
+        $data->status = 1;
+        $data->user_id_penyetuju = Auth::user()->id;
+        $data->save();
+        return $this->simpan_inti($data->pelanggan_id, $data->harga, $data->pajak, $data->alasan, $data->ket);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function hapus_izin_penetapan(Request $r)
     {
-        //
+        $this->validate($r, [
+            'id' => 'required',  //ID IZIN PENETAPAN
+        ]);
+
+        $data = IzinPenetapan::where('id', $r->id)
+            ->where('status', '0')
+            ->first();
+        if (!$data) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Data tidak ditemukan"
+            ], 404);
+        }
+
+
+        $data->delete();
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Sukses ditolak..."
+        ], 204);
     }
 
     /**
