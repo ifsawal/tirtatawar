@@ -233,7 +233,7 @@ class PencatatanController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Sepertinya input meteran terbalik...",
-                "kode" => 2,
+                "kode" => 0,
             ], 404);
         }
 
@@ -245,7 +245,7 @@ class PencatatanController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Meteran bulan depan tidak dapat di isi...",
-                "kode" => 2,
+                "kode" => 0,
             ], 404);
         }
 
@@ -253,7 +253,7 @@ class PencatatanController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
-                "kode" => 2,
+                "kode" => 0,
             ], 404);
         }
 
@@ -376,7 +376,6 @@ class PencatatanController extends Controller
                 return response()->json([
                     "sukses" => false,
                     "pesan" => "Meteran akhir belum diisi...",
-                    "kode" => 0,
                 ], 404);
             }
 
@@ -441,7 +440,6 @@ class PencatatanController extends Controller
                 return response()->json([
                     "sukses" => false,
                     "pesan" => "Sepertinya input meteran terbalik...",
-                    "kode" => 2,
                 ], 404);
             }
 
@@ -487,7 +485,6 @@ class PencatatanController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Sepertinya input meteran terbalik...",
-                "kode" => 2,
             ], 404);
         }
 
