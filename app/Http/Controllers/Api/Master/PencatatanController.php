@@ -441,8 +441,17 @@ class PencatatanController extends Controller
                 return response()->json([
                     "sukses" => false,
                     "pesan" => "Sepertinya input meteran terbalik...",
-                    "kode" => 2,
+                    "kode" => 1,
                 ], 404);
+            } else if ($this->hitung($cek->awal, $request->akhir) > 300)  //JIKA  TERLALU BESAR PEMAKAIAN
+            {
+                if (!isset($request->pemakaian_besar)) {
+                    return response()->json([
+                        "sukses" => false,
+                        "pesan" => "Pemakaian diatas 300m3, Contreng jika yakin...",
+                        "kode" => 4,  //harus conteng pemakaian besar
+                    ], 404);
+                }
             }
 
 
@@ -489,6 +498,15 @@ class PencatatanController extends Controller
                 "pesan" => "Sepertinya input meteran terbalik...",
                 "kode" => 2,
             ], 404);
+        } else if ($pemakaian > 300)  //JIKA  TERLALU BESAR PEMAKAIAN
+        {
+            if (!isset($request->pemakaian_besar)) {
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Pemakaian diatas 300m3, Contreng jika yakin...",
+                    "kode" => 4, //harus conteng pemakaian besar
+                ], 404);
+            }
         }
 
         //baru 
