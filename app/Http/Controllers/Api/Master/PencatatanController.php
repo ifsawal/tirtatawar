@@ -126,7 +126,7 @@ class PencatatanController extends Controller
         //jika minus
         if ($pemakaian < 0) {
             $panjang = strlen($awal);
-            if ($panjang == 3) {  //JIKA HASIL DIIBAWAH 3 DIGIT
+            if ($panjang <= 3) {  //JIKA HASIL DIIBAWAH 3 DIGIT
                 return -1;
             }
 
