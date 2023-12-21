@@ -235,6 +235,15 @@ class PencatatanController extends Controller
                 "pesan" => "Sepertinya input meteran terbalik...",
                 "kode" => 2,
             ], 404);
+        } else if ($pemakaian > 300)  //JIKA  TERLALU BESAR PEMAKAIAN
+        {
+            if (!isset($r->pemakaian_besar)) {
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Pemakaian diatas 300m3, Contreng persetujuan...",
+                    "kode" => 4, //harus conteng pemakaian besar
+                ], 404);
+            }
         }
 
         $input = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->format("Y-m");
@@ -375,7 +384,7 @@ class PencatatanController extends Controller
             if (isset($request->sama_dengam_bulan_lalu)) {  //JIKA AKHIR METERAN TIDAK DI ISI
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Tidak sebelumnya ada meteran...",
+                    "pesan" => "sebelumnya tidak ada meteran...",
                     "kode" => 0,
                 ], 404);
             }
@@ -448,7 +457,7 @@ class PencatatanController extends Controller
                 if (!isset($request->pemakaian_besar)) {
                     return response()->json([
                         "sukses" => false,
-                        "pesan" => "Pemakaian diatas 300m3, Contreng jika yakin...",
+                        "pesan" => "Pemakaian diatas 300m3, Contreng persetujuan...",
                         "kode" => 4,  //harus conteng pemakaian besar
                     ], 404);
                 }
@@ -503,7 +512,7 @@ class PencatatanController extends Controller
             if (!isset($request->pemakaian_besar)) {
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Pemakaian diatas 300m3, Contreng jika yakin...",
+                    "pesan" => "Pemakaian diatas 300m3, Contreng persetujuan...",
                     "kode" => 4, //harus conteng pemakaian besar
                 ], 404);
             }
