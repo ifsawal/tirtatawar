@@ -415,11 +415,6 @@ class PencatatanController extends Controller
             $this->validate($request, [
                 'akhir' => 'required|integer',
             ]);
-            if ($cek) {
-                $request->akhir = $sebelumnya->awal;
-            } else {
-                $request->akhir = $request->akhir;
-            }
         }
 
 
