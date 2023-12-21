@@ -235,12 +235,12 @@ class PencatatanController extends Controller
                 "pesan" => "Sepertinya input meteran terbalik...",
                 "kode" => 2,
             ], 404);
-        } else if ($pemakaian > 300)  //JIKA  TERLALU BESAR PEMAKAIAN
+        } else if ($pemakaian > 50)  //JIKA  TERLALU BESAR PEMAKAIAN
         {
             if (!isset($r->pemakaian_besar)) {
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Pemakaian diatas 300m3, Contreng persetujuan...",
+                    "pesan" => "Pemakaian diatas 50 m3, Contreng persetujuan...",
                     "kode" => 4, //harus conteng pemakaian besar
                 ], 404);
             }
@@ -452,12 +452,12 @@ class PencatatanController extends Controller
                     "pesan" => "Sepertinya input meteran terbalik...",
                     "kode" => 1,
                 ], 404);
-            } else if ($this->hitung($cek->awal, $request->akhir) > 300)  //JIKA  TERLALU BESAR PEMAKAIAN
+            } else if ($this->hitung($cek->awal, $request->akhir) > 50)  //JIKA  TERLALU BESAR PEMAKAIAN
             {
                 if (!isset($request->pemakaian_besar)) {
                     return response()->json([
                         "sukses" => false,
-                        "pesan" => "Pemakaian diatas 300m3, Contreng persetujuan...",
+                        "pesan" => "Pemakaian diatas 50 m3, Contreng persetujuan...",
                         "kode" => 4,  //harus conteng pemakaian besar
                     ], 404);
                 }
@@ -507,12 +507,12 @@ class PencatatanController extends Controller
                 "pesan" => "Sepertinya input meteran terbalik...",
                 "kode" => 2,
             ], 404);
-        } else if ($pemakaian > 300)  //JIKA  TERLALU BESAR PEMAKAIAN
+        } else if ($pemakaian > 50)  //JIKA  TERLALU BESAR PEMAKAIAN
         {
             if (!isset($request->pemakaian_besar)) {
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Pemakaian diatas 300m3, Contreng persetujuan...",
+                    "pesan" => "Pemakaian diatas 50 m3, Contreng persetujuan...",
                     "kode" => 4, //harus conteng pemakaian besar
                 ], 404);
             }
