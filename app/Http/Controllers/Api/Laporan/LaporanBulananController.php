@@ -30,6 +30,7 @@ class LaporanBulananController extends Controller
                 'wiljalans.jalan',
                 'pencatatans.bulan',
                 'pencatatans.tahun',
+                'pencatatans.pemakaian',
                 'tagihans.jumlah',
                 'tagihans.biaya',
                 'tagihans.pajak',
@@ -37,6 +38,7 @@ class LaporanBulananController extends Controller
                 'tagihans.status_bayar',
                 'tagihans.sistem_bayar',
                 'tagihans.tgl_bayar',
+
             );
         } else {
             $catat->select(
