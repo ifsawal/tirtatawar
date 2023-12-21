@@ -375,7 +375,7 @@ class PencatatanController extends Controller
             if (isset($request->sama_dengam_bulan_lalu)) {  //JIKA AKHIR METERAN TIDAK DI ISI
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Meteran akhir belum diisi...",
+                    "pesan" => "Tidak sebelumnya ada meteran...",
                     "kode" => 0,
                 ], 404);
             }
