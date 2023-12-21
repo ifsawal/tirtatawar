@@ -240,7 +240,7 @@ class PencatatanController extends Controller
             if (!isset($r->pemakaian_besar)) {
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Pemakaian diatas 50 m3, Contreng persetujuan...",
+                    "pesan" => "Total pemakaian : " . $pemakaian . " m3<br> Pemakaian diatas 50 m3, Contreng persetujuan...",
                     "kode" => 4, //harus conteng pemakaian besar
                 ], 404);
             }
@@ -457,7 +457,7 @@ class PencatatanController extends Controller
                 if (!isset($request->pemakaian_besar)) {
                     return response()->json([
                         "sukses" => false,
-                        "pesan" => "Pemakaian diatas 50 m3, Contreng persetujuan...",
+                        "pesan" => "Total pemakaian : " . $this->hitung($cek->awal, $request->akhir) . " m3<br> Pemakaian diatas 50 m3, Contreng persetujuan...",
                         "kode" => 4,  //harus conteng pemakaian besar
                     ], 404);
                 }
@@ -512,7 +512,7 @@ class PencatatanController extends Controller
             if (!isset($request->pemakaian_besar)) {
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Pemakaian diatas 50 m3, Contreng persetujuan...",
+                    "pesan" => "Total pemakaian : " . $pemakaian . " m3<br> Pemakaian diatas 50 m3, Contreng persetujuan...",
                     "kode" => 4, //harus conteng pemakaian besar
                 ], 404);
             }
