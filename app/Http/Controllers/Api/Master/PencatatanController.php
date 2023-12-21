@@ -404,7 +404,7 @@ class PencatatanController extends Controller
             ->where('tahun', '=', $tahun)
             ->first();
 
-
+        //TULISAN DENGAM (BUKAN DENGAN)
         if (isset($request->sama_dengam_bulan_lalu)) {  //JIKA SAMA DENGAN BULAN LALU ANGKA METERAN
             if ($cek) {
                 $request->akhir = $sebelumnya->awal;
@@ -415,6 +415,11 @@ class PencatatanController extends Controller
             $this->validate($request, [
                 'akhir' => 'required|integer',
             ]);
+            if ($cek) {
+                $request->akhir = $sebelumnya->awal;
+            } else {
+                $request->akhir = $request->akhir;
+            }
         }
 
 
