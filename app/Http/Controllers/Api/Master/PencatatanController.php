@@ -126,6 +126,10 @@ class PencatatanController extends Controller
         //jika minus
         if ($pemakaian < 0) {
             $panjang = strlen($awal);
+            if ($panjang == 3) {  //JIKA HASIL DIIBAWAH 3 DIGIT
+                return -1;
+            }
+
             $digit = "";
             for ($i = 0; $i < $panjang; $i++) {
                 $digit = $digit . "9";
@@ -225,6 +229,13 @@ class PencatatanController extends Controller
         $user_id = Auth::user()->id;
 
         $pemakaian = $this->hitung($r->awal, $r->akhir);
+        if ($pemakaian < 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Sepertinya input meteran terbalik...",
+                "kode" => 2,
+            ], 404);
+        }
 
         $input = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->format("Y-m");
         $sekarang = Carbon::now();
@@ -238,7 +249,13 @@ class PencatatanController extends Controller
             ], 404);
         }
 
-
+        if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
+                "kode" => 2,
+            ], 404);
+        }
 
 
         $cek = Pencatatan::with('tagihan:id,status_bayar,pencatatan_id')
@@ -403,6 +420,14 @@ class PencatatanController extends Controller
 
 
         $pemakaian = $this->hitung($meteranSebelumnya, $request->akhir);
+        if ($pemakaian < 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Sepertinya input meteran terbalik...",
+                "kode" => 2,
+            ], 404);
+        }
+
 
         $nama_gambar = config('external.nama_gambar');
         $file = md5($nama_gambar . $bulan . $tahun . $request->pelanggan_id) . ".jpg";
@@ -421,6 +446,14 @@ class PencatatanController extends Controller
                     "pesan" => "Meteran ini tidak dapat di rubah, karena sudah di bayar...",
                     "kode" => 0,
                 ], 204);
+            }
+
+            if ($this->hitung($cek->awal, $request->akhir) < 0) {   //UNTUK NGECEK INPUTAN DI BAWAH INI
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Sepertinya input meteran terbalik...",
+                    "kode" => 2,
+                ], 404);
             }
 
 
