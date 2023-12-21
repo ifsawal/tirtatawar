@@ -345,7 +345,7 @@ class PencatatanController extends Controller
 
 
 
-    //simpan catatan rutin
+    //simpan catatan rutin otomatis
     public function store(Request $request)
     {
 
@@ -418,17 +418,6 @@ class PencatatanController extends Controller
         }
 
 
-
-        $pemakaian = $this->hitung($meteranSebelumnya, $request->akhir);
-        if ($pemakaian < 0) {
-            return response()->json([
-                "sukses" => false,
-                "pesan" => "Sepertinya input meteran terbalik...",
-                "kode" => 2,
-            ], 404);
-        }
-
-
         $nama_gambar = config('external.nama_gambar');
         $file = md5($nama_gambar . $bulan . $tahun . $request->pelanggan_id) . ".jpg";
 
@@ -492,6 +481,15 @@ class PencatatanController extends Controller
             exit;
         }
 
+
+        $pemakaian = $this->hitung($meteranSebelumnya, $request->akhir);
+        if ($pemakaian < 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Sepertinya input meteran terbalik...",
+                "kode" => 2,
+            ], 404);
+        }
 
         //baru 
         DB::beginTransaction();
