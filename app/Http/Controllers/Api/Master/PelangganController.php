@@ -353,7 +353,7 @@ class PelangganController extends Controller
         ]);
 
         $pelanggan = Pelanggan::findOrFail($id);
-        $pelanggan->nama = $request->nama;
+        // $pelanggan->nama = $request->nama;
         $pelanggan->nik = $request->nik;
         $pelanggan->kk = $request->kk;
         if ($pelanggan->golongan_id <> $request->golongan_id) {
