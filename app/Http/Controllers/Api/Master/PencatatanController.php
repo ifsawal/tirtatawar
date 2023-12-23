@@ -45,11 +45,12 @@ class PencatatanController extends Controller
 
         $pencatatan = Pencatatan::with('user:id,nama', 'user_perubahan:id,nama')
             ->where('pelanggan_id', '=', $request->pelanggan_id)
-            ->select('id', 'awal', 'akhir', 'pemakaian', 'bulan', 'tahun', 'user_id', 'user_id_perubahan')
+            ->select(['id', 'awal', 'akhir', 'pemakaian', 'bulan', 'tahun', 'user_id', 'user_id_perubahan', "created_at as waktu"])
             ->orderBy('tahun', 'desc')
             ->orderBy('bulan', 'desc')
             ->limit(24)
             ->get();
+
 
         if (count($pencatatan) == 0) {
             return response()->json([
@@ -87,8 +88,8 @@ class PencatatanController extends Controller
 
         $pencatatan = Pencatatan::with('user:id,nama', 'user_perubahan:id,nama')
             ->where('pelanggan_id', '=', $request->pelanggan_id)
-            ->where('manual', 1)
-            ->select('id', 'awal', 'akhir', 'pemakaian', 'bulan', 'tahun', 'user_id', 'user_id_perubahan')
+            // ->where('manual', 1)
+            ->select(['id', 'awal', 'akhir', 'pemakaian', 'bulan', 'tahun', 'user_id', 'user_id_perubahan', 'manual'])
             ->orderBy('tahun', 'desc')
             ->orderBy('bulan', 'desc')
             ->limit(50)
@@ -469,6 +470,7 @@ class PencatatanController extends Controller
                 $cek->akhir = $request->akhir; //
                 $cek->pemakaian = $this->hitung($cek->awal, $request->akhir); //
                 $cek->photo = $file;
+                $cek->manual = NULL;
                 $cek->user_id_perubahan = $user_id; //
                 $cek->save();
 
