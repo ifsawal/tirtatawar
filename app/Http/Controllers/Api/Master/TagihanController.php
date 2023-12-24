@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Api\Master;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Master\Tagihan;
+use App\Models\Master\Transfer;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Api\Master\TagihanController;
+use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Resources\Api\Pelanggan\Tagihan\TagihanResource;
-use App\Models\Master\Transfer;
 
 class TagihanController extends Controller
 {
@@ -82,6 +84,7 @@ class TagihanController extends Controller
                 "sukses" => true,
                 "pesan" => "Ditemukan...",
                 'tagihan' => $tagihan,
+
             ], 202);
         }
 
@@ -121,6 +124,7 @@ class TagihanController extends Controller
                 "pesan" => "Ditemukan...",
                 // 'pencatatan' => $pencatatan,
                 'tagihan' => $tagihan,
+                'linkdownload' => BayarController::linkplaystore(),
             ], 202);
         } catch (\Exception $e) {
             DB::rollback();

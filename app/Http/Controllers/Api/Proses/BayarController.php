@@ -215,6 +215,10 @@ class BayarController extends Controller
         }
     }
 
+    public static function linkplaystore()
+    {
+        return "https://www.tirtatawar.com/playstore";
+    }
     /**
      * Display the specified resource.
      */
