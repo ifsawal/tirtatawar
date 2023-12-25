@@ -126,6 +126,7 @@ class BayarController extends Controller
                 'desa.kecamatan:id,kecamatan',
                 'golongan:id,golongan,biaya',
                 'rute:id,rute',
+                'wiljalan:id,jalan',
             )->where('id', $r->pelanggan_id)->first();
 
             DB::commit();
@@ -191,6 +192,7 @@ class BayarController extends Controller
                 'desa.kecamatan:id,kecamatan',
                 'golongan:id,golongan,biaya',
                 'rute:id,rute',
+                'wiljalan:id,jalan',
             )->where('id', $r->pelanggan_id)->first();
 
             DB::commit();
