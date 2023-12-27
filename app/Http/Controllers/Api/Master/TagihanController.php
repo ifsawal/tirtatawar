@@ -11,7 +11,6 @@ use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Api\Master\TagihanController;
 use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Resources\Api\Pelanggan\Tagihan\TagihanResource;
 

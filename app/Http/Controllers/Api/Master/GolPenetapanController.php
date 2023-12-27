@@ -188,18 +188,20 @@ class GolPenetapanController extends Controller
 
         DB::beginTransaction();
         try {
-            $penetapan = new IzinPenetapan();
-            $penetapan->pelanggan_id = $request->id;
-            $penetapan->harga = $request->harga;
-            $penetapan->pajak = $request->pajak;
-            $penetapan->aktif = "Y";
-            $penetapan->harga = $request->harga;
-            $penetapan->tgl_awal = now();
-            $penetapan->alasan = $request->alasan;
-            $penetapan->ket = $request->ket;
-            $penetapan->user_id = $user->id;
-            $penetapan->pdam_id = $user->pdam_id;
-            $penetapan->save();
+            // $penetapan = new IzinPenetapan();
+            // $penetapan->pelanggan_id = $request->id;
+            // $penetapan->harga = $request->harga;
+            // $penetapan->pajak = $request->pajak;
+            // $penetapan->aktif = "Y";
+            // $penetapan->harga = $request->harga;
+            // $penetapan->tgl_awal = now();
+            // $penetapan->alasan = $request->alasan;
+            // $penetapan->ket = $request->ket;
+            // $penetapan->user_id = $user->id;
+            // $penetapan->pdam_id = $user->pdam_id;
+            // $penetapan->save();
+
+            return $this->simpan_inti($request->id, $request->harga, $request->pajak, $request->alasan, $request->ket);  //JIKA TIDAK PAKE IZIN
 
             DB::commit();
             return response()->json([

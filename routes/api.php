@@ -39,6 +39,7 @@ use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
 use App\Http\Controllers\Api\Laporan\LaporanPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
+use App\Http\Controllers\Api\Laporan\LaporanPetugasController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
 use App\Http\Controllers\Api\Master\IzinController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
@@ -144,6 +145,8 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/rekapsetoran', [LaporanBayarController::class, 'rekap_setoran']);
     Route::post('/simpanpenyerahan', [SetoranController::class, 'rubah']);
     Route::post('/setujuiditerima', [SetoranController::class, 'setujuiditerima']);
+
+    Route::post('/lappencatatan', [LaporanPetugasController::class, 'data_pencatatan']); //PETUGAS
 
     Route::post('/listkeluhan', [KeluhanController::class, 'listkeluhan']);
     Route::post('/detilkeluhan', [KeluhanController::class, 'detilkeluhan']);
