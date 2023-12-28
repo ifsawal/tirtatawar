@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Laporan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Master\UserWiljalan;
+use App\Models\Master\Wiljalan;
 use Illuminate\Support\Facades\Auth;
 
 class LaporanPetugasController extends Controller
@@ -17,18 +18,22 @@ class LaporanPetugasController extends Controller
         $user = Auth::user();
         $user_id = $user->id;
         isset($r->byuser) ? $user_id = $r->byuser : "";  //ISI ID USER
+        // $user_id = 13;
 
-        $data = UserWiljalan::query();
+        $data = Wiljalan::query();
         $data->select(
+            'pelanggans.id',
             'pelanggans.nama',
         );
-        $data->join('wiljalans', 'wiljalans.id', '=', 'user_wiljalans.wiljalan_id');
-        $data->join('wiljalans', 'wiljalans.id', '=', 'pelanggans.wiljalan_id');
-        $data->where('user_wiljalans.id', '=', $r->id);
+        $data->join('user_wiljalans', 'user_wiljalans.wiljalan_id', '=', 'wiljalans.id');
+        $data->join('pelanggans', 'pelanggans.wiljalan_id', '=', 'wiljalans.id');
+        $data->where('user_wiljalans.user_id', '=', $user_id);
+        // $data->where('if()');
+
         // $data->where('rekaps.tahun', '=', $r->tahun);
         // $data->where('rekaps.bulan', '=', $r->bulan);
         // $data->where('rekaps.pdam_id', '=', $pdam_id);
-        return $data->get();
+        return  count($data->get());
     }
 
     /**
