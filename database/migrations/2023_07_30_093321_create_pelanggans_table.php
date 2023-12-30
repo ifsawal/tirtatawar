@@ -41,6 +41,8 @@ return new class extends Migration
             $table->integer('hp')->default(0);
             $table->integer('penetapan')->default(0);
             $table->integer('kode')->nullable();
+            $table->unsignedBigInteger('user_id_petugas')->nullable();
+            $table->foreign('user_id_petugas')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
 
             $table->softDeletes();
             $table->timestamps();

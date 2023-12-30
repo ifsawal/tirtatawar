@@ -208,7 +208,7 @@ class PencatatanController extends Controller
     }
 
 
-
+    //BELUM DI PAKE
     public static function simpanTagihanStatic($pencatatan_id2, $pelanggan_id2, $pemakaian2)
     {
         self::simpanTagihan($pencatatan_id2, $pelanggan_id2,  $pemakaian2);
@@ -405,7 +405,7 @@ class PencatatanController extends Controller
 
         if (isset($request->tanggal)) $waktu = Carbon::create($request->tanggal);
         else $waktu = Carbon::now();
-        $bulan = $waktu->month;
+        $bulan = $waktu->month;  //BERUBAH JIKA MUNDUR
         $tahun = $waktu->year;
 
         $cek = Pencatatan::with('tagihan:id,status_bayar,pencatatan_id') //PASTIKAN APAKAH UPDATE ATAU DAFTAR BARU

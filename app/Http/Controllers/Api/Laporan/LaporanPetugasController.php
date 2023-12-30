@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Laporan;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Master\Pelanggan;
 use App\Models\Master\UserWiljalan;
 use App\Models\Master\Wiljalan;
 use Illuminate\Support\Facades\Auth;
@@ -15,24 +16,29 @@ class LaporanPetugasController extends Controller
      */
     public function data_pencatatan(Request $r)
     {
+
+        $this->validate($r, [
+            'bulan' => 'required', // bayar id
+            'tahun' => 'required', // bayar id
+        ]);
+
         $user = Auth::user();
         $user_id = $user->id;
         isset($r->byuser) ? $user_id = $r->byuser : "";  //ISI ID USER
-        // $user_id = 13;
+        
 
-        $data = Wiljalan::query();
+        $data = Pelanggan::query();
         $data->select(
             'pelanggans.id',
             'pelanggans.nama',
         );
-        $data->join('user_wiljalans', 'user_wiljalans.wiljalan_id', '=', 'wiljalans.id');
-        $data->join('pelanggans', 'pelanggans.wiljalan_id', '=', 'wiljalans.id');
-        $data->where('user_wiljalans.user_id', '=', $user_id);
-        // $data->where('if()');
+        $data->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
+        $data->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
+        $data->where('pelanggans.user_id_petugas', '=', $user_id);
 
-        // $data->where('rekaps.tahun', '=', $r->tahun);
-        // $data->where('rekaps.bulan', '=', $r->bulan);
-        // $data->where('rekaps.pdam_id', '=', $pdam_id);
+        $data->where('pelanggans.tahun', '=', $r->tahun);
+        $data->where('pelanggans.bulan', '=', $r->bulan);
+        $data->where('pelanggans.pdam_id', '=', $user->pdam_id);
         return  count($data->get());
     }
 

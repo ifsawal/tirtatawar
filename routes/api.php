@@ -45,6 +45,7 @@ use App\Http\Controllers\Api\Master\IzinController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
+use App\Http\Controllers\Api\Server\PerubahanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -176,6 +177,10 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
 
 
     Route::post('/kirimnotifikasi', [NotifikasiFcmController::class, 'notif']);
+    
+    //versi server
+    Route::post('/perubahan_petugas_pelanggan', [PerubahanController::class, 'rubah_petugas']);
+
 });
 
 
