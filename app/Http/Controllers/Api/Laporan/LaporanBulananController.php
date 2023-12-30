@@ -49,7 +49,8 @@ class LaporanBulananController extends Controller
                 'tagihans.status_bayar',
                 'tagihans.sistem_bayar',
                 'tagihans.tgl_bayar',
-                'pelanggans.nama'
+                'pelanggans.nama',
+                'pelanggans.id as id_pel'
             );
         }
 
