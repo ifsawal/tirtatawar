@@ -259,7 +259,7 @@ class PencatatanController extends Controller
             ], 404);
         }
 
-        if ($input == "2023-09") {
+        if ($input == "2023-12") {
         } else //HAPUS NANTIK 2 baris ini
             if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
                 return response()->json([
@@ -407,8 +407,10 @@ class PencatatanController extends Controller
 
         if (isset($request->tanggal)) $waktu = Carbon::create($request->tanggal);
         else $waktu = Carbon::now();
-        $bulan = $waktu->month;  //BERUBAH JIKA MUNDUR
-        $tahun = $waktu->year;
+        // $bulan = $waktu->month;  //BERUBAH JIKA MUNDUR
+        // $tahun = $waktu->year;
+        $bulan = 12;  //manual
+        $tahun = 2023;
 
         $cek = Pencatatan::with('tagihan:id,status_bayar,pencatatan_id') //PASTIKAN APAKAH UPDATE ATAU DAFTAR BARU
             ->where('pelanggan_id', '=', $request->pelanggan_id)
