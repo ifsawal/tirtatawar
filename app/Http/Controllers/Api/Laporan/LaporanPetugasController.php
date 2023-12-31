@@ -25,7 +25,7 @@ class LaporanPetugasController extends Controller
         $user = Auth::user();
         $user_id = $user->id;
         isset($r->byuser) ? $user_id = $r->byuser : "";  //ISI ID USER
-        
+
 
         $data = Pelanggan::query();
         $data->select(
