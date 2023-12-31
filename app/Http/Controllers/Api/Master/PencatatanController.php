@@ -259,13 +259,15 @@ class PencatatanController extends Controller
             ], 404);
         }
 
-        if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
-            return response()->json([
-                "sukses" => false,
-                "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
-                "kode" => 2,
-            ], 404);
-        }
+        if ($input == "2023-09") {
+        } else //HAPUS NANTIK 2 baris ini
+            if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
+                    "kode" => 2,
+                ], 404);
+            }
 
 
         $cek = Pencatatan::with('tagihan:id,status_bayar,pencatatan_id')
