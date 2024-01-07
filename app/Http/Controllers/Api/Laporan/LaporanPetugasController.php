@@ -31,15 +31,40 @@ class LaporanPetugasController extends Controller
         $data->select(
             'pelanggans.id',
             'pelanggans.nama',
+            'tagihans.total',
         );
         $data->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
         $data->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
         $data->where('pelanggans.user_id_petugas', '=', $user_id);
 
-        $data->where('pelanggans.tahun', '=', $r->tahun);
-        $data->where('pelanggans.bulan', '=', $r->bulan);
+        isset($r->golongan_id) ? $data->where('pelanggans.golongan_id', '=', $r->golongan_id) : '';
+        isset($r->wiljalan_id) ? $data->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : '';
+        isset($r->status_bayar) ? $data->where('tagihans.status_bayar', '=', $r->status_bayar) : '';
+
+        $data->where('pencatatans.tahun', '=', $r->tahun);
+        $data->where('pencatatans.bulan', '=', $r->bulan);
         $data->where('pelanggans.pdam_id', '=', $user->pdam_id);
-        return  count($data->get());
+        $jumlah_data = $data->get()->count();
+
+        if ($jumlah_data == 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Data tidak ditemukan...",
+            ], 404);
+        }
+
+        $total = 0;
+        foreach ($data->get() as $d) {
+            $total += $d['total'];
+        }
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Sukses, data ditemukan...",
+            "jumlah_data" => $jumlah_data,
+            "jumlah_rupiah" => $total,
+            "data" => $data->paginate(50),
+        ], 202);
     }
 
     /**
