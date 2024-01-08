@@ -41,11 +41,13 @@ use App\Http\Controllers\Api\Laporan\LaporanPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanPetugasController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
+use App\Http\Controllers\Api\Laporan\LaporanRekapDrdWiljalanController;
 use App\Http\Controllers\Api\Master\IzinController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
 use App\Http\Controllers\Api\Server\CekAngkaController;
+use App\Http\Controllers\Api\Server\IsiMeteranController;
 use App\Http\Controllers\Api\Server\PerubahanController;
 
 /*
@@ -139,6 +141,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/laporanbulanan', [LaporanBulananController::class, 'laporan_bulanan']);
     Route::post('/laporanrekapbulanan', [LaporanRekapBulananController::class, 'ambil_rekap']);
     Route::post('/prosesrekap', [LaporanRekapBulananController::class, 'proses_rekap']);
+    Route::post('/laporanrekapdrdwiljalanexport', [LaporanRekapDrdWiljalanController::class, 'drd_wiljalan']);
 
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
     Route::post('/laporanbayarwilayah', [LaporanBayarController::class, 'laporan_bayar_where']);
@@ -182,6 +185,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     //versi server
     Route::post('/perubahan_petugas_pelanggan', [PerubahanController::class, 'rubah_petugas']);
     Route::post('/cekrekaptotal', [CekAngkaController::class, 'cek_rekap_total']);
+    Route::post('/isimeteran', [IsiMeteranController::class, 'isi_meteran']);
 });
 
 
