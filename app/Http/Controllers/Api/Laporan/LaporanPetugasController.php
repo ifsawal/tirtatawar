@@ -32,6 +32,8 @@ class LaporanPetugasController extends Controller
             'pelanggans.id',
             'pelanggans.nama',
             'tagihans.total',
+            'tagihans.status_bayar',
+            'tagihans.sistem_bayar',
         );
         $data->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
         $data->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
@@ -54,8 +56,14 @@ class LaporanPetugasController extends Controller
         }
 
         $total = 0;
+        $bayar = 0;
+        $jumlah_terbayar = 0;
         foreach ($data->get() as $d) {
             $total += $d['total'];
+            if ($d['status_bayar'] == "Y") {
+                $bayar += 1;
+                $jumlah_terbayar += $d['total'];
+            }
         }
 
         return response()->json([
@@ -63,6 +71,8 @@ class LaporanPetugasController extends Controller
             "pesan" => "Sukses, data ditemukan...",
             "jumlah_data" => $jumlah_data,
             "jumlah_rupiah" => $total,
+            "jumlah_terbayar" => $jumlah_terbayar,
+            "terbayar" => $bayar,
             "data" => $data->paginate(50),
         ], 202);
     }
