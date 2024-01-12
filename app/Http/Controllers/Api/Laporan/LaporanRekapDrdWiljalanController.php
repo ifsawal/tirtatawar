@@ -117,7 +117,7 @@ class LaporanRekapDrdWiljalanController extends Controller
         return response()->json([
             "sukses" => true,
             "pesan" => "Sukses...",
-            "data" =>  $pel,
+            // "data" =>  $pel,
         ], 202);
     }
 
