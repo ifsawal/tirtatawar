@@ -41,6 +41,7 @@ use App\Http\Controllers\Api\Laporan\LaporanPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanPetugasController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
+use App\Http\Controllers\Api\Laporan\LaporanRekapDrdGolonganController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapDrdWiljalanController;
 use App\Http\Controllers\Api\Master\IzinController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
@@ -135,13 +136,15 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::get('/laporanpelangganexport', [LaporanPelangganController::class, 'laporanpelangganexport']);
     Route::get('/laporanbayarbulananexport', [LaporanBulananController::class, 'laporanbayarbulananexport']);
     Route::get('/laporanrekapbulananexport', [LaporanRekapBulananController::class, 'laporanrekapbulananexport']);
+    Route::get('/laporanrekapdrdwiljalanexport', [LaporanRekapDrdWiljalanController::class, 'laporanrekapdrdwiljalanexport']);
 
     Route::post('/laporanpelanggan', [LaporanPelangganController::class, 'laporan_pelanggan']);
     Route::post('/laporanbayarbank', [LaporanBayarBankController::class, 'laporanbayarbank']);
     Route::post('/laporanbulanan', [LaporanBulananController::class, 'laporan_bulanan']);
     Route::post('/laporanrekapbulanan', [LaporanRekapBulananController::class, 'ambil_rekap']);
     Route::post('/prosesrekap', [LaporanRekapBulananController::class, 'proses_rekap']);
-    Route::post('/laporanrekapdrdwiljalanexport', [LaporanRekapDrdWiljalanController::class, 'drd_wiljalan']);
+    Route::post('/prosesdrdwiljalanexport', [LaporanRekapDrdWiljalanController::class, 'drd_wiljalan']);
+    Route::post('/prosesdrdgolongan', [LaporanRekapDrdGolonganController::class, 'drd_golongan']);
 
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
     Route::post('/laporanbayarwilayah', [LaporanBayarController::class, 'laporan_bayar_where']);

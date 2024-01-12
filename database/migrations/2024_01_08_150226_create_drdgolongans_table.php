@@ -24,6 +24,8 @@ return new class extends Migration
             $table->integer('harga_air');
             $table->integer('adm');
             $table->integer('total');
+            $table->integer('status_update')->default(0);
+            $table->unique(['rute_id', 'golongan_id', 'bulan', 'tahun']);
             $table->timestamps();
         });
     }

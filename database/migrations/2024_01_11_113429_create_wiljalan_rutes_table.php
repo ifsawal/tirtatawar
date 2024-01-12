@@ -11,21 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('drdjalans', function (Blueprint $table) {
+        Schema::create('wiljalan_rutes', function (Blueprint $table) {
             $table->id();
+
             $table->unsignedBigInteger('rute_id')->nullable();
             $table->foreign('rute_id')->references('id')->on('rutes')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('wiljalan_id')->nullable();
             $table->foreign('wiljalan_id')->references('id')->on('wiljalans')->onDelete('restrict')->onUpdate('cascade');
-            $table->unsignedBigInteger('golongan_id');
-            $table->foreign('golongan_id')->references('id')->on('golongans')->onDelete('restrict')->onUpdate('cascade');
-            $table->integer('bulan');
-            $table->integer('tahun');
-            $table->integer('jumpel');
-            $table->integer('jumm3');
-            $table->integer('jumtotal');
-            $table->integer('status_update')->default(0);
-            $table->unique(['rute_id', 'wiljalan_id', 'golongan_id', 'bulan', 'tahun']);
+
             $table->timestamps();
         });
     }
@@ -35,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('drdjalans');
+        Schema::dropIfExists('wiljalan_rutes');
     }
 };
