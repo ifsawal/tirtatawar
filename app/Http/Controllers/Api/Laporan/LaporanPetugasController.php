@@ -42,6 +42,8 @@ class LaporanPetugasController extends Controller
         isset($r->golongan_id) ? $data->where('pelanggans.golongan_id', '=', $r->golongan_id) : '';
         isset($r->wiljalan_id) ? $data->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : '';
         isset($r->status_bayar) ? $data->where('tagihans.status_bayar', '=', $r->status_bayar) : '';
+        isset($r->sistem_bayar) ? $data->where('tagihans.sistem_bayar', '=', $r->sistem_bayar) : '';
+
 
         $data->where('pencatatans.tahun', '=', $r->tahun);
         $data->where('pencatatans.bulan', '=', $r->bulan);
