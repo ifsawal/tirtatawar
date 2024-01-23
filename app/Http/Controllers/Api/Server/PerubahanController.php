@@ -26,4 +26,12 @@ class PerubahanController extends Controller
 
         return $a;
     }
+
+    public function rubah_petugas_berdasarkan_petugas(Request $r)
+    {
+        $a = Pelanggan::where('user_id_petugas', $r->petugas_id)
+            // ->update(['user_id'=>$r->petugas]);
+            ->update(['user_id_petugas' => $r->petugas_id_pengganti]);
+        return $a;
+    }
 }

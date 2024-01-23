@@ -21,20 +21,33 @@ class LaporanBayarController extends Controller
         $tanggal = now();
         isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
 
-        $penagih = Penagih::with(
+
+        $queri = [
             'tagihan:id,jumlah,diskon,denda,total,status_bayar,sistem_bayar,pencatatan_id',
             'tagihan.pencatatan:id,awal,akhir,pemakaian,bulan,tahun,pelanggan_id',
-            'tagihan.pencatatan.pelanggan:id,nama',
-        )
-            ->where('user_id', $user_id)
-            ->whereDate('waktu', $tanggal)
-            ->orderBy('id', "DESC")
-            ->get();
+            'tagihan.pencatatan.pelanggan:id,nama'
+        ];
+
+        if (isset($r->bulan) && isset($r->tahun)) {
+            $penagih = Penagih::with($queri)
+                ->whereRelation('tagihan.pencatatan', 'bulan', '=', $r->bulan)
+                ->whereRelation('tagihan.pencatatan', 'tahun', '=', $r->tahun)
+                ->where('user_id', $user_id)
+                ->whereDate('waktu', $tanggal)
+                ->orderBy('id', "DESC")
+                ->get();
+        } else {
+            $penagih = Penagih::with($queri)
+                ->where('user_id', $user_id)
+                ->whereDate('waktu', $tanggal)
+                ->orderBy('id', "DESC")
+                ->get();
+        }
+
 
         $setoran = Setoran::where('user_id', $user_id)
             ->whereDate('tanggal', $tanggal)
             ->first();
-
 
         return response()->json([
             "sukses" => true,
