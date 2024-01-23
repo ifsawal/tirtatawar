@@ -172,14 +172,24 @@ class PenggunaController extends Controller
         $user = User::where('id', $user_id)->first();
 
         $kata = 2;
-        isset($r->status) ? $kata = $r->status : "";
+        if (isset($r->status)) {
+            $kata = $r->status;
+        }
 
         $pengguna = User::with('roles:id,name')
-            ->where('pdam_id', $user->pdam_id)->withTrashed()
+            ->where('pdam_id', $user->pdam_id)
             ->whereHas('roles', function ($q) use ($kata) {
                 $q->where('id', '=', $kata);
             })
             ->get();
+
+        if ($r->all == "all") {
+            $pengguna = User::with('roles:id,name')
+                ->where('pdam_id', $user->pdam_id)->withTrashed()
+                ->get();
+        }
+
+
         $role = Role::all();
 
         return response()->json([

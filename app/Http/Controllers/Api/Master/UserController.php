@@ -75,7 +75,7 @@ class UserController extends Controller
 
         return response()->json([
             'sukses' => true,
-            'pesan' => "Perubahan berhasil...",
+            'pesan' => "Penambahan berhasil...",
         ], 201);
     }
 
