@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\UserWiljalan;
 use App\Models\Master\Wiljalan;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class LaporanPetugasController extends Controller
@@ -14,18 +15,10 @@ class LaporanPetugasController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function data_pencatatan(Request $r)
+
+
+    public function ambil_data($r, $user_id, $pdam_id, $data = null)
     {
-
-        $this->validate($r, [
-            'bulan' => 'required', // bayar id
-            'tahun' => 'required', // bayar id
-        ]);
-
-        $user = Auth::user();
-        $user_id = $user->id;
-        isset($r->byuser) ? $user_id = $r->byuser : "";  //ISI ID USER
-
 
         $data = Pelanggan::query();
         $data->select(
@@ -47,14 +40,14 @@ class LaporanPetugasController extends Controller
 
         $data->where('pencatatans.tahun', '=', $r->tahun);
         $data->where('pencatatans.bulan', '=', $r->bulan);
-        $data->where('pelanggans.pdam_id', '=', $user->pdam_id);
+        $data->where('pelanggans.pdam_id', '=', $pdam_id);
         $jumlah_data = $data->get()->count();
 
         if ($jumlah_data == 0) {
-            return response()->json([
+            return [
                 "sukses" => false,
                 "pesan" => "Data tidak ditemukan...",
-            ], 404);
+            ];
         }
 
         $total = 0;
@@ -68,16 +61,77 @@ class LaporanPetugasController extends Controller
             }
         }
 
-        return response()->json([
-            "sukses" => true,
-            "pesan" => "Sukses, data ditemukan...",
-            "jumlah_data" => $jumlah_data,
-            "jumlah_rupiah" => $total,
-            "jumlah_terbayar" => $jumlah_terbayar,
-            "terbayar" => $bayar,
-            "data" => $data->paginate(50),
-        ], 202);
+        if ($data == null) {
+            return [
+                "sukses" => true,
+                "pesan" => "Sukses, data ditemukan...",
+                "jumlah_data" => $jumlah_data,
+                "jumlah_rupiah" => $total,
+                "jumlah_terbayar" => $jumlah_terbayar,
+                "terbayar" => $bayar,
+                "data" => $data->paginate(50),
+            ];
+        } else {
+            return [
+                "sukses" => true,
+                "pesan" => "Sukses, data ditemukan...",
+                "jumlah_data" => $jumlah_data,
+                "jumlah_rupiah" => $total,
+                "jumlah_terbayar" => $jumlah_terbayar,
+                "terbayar" => $bayar,
+            ];
+        }
     }
+
+
+    public function data_pencatatan(Request $r) //perorang
+    {
+
+        $this->validate($r, [
+            'bulan' => 'required',
+            'tahun' => 'required',
+        ]);
+
+
+        $user = Auth::user();
+        $user_id = $user->id;
+        $pdam_id = $user->pdam_id;
+        isset($r->byuser) ? $user_id = $r->byuser : "";  //ISI ID USER
+
+        $dataperorang = $this->ambil_data($r, $user_id, $pdam_id);
+
+        return response()->json($dataperorang, 202);
+    }
+
+
+    public function data_pencatatan_banyak(Request $r) //proses
+    {
+        $this->validate($r, [
+            'bulan' => 'required',
+            'tahun' => 'required',
+        ]);
+
+        $user = Auth::user();
+        $pdam_id = $user->pdam_id;
+
+        $ka = 2;
+        return $user = User::with('roles:id,name')
+            ->where('pdam_id', $pdam_id)
+            ->whereHas('roles', function ($q) use ($ka) {
+                $q->where('id', '=', $ka);
+            })
+            ->get();
+
+        $da = [];
+
+        foreach ($user as $u) {
+            $data = $this->ambil_data($r, $u['id'], $pdam_id, true);
+            $da[] = $data;
+        }
+
+        return $da;
+    }
+
 
     /**
      * Show the form for creating a new resource.
