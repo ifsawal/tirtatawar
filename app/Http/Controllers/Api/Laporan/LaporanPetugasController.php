@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Api\Laporan;
 
+use App\Exports\LaporanBayarExport;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\Master\LapBayar;
+use App\Models\Master\Wiljalan;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\UserWiljalan;
-use App\Models\Master\Wiljalan;
-use App\Models\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanPetugasController extends Controller
 {
@@ -115,7 +118,7 @@ class LaporanPetugasController extends Controller
         $pdam_id = $user->pdam_id;
 
         $ka = 2;
-        return $user = User::with('roles:id,name')
+        $user = User::with('roles:id,name')
             ->where('pdam_id', $pdam_id)
             ->whereHas('roles', function ($q) use ($ka) {
                 $q->where('id', '=', $ka);
@@ -126,12 +129,53 @@ class LaporanPetugasController extends Controller
 
         foreach ($user as $u) {
             $data = $this->ambil_data($r, $u['id'], $pdam_id, true);
-            $da[] = $data;
+            if($data['sukses']==false)continue;
+
+            $lap = LapBayar::where('bulan', $r->bulan)
+            ->where('tahun', $r->tahun)
+            ->where('user_id', $u['id'])
+            ->first();
+        if (!$lap) {
+            $lap = new LapBayar();
         }
 
-        return $da;
+        $lap->user_id =  $u['id'];
+        $lap->bulan =  $r->bulan;
+        $lap->tahun =  $r->tahun;
+        $lap->jumlah_p =  $data['jumlah_data'];
+        $lap->p_terbayar =  $data['terbayar'];
+        $lap->p_no_bayar =  $data['jumlah_data']-$data['terbayar'];
+        $lap->total_rp =  $data['jumlah_rupiah'];
+        $lap->rp_terbayar =  $data['jumlah_terbayar'];
+        $lap->rp_no_bayar =  $data['jumlah_rupiah']-$data['jumlah_terbayar'];
+        $lap->save();
+        
+        $da[]=$lap;
+        }
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Proses selesai...",
+        ], 201);
     }
 
+
+    public static function rekap($r)
+    {
+        return $lap = LapBayar::where('bulan', $r->bulan)
+        ->where('tahun', $r->tahun)
+        ->get();
+    }
+
+
+    public function laporanbayarexport(Request $r)
+    {
+        $this->validate($r, [
+            'bulan' => 'required',
+            'tahun' => 'required',
+        ]);
+        return Excel::download(new LaporanBayarExport($r), 'laporan_bayar.xlsx');
+    }
 
     /**
      * Show the form for creating a new resource.

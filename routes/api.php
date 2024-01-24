@@ -155,6 +155,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/setujuiditerima', [SetoranController::class, 'setujuiditerima']);
 
     Route::post('/proseslappencatatan', [LaporanPetugasController::class, 'data_pencatatan_banyak']); //PETUGAS
+    Route::post('/laporanbayarexport', [LaporanPetugasController::class, 'laporanbayarexport']); //PETUGAS
 
     Route::post('/lappencatatan', [LaporanPetugasController::class, 'data_pencatatan']); //PETUGAS
 
