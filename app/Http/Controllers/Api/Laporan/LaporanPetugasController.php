@@ -20,7 +20,7 @@ class LaporanPetugasController extends Controller
      */
 
 
-    public function ambil_data($r, $user_id, $pdam_id, $data = null)
+    public function ambil_data($r, $user_id, $pdam_id, $tampil_data = NULL)
     {
 
         $data = Pelanggan::query();
@@ -64,7 +64,7 @@ class LaporanPetugasController extends Controller
             }
         }
 
-        if ($data == null) {
+        if ($tampil_data == NULL) {
             return [
                 "sukses" => true,
                 "pesan" => "Sukses, data ditemukan...",
@@ -102,7 +102,12 @@ class LaporanPetugasController extends Controller
         isset($r->byuser) ? $user_id = $r->byuser : "";  //ISI ID USER
 
         $dataperorang = $this->ambil_data($r, $user_id, $pdam_id);
-
+        if ($dataperorang['sukses'] == false) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Data tidak ditemukan...",
+            ], 404);
+        }
         return response()->json($dataperorang, 202);
     }
 
@@ -129,28 +134,28 @@ class LaporanPetugasController extends Controller
 
         foreach ($user as $u) {
             $data = $this->ambil_data($r, $u['id'], $pdam_id, true);
-            if($data['sukses']==false)continue;
+            if ($data['sukses'] == false) continue;
 
             $lap = LapBayar::where('bulan', $r->bulan)
-            ->where('tahun', $r->tahun)
-            ->where('user_id', $u['id'])
-            ->first();
-        if (!$lap) {
-            $lap = new LapBayar();
-        }
+                ->where('tahun', $r->tahun)
+                ->where('user_id', $u['id'])
+                ->first();
+            if (!$lap) {
+                $lap = new LapBayar();
+            }
 
-        $lap->user_id =  $u['id'];
-        $lap->bulan =  $r->bulan;
-        $lap->tahun =  $r->tahun;
-        $lap->jumlah_p =  $data['jumlah_data'];
-        $lap->p_terbayar =  $data['terbayar'];
-        $lap->p_no_bayar =  $data['jumlah_data']-$data['terbayar'];
-        $lap->total_rp =  $data['jumlah_rupiah'];
-        $lap->rp_terbayar =  $data['jumlah_terbayar'];
-        $lap->rp_no_bayar =  $data['jumlah_rupiah']-$data['jumlah_terbayar'];
-        $lap->save();
-        
-        $da[]=$lap;
+            $lap->user_id =  $u['id'];
+            $lap->bulan =  $r->bulan;
+            $lap->tahun =  $r->tahun;
+            $lap->jumlah_p =  $data['jumlah_data'];
+            $lap->p_terbayar =  $data['terbayar'];
+            $lap->p_no_bayar =  $data['jumlah_data'] - $data['terbayar'];
+            $lap->total_rp =  $data['jumlah_rupiah'];
+            $lap->rp_terbayar =  $data['jumlah_terbayar'];
+            $lap->rp_no_bayar =  $data['jumlah_rupiah'] - $data['jumlah_terbayar'];
+            $lap->save();
+
+            $da[] = $lap;
         }
 
         return response()->json([
@@ -163,8 +168,8 @@ class LaporanPetugasController extends Controller
     public static function rekap($r)
     {
         return $lap = LapBayar::where('bulan', $r->bulan)
-        ->where('tahun', $r->tahun)
-        ->get();
+            ->where('tahun', $r->tahun)
+            ->get();
     }
 
 
