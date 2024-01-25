@@ -44,16 +44,24 @@ class LaporanBayarController extends Controller
                 ->get();
         }
 
-
+        $perbulan_tagih = 0;
+        if (isset($r->bulan)) {
+            foreach ($penagih as $p) {
+                $perbulan_tagih += $p->tagihan->total;
+            }
+        }
         $setoran = Setoran::where('user_id', $user_id)
             ->whereDate('tanggal', $tanggal)
             ->first();
+
+        // isset($r->bulan) ? $setoran = "-" : "";
 
         return response()->json([
             "sukses" => true,
             "pesan" => "Ditemukan...",
             'penagih' => $penagih,
             'setoran' => $setoran,
+            'perbulan_tagih' => $perbulan_tagih,
         ], 202);
     }
 
