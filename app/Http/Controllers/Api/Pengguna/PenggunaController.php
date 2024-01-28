@@ -199,16 +199,26 @@ class PenggunaController extends Controller
             'role' => $role,
 
         ], 202);
+    }
 
+    public function datauser_status(Request $r)
+    {
+        $user = Auth::user();
+        $kata = $r->status;
 
-        // $user->getPermissionNames();
-        // $role = $user->getRoleNames();
-        // $col = collect($user->getAllPermissions());
-        // return   $permisi = $col->map(function ($col) {
-        //     return collect($col->toArray())
-        //         ->only(['id', 'name'])
-        //         ->all();
-        // });
+        $pengguna = User::with('roles:id,name')
+            ->where('pdam_id', $user->pdam_id)
+            ->whereHas('roles', function ($q) use ($kata) {
+                $q->where('name', '=', $kata);
+            })
+            ->get();
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Data ditemukan...",
+            'data' => $pengguna,
+
+        ], 202);
     }
 
 

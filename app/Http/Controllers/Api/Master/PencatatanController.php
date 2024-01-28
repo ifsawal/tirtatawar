@@ -259,7 +259,7 @@ class PencatatanController extends Controller
             ], 404);
         }
 
-        // if ($input == "2023-12") {
+        // if ($input == "2023-12" or $input == "2023-11") {
         // } else //HAPUS NANTIK 2 baris ini
         if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
             return response()->json([

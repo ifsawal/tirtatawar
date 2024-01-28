@@ -116,6 +116,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/setujuipenetapan', [GolPenetapanController::class, 'setujuipenetapan']);
     Route::post('/hapusizinpenetapan', [GolPenetapanController::class, 'hapus_izin_penetapan']);
 
+    Route::post('/pelanggan_update', [PelangganController::class, 'update_pel']);
     Route::post('/setujui', [PelangganController::class, 'setujui']);
     Route::resource('/pelanggan', PelangganController::class);
     Route::resource('/hp_pelanggan', HpPelangganController::class);
@@ -168,6 +169,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/simpankeluhan', [KeluhanController::class, 'simpan_keluhan']);
 
     Route::post('/datauser', [PenggunaController::class, 'datauser']);
+    Route::post('/datauser/status', [PenggunaController::class, 'datauser_status']);
     Route::post('/detiluser', [PenggunaController::class, 'detiluser']);
     Route::post('/tambahstatus', [PenggunaController::class, 'tambahstatus']);
     Route::post('/terimakaryawan', [PenggunaController::class, 'terimakaryawan']);

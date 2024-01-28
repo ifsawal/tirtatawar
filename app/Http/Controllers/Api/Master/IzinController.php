@@ -82,7 +82,49 @@ class IzinController extends Controller
         ], 204);
     }
 
-    public function izin_di_setujui(Request $r)
+    public function izin_di_setujui(Request $r) //satu satu
+    {
+        $this->validate($r, [
+            'id' => 'required',   // id izin
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $data = IzinPerubahan::findOrFail($r->id);
+            if ($data->dasar == "kolektif") {  //jika kolektif
+                DB::commit();
+                return $this->izin_di_setujui_colektif($r);
+            }
+
+            DB::table($data->tabel)
+                ->where('id', $data->id_dirubah)
+                ->update([
+                    $data->fild => $data->final
+                ]);
+
+
+            $data->user_id_penyetuju = Auth::user()->id;
+            $data->status = 1;
+            $data->save();
+
+
+            DB::commit();
+
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Proses persetujuan sukses...",
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Gagal Menyetujui...",
+            ], 404);
+        }
+    }
+
+    public function izin_di_setujui_colektif(Request $r)  //bnyak fild
     {
         $this->validate($r, [
             'id' => 'required',   // id izin
@@ -93,9 +135,7 @@ class IzinController extends Controller
             $data = IzinPerubahan::findOrFail($r->id);
             DB::table($data->tabel)
                 ->where('id', $data->id_dirubah)
-                ->update([
-                    $data->fild => $data->final
-                ]);
+                ->update(json_decode($data->fild, TRUE));
 
 
             $data->user_id_penyetuju = Auth::user()->id;

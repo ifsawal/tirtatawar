@@ -86,7 +86,9 @@ class PelangganController extends Controller
             'desa.kecamatan:id,kecamatan',
             'golongan:id,golongan',
             'rute:id,rute',
-            'user_perubahan:id,nama'
+            'user_perubahan:id,nama',
+            'petugas:id,nama',
+            'wiljalan:id,jalan'
         )->where('id', $id)->where('pdam_id', $user[0]->pdam->id)->withTrashed()->get();
 
 
@@ -237,6 +239,12 @@ class PelangganController extends Controller
             'desa_id' => 'required',
             'user_id' => 'required',
 
+            'wiljalan_id' => 'required',
+            'rute_id' => 'required',
+            'petugas_id' => 'required',
+
+
+
         ]);
 
         $kode = rand(10000, 99999);
@@ -249,9 +257,11 @@ class PelangganController extends Controller
         $pelanggan->desa_id = $request->desa_id;
         $pelanggan->user_id = $request->user_id;
         $pelanggan->kode = $kode;
-        if ($pelanggan->rute_id <> "") {
-            $pelanggan->rute_id = $request->rute_id;
-        }
+
+        $pelanggan->rute_id = $request->rute_id;
+        $pelanggan->wiljalan_id = $request->wiljalan_id;
+        $pelanggan->user_id_petugas = $request->petugas_id;
+
         $pelanggan->deleted_at = Carbon::now();
         $pelanggan->save();
 
@@ -338,64 +348,94 @@ class PelangganController extends Controller
         ], 202);
     }
 
+    public function update(Request $request, $id)
+    {
+    }
 
-    public function update(Request $request, string $id)
+    public function update_pel(Request $request)
     {
 
-
         $this->validate($request, [
+            'id' => 'required',
+
             'nama' => 'required|min:4',
             'nik' => 'required|min:16',
             'golongan_id' => 'required',
-            'desa_id' => 'required',
             'rute_id' => 'required',
             'user_id_perubahan' => 'required',
+            'wiljalan_id' => 'required',
+            'petugas_id' => 'required',
+
+            'golongan_nama' => 'required',
+            'wiljalan_nama' => 'required',
+            'petugas_nama' => 'required',
+            'rute_nama' => 'required',
         ]);
 
-        $pelanggan = Pelanggan::findOrFail($id);
-        // $pelanggan->nama = $request->nama;
-        $pelanggan->nik = $request->nik;
-        $pelanggan->kk = $request->kk;
-        if ($pelanggan->golongan_id <> $request->golongan_id) {
 
-            $goldasar = Golongan::find($pelanggan->golongan_id);
-            $golfinal = Golongan::find($request->golongan_id);
 
-            $user = Auth::user();
-            $izin = new IzinPerubahan();
-            $izin->tabel = "pelanggans";
-            $izin->fild = "golongan_id";
-            $izin->id_dirubah = $pelanggan->id;
-            $izin->dasar = $pelanggan->golongan_id;
-            $izin->final = $request->golongan_id;
-            $izin->relasi = "golongans";
-            $izin->user_id = $user->id;
-            $izin->ket = "Perubahan Golongan Pelanggan <br>Nopel " . $pelanggan->id . "- An. " . $pelanggan->nama . "<br>dari <b>" . $goldasar->golongan . "</b> ke <b>" . $golfinal->golongan . "</b><br>Oleh " . $user->nama;
-            $izin->pdam_id = Auth::user()->pdam_id;
-            $izin->save();
-
-            // $pelanggan->golongan_id = $request->golongan_id;
+        $sebelumnya = IzinPerubahan::where('id_dirubah', $request->id)
+            ->where('status', 0)
+            ->first();
+        if ($sebelumnya) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Perubahan sebelumnya belum disetujui...",
+            ], 404);
         }
 
-        $pelanggan->desa_id = $request->desa_id;
-        $pelanggan->rute_id = $request->rute_id;
-        $pelanggan->user_id_perubahan = Auth::user()->id;
-        $pelanggan->save();
 
-        if (isset($request->nohp) && !empty($request->nohp)) {
-            $nohp = new HpPelanggan;
-            $nohp->nohp = $request->nohp;
-            $nohp->pelanggan_id = $pelanggan->id;
-            $nohp->aktif = "Y";
-            $nohp->save();
+        $pelanggan = Pelanggan::with('golongan:id,golongan', 'wiljalan:id,jalan', 'rute:id,rute', 'petugas:id,nama')
+            ->where('id', $request->id)
+            ->first();
+        $value = [
+            'nama' => $request->nama,
+            'nik' => $request->nik,
+            'kk' => $request->kk,
+            'golongan_id' => $request->golongan_id,
+            'wiljalan_id' => $request->wiljalan_id,
+            'rute_id' => $request->rute_id,
+            'user_id_petugas' => $request->petugas_id,
+        ];
 
-            $this->simpanJumlahNoHp($pelanggan->id); //simpan jumlah hp
-        }
+        // $goldasar = Golongan::find($pelanggan->golongan_id);
+        // $golfinal = Golongan::find($request->golongan_id);
+
+        $user = Auth::user();
+        $izin = new IzinPerubahan();
+        $izin->tabel = "pelanggans";
+        $izin->fild = json_encode($value);
+
+        $izin->id_dirubah = $request->id;
+        $izin->dasar = "kolektif";
+        $izin->final = 0;
+        $izin->user_id = $user->id;
+        $izin->ket = "Perubahan Pelanggan Nopel : {$pelanggan->id}<br>
+        <b>Data Lama</b><br>
+        {$pelanggan->nama} - {$pelanggan->nik} - {$pelanggan->kk} -  {$pelanggan->golongan->golongan}- {$pelanggan->wiljalan->jalan} - {$pelanggan->rute->rute} - {$pelanggan->petugas->nama}  
+        <b>Data Baru<b><br>
+        {$request->nama} - {$request->nik} - {$request->kk} -  {$request->golongan_nama}- {$request->wiljalan_nama} - {$request->rute_nama} - {$request->petugas_nama}  
+        ";
+        $izin->pdam_id = $user->pdam_id;
+        $izin->save();
+
+        // $pelanggan->golongan_id = $request->golongan_id;
+
+
+        // if (isset($request->nohp) && !empty($request->nohp)) {
+        //     $nohp = new HpPelanggan;
+        //     $nohp->nohp = $request->nohp;
+        //     $nohp->pelanggan_id = $pelanggan->id;
+        //     $nohp->aktif = "Y";
+        //     $nohp->save();
+
+        //     $this->simpanJumlahNoHp($pelanggan->id); //simpan jumlah hp
+        // }
 
         return response()->json([
             'sukses' => true,
             'pesan' => "Perubahan berhasil...",
-            'id' => $pelanggan->id,
+            'id' => $izin,
         ], 202);
     }
 
