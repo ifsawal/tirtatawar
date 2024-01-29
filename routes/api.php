@@ -195,6 +195,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/rubah_petugas_berdasarkan_petugas', [PerubahanController::class, 'rubah_petugas_berdasarkan_petugas']);
     Route::post('/cekrekaptotal', [CekAngkaController::class, 'cek_rekap_total']);
     Route::post('/isimeteran', [IsiMeteranController::class, 'isi_meteran']);
+    Route::post('/isimeteranbelumisi', [IsiMeteranController::class, 'isi_meteran_belum_isi']);
 });
 
 

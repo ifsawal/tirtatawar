@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Server;
 
+use App\Fungsi\Pencatatan\Prosespencatatan;
+use App\Fungsi\Pencatatan\Prosestagihan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Master\Tagihan;
@@ -14,93 +16,114 @@ use App\Http\Controllers\Controller;
 class IsiMeteranController extends Controller
 {
 
-    public function hitung($awal, $akhir)
+    // public function hitung($awal, $akhir)
+    // {
+    //     $pemakaian = $akhir - $awal;
+    //     //jika minus
+    //     if ($pemakaian < 0) {
+    //         $panjang = strlen($awal);
+    //         if ($panjang <= 3) {  //JIKA HASIL DIIBAWAH 3 DIGIT maka batalkan
+    //             return -1;
+    //         }
+
+    //         $digit = "";
+    //         for ($i = 0; $i < $panjang; $i++) {
+    //             $digit = $digit . "9";
+    //         }
+    //         $digit = $digit + 1;
+
+    //         $pemakaian = ($digit - $awal) + $akhir;
+    //     }
+    //     return $pemakaian;
+    // }
+
+
+    // public function simpanTagihan($pencatatan_id, $pelanggan_id, $pemakaian, $aksi = "tambah")
+    // {
+
+    //     if ($aksi == "tambah") {
+    //         $tagihan = new Tagihan();
+    //     } else {
+    //         $tagihan = Tagihan::where('pencatatan_id', '=', $pencatatan_id)->first();
+    //     }
+
+    //     $golongan = Pelanggan::with('golongan:id,golongan,biaya,pajak,denda', 'golongan.goldetil:id,nama,awal_meteran,akhir_meteran,harga,golongan_id')
+    //         ->select('nama', 'golongan_id', 'penetapan')
+    //         ->where('id', '=', $pelanggan_id)
+    //         ->get();
+
+    //     $a = "";
+    //     $jumlah = 0;
+    //     if ($golongan[0]->penetapan == 1) {  //jika penetapan
+    //         $harga = GolPenetapan::where('pelanggan_id', '=', $pelanggan_id)
+    //             ->where('aktif', '=', 'Y')
+    //             ->first();
+    //         $biaya = $golongan[0]->golongan->biaya;
+    //         $dasar_pajak = $golongan[0]->golongan->pajak;
+    //         $denda_perbulan = $golongan[0]->golongan->denda;
+
+    //         $jumlah = $harga->harga;
+    //         $jumlah_pajak = $harga->pajak;
+    //     } else if (isset($golongan[0]->golongan->goldetil)) {  //jika sesuai tarif
+    //         foreach ($golongan[0]->golongan->goldetil as $detil) {
+    //             if ($pemakaian == 0) {
+    //                 $jumlah = $jumlah + 0;
+    //                 break;
+    //             } else if ($pemakaian > $detil->awal_meteran && $pemakaian <= $detil->akhir_meteran && $detil->akhir_meteran <> 0) {
+    //                 $jumlah = $jumlah + ($detil->harga * ($pemakaian - $detil->awal_meteran));
+    //                 break;
+    //             } else if ($detil->akhir_meteran == 0) {
+    //                 $jumlah = $jumlah + ($detil->harga * ($pemakaian - $detil->awal_meteran));
+    //                 break;
+    //             } else {
+    //                 $jumlah = $jumlah + ($detil->harga * ($detil->akhir_meteran - $detil->awal_meteran));
+    //             }
+    //         }
+    //         $biaya = $golongan[0]->golongan->biaya;
+    //         $dasar_pajak = $golongan[0]->golongan->pajak;
+    //         $denda_perbulan = $golongan[0]->golongan->denda;
+
+    //         $jumlah = $jumlah;
+    //         $jumlah_pajak = $pemakaian * $dasar_pajak;
+    //     }
+
+
+    //     $tagihan->pencatatan_id = $pencatatan_id;
+    //     $tagihan->jumlah = $jumlah;
+    //     $tagihan->denda_perbulan = $denda_perbulan;
+    //     $tagihan->biaya = $biaya;
+    //     $tagihan->pajak = $jumlah_pajak;
+    //     $tagihan->subtotal = $jumlah + $biaya + $jumlah_pajak;
+    //     $tagihan->total = $tagihan->subtotal;
+    //     $tagihan->diskon = 0;
+    //     $tagihan->denda = 0;
+    //     isset($harga->id) ? $tagihan->gol_penetapan_id = $harga->id : ""; //isi id gol_penetapan jika terdaftar sebagai penetapan
+    //     $tagihan->status_bayar = 'N';
+    //     $tagihan->save();
+    // }
+
+    public function isi_meteran_belum_isi(Request $r)
     {
-        $pemakaian = $akhir - $awal;
-        //jika minus
-        if ($pemakaian < 0) {
-            $panjang = strlen($awal);
-            if ($panjang <= 3) {  //JIKA HASIL DIIBAWAH 3 DIGIT maka batalkan
-                return -1;
-            }
+        $p = new Prosespencatatan($r);
+        return $p->proses($r);
 
-            $digit = "";
-            for ($i = 0; $i < $panjang; $i++) {
-                $digit = $digit . "9";
-            }
-            $digit = $digit + 1;
+        // $rekap = Pelanggan::query();
+        // $rekap->select(
+        //     'pelanggans.id',
+        // );
+        // $rekap->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
+        // $rekap->where('pencatatans.tahun', '=', $r->tahun);
+        // $rekap->where('pencatatans.bulan', '=', $r->bulan);
 
-            $pemakaian = ($digit - $awal) + $akhir;
-        }
-        return $pemakaian;
+
+        // $pel = Pelanggan::query();
+        // $pel->select(
+        //     'id',
+        //     'nama',
+        // );
+        // $pel->whereNotIn('id', $rekap->get());
+        // return $pel->get();
     }
-
-
-    public function simpanTagihan($pencatatan_id, $pelanggan_id, $pemakaian, $aksi = "tambah")
-    {
-
-        if ($aksi == "tambah") {
-            $tagihan = new Tagihan();
-        } else {
-            $tagihan = Tagihan::where('pencatatan_id', '=', $pencatatan_id)->first();
-        }
-
-        $golongan = Pelanggan::with('golongan:id,golongan,biaya,pajak,denda', 'golongan.goldetil:id,nama,awal_meteran,akhir_meteran,harga,golongan_id')
-            ->select('nama', 'golongan_id', 'penetapan')
-            ->where('id', '=', $pelanggan_id)
-            ->get();
-
-        $a = "";
-        $jumlah = 0;
-        if ($golongan[0]->penetapan == 1) {  //jika penetapan
-            $harga = GolPenetapan::where('pelanggan_id', '=', $pelanggan_id)
-                ->where('aktif', '=', 'Y')
-                ->first();
-            $biaya = $golongan[0]->golongan->biaya;
-            $dasar_pajak = $golongan[0]->golongan->pajak;
-            $denda_perbulan = $golongan[0]->golongan->denda;
-
-            $jumlah = $harga->harga;
-            $jumlah_pajak = $harga->pajak;
-        } else if (isset($golongan[0]->golongan->goldetil)) {  //jika sesuai tarif
-            foreach ($golongan[0]->golongan->goldetil as $detil) {
-                if ($pemakaian == 0) {
-                    $jumlah = $jumlah + 0;
-                    break;
-                } else if ($pemakaian > $detil->awal_meteran && $pemakaian <= $detil->akhir_meteran && $detil->akhir_meteran <> 0) {
-                    $jumlah = $jumlah + ($detil->harga * ($pemakaian - $detil->awal_meteran));
-                    break;
-                } else if ($detil->akhir_meteran == 0) {
-                    $jumlah = $jumlah + ($detil->harga * ($pemakaian - $detil->awal_meteran));
-                    break;
-                } else {
-                    $jumlah = $jumlah + ($detil->harga * ($detil->akhir_meteran - $detil->awal_meteran));
-                }
-            }
-            $biaya = $golongan[0]->golongan->biaya;
-            $dasar_pajak = $golongan[0]->golongan->pajak;
-            $denda_perbulan = $golongan[0]->golongan->denda;
-
-            $jumlah = $jumlah;
-            $jumlah_pajak = $pemakaian * $dasar_pajak;
-        }
-
-
-        $tagihan->pencatatan_id = $pencatatan_id;
-        $tagihan->jumlah = $jumlah;
-        $tagihan->denda_perbulan = $denda_perbulan;
-        $tagihan->biaya = $biaya;
-        $tagihan->pajak = $jumlah_pajak;
-        $tagihan->subtotal = $jumlah + $biaya + $jumlah_pajak;
-        $tagihan->total = $tagihan->subtotal;
-        $tagihan->diskon = 0;
-        $tagihan->denda = 0;
-        isset($harga->id) ? $tagihan->gol_penetapan_id = $harga->id : ""; //isi id gol_penetapan jika terdaftar sebagai penetapan
-        $tagihan->status_bayar = 'N';
-        $tagihan->save();
-    }
-
-
 
 
 
