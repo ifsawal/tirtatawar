@@ -104,25 +104,87 @@ class IsiMeteranController extends Controller
 
     public function isi_meteran_belum_isi(Request $r)
     {
-        $p = new Prosespencatatan($r);
-        return $p->proses($r);
+        // $p = new Prosespencatatan();
+        // return $p->proses_catatan($r);
+        $waktu = Carbon::createFromDate($r->tahun, $r->bulan, 1);
+        $waktu = $waktu->subMonth(1);
+        $tahun = $waktu->format("Y");
+        $bulanlalu = $waktu->format("m");
 
-        // $rekap = Pelanggan::query();
-        // $rekap->select(
-        //     'pelanggans.id',
-        // );
-        // $rekap->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
-        // $rekap->where('pencatatans.tahun', '=', $r->tahun);
-        // $rekap->where('pencatatans.bulan', '=', $r->bulan);
+        $pemakaian = $r->pemakaian;
 
 
-        // $pel = Pelanggan::query();
-        // $pel->select(
-        //     'id',
-        //     'nama',
-        // );
-        // $pel->whereNotIn('id', $rekap->get());
-        // return $pel->get();
+        $rekap = Pelanggan::query();
+        $rekap->select(
+            'pelanggans.id',
+        );
+        $rekap->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
+        $rekap->where('pencatatans.tahun', '=', $r->tahun);
+        $rekap->where('pencatatans.bulan', '=', $r->bulan);
+
+
+        $pel = Pelanggan::query();
+        $pel->select(
+            'id',
+            'nama',
+        );
+        $pel->whereNotIn('id', $rekap->get());
+        
+        $sukses = 0;
+        $gagal = 0;
+        $bulan_lalu_tidak_ditemukan = 0;
+        
+        foreach($pel->get() as $p){
+            DB::beginTransaction();
+            try {
+
+                $cekcatat = Pencatatan::where('bulan', $bulanlalu)
+                    ->where('tahun', $tahun)
+                    ->where('pelanggan_id', $p->id)
+                    ->first();
+                if (!$cekcatat) {
+                    DB::rollback();
+                    $bulan_lalu_tidak_ditemukan += 1;
+                    continue;
+                }
+
+                $akhir = $cekcatat->akhir + $r->pemakaian;
+                // if ($cekcatat->pemakaian == 0) {
+                //     $akhir = $cekcatat->akhir;
+                //     $pemakaian = 0;
+                // } else {
+                //     $pemakaian = $r->pemakaian;
+                // }
+
+                $pencatatan =  new Pencatatan();
+                $pencatatan->awal = $cekcatat->akhir; //
+                $pencatatan->akhir = $akhir; //
+                $pencatatan->pemakaian = $pemakaian; //
+                $pencatatan->bulan = $r->bulan; //
+                $pencatatan->tahun = $r->tahun; //
+                $pencatatan->pelanggan_id = $p->id;
+                $pencatatan->user_id = 1; //
+                $pencatatan->manual = 1; //
+                $pencatatan->save();
+
+                $tag=new Prosespencatatan();
+                $tag->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian); 
+                // $this->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian);
+                DB::commit();
+                $sukses += 1;
+            } catch (\Exception $e) {
+                DB::rollback();
+                $gagal += 1;
+            }
+        }
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Data ditemukan...",
+            "sukses" => $sukses,
+            "gagal" => $gagal,
+            "bulan_lalu_tidak_ditemukan" => $bulan_lalu_tidak_ditemukan,
+        ], 202);
+
     }
 
 
@@ -180,7 +242,9 @@ class IsiMeteranController extends Controller
                 $pencatatan->manual = 1; //
                 $pencatatan->save();
 
-                $this->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian);
+                $tag=new Prosespencatatan();
+                $tag->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian); 
+                // $this->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian);
                 DB::commit();
                 $sukses += 1;
             } catch (\Exception $e) {
