@@ -23,6 +23,7 @@ class TagihanResource extends JsonResource
         $waktucatat = date('Y-m', strtotime($waktucatat));
 
         if ($waktucatat == "2023-11") return 0;  //BULAN 11 TIDAK ADA DENDA
+        if ($waktucatat == "2023-12") return 0;  //BULAN 12 TIDAK ADA DENDA
 
         $catatkurangi1bulan = $kurangi1bulan;
         $waktukurang1bulan = date('Y-m', strtotime(Carbon::now()->subMonths(1)));
