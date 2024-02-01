@@ -91,6 +91,14 @@ class IzinController extends Controller
         DB::beginTransaction();
         try {
             $data = IzinPerubahan::findOrFail($r->id);
+            if ($data->status == 1) {
+                DB::rollback();
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Izin sudah disetujui...",
+                ], 404);
+            }
+
             if ($data->dasar == "kolektif") {  //jika kolektif
                 DB::commit();
                 return $this->izin_di_setujui_colektif($r);
@@ -133,6 +141,7 @@ class IzinController extends Controller
         DB::beginTransaction();
         try {
             $data = IzinPerubahan::findOrFail($r->id);
+
             DB::table($data->tabel)
                 ->where('id', $data->id_dirubah)
                 ->update(json_decode($data->fild, TRUE));

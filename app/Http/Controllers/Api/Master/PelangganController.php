@@ -412,10 +412,29 @@ class PelangganController extends Controller
         $izin->user_id = $user->id;
         $izin->ket = "Perubahan Pelanggan Nopel : {$pelanggan->id}<br>
         <b>Data Lama</b><br>
-        {$pelanggan->nama} - {$pelanggan->nik} - {$pelanggan->kk} -  {$pelanggan->golongan->golongan}- {$pelanggan->wiljalan->jalan} - {$pelanggan->rute->rute} - {$pelanggan->petugas->nama}  
-        <b>Data Baru<b><br>
-        {$request->nama} - {$request->nik} - {$request->kk} -  {$request->golongan_nama}- {$request->wiljalan_nama} - {$request->rute_nama} - {$request->petugas_nama}  
-        ";
+        {$pelanggan->nama} 
+        - {$pelanggan->nik} 
+        - {$pelanggan->kk} 
+        - {$pelanggan->golongan->golongan} 
+        - {$pelanggan->wiljalan->jalan} 
+        - {$pelanggan->rute->rute} 
+        - {$pelanggan->petugas->nama}  
+        <br><b>Data Baru</b><br>";
+        $request->nama == $pelanggan->nama ? $izin->ket .= "- {$request->nama}" : $izin->ket .= "<b>- {$request->nama}</b>";
+        $request->nik == $pelanggan->nik ? $izin->ket .= "- {$request->nik}" : $izin->ket .= "<b>- {$request->nik}</b>";
+        $request->kk == $pelanggan->kk ? $izin->ket .= "- {$request->kk}" : $izin->ket .= "<b>- {$request->kk}</b>";
+        $request->golongan_nama == $pelanggan->golongan->golongan ? $izin->ket .= "{$request->golongan_nama}" : $izin->ket .= "<b>- {$request->golongan_nama}</b>";
+        $request->wiljalan_nama == $pelanggan->wiljalan->jalan ? $izin->ket .= "- {$request->wiljalan_nama}" : $izin->ket .= "<b>- {$request->wiljalan_nama}</b>";
+        $request->rute_nama == $pelanggan->rute->rute ? $izin->ket .= "- {$request->rute_nama}" : $izin->ket .= "</b>- {$request->rute_nama}<b>";
+        $request->petugas_nama == $pelanggan->petugas->nama ? $izin->ket .= "- {$request->petugas_nama}" : $izin->ket .= "</b>- {$request->petugas_nama}<b>";
+
+        // - {$request->nik} 
+        // - {$request->kk} 
+        // - {$request->golongan_nama} 
+        // - {$request->wiljalan_nama} 
+        // - {$request->rute_nama} 
+        // - {$request->petugas_nama}  
+        // ";
         $izin->pdam_id = $user->pdam_id;
         $izin->save();
 
