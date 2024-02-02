@@ -32,6 +32,7 @@ return new class extends Migration
             $table->foreign('gol_penetapan_id')->references('id')->on('gol_penetapans')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id_perubahan')->nullable();
             $table->foreign('user_id_perubahan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
+            $table->integer("total_nodenda");
             $table->timestamps();
         });
     }

@@ -365,11 +365,13 @@ class PelangganController extends Controller
             'user_id_perubahan' => 'required',
             'wiljalan_id' => 'required',
             'petugas_id' => 'required',
+            'desa_id' => 'required',
 
             'golongan_nama' => 'required',
             'wiljalan_nama' => 'required',
             'petugas_nama' => 'required',
             'rute_nama' => 'required',
+            'desa_nama' => 'required',
         ]);
 
 
@@ -385,7 +387,7 @@ class PelangganController extends Controller
         }
 
 
-        $pelanggan = Pelanggan::with('golongan:id,golongan', 'wiljalan:id,jalan', 'rute:id,rute', 'petugas:id,nama')
+        $pelanggan = Pelanggan::with('golongan:id,golongan', 'wiljalan:id,jalan', 'rute:id,rute', 'petugas:id,nama', 'desa:id,desa')
             ->where('id', $request->id)
             ->first();
         $value = [
@@ -396,10 +398,8 @@ class PelangganController extends Controller
             'wiljalan_id' => $request->wiljalan_id,
             'rute_id' => $request->rute_id,
             'user_id_petugas' => $request->petugas_id,
+            'desa_id' => $request->desa_id,
         ];
-
-        // $goldasar = Golongan::find($pelanggan->golongan_id);
-        // $golfinal = Golongan::find($request->golongan_id);
 
         $user = Auth::user();
         $izin = new IzinPerubahan();
@@ -419,6 +419,7 @@ class PelangganController extends Controller
         - {$pelanggan->wiljalan->jalan} 
         - {$pelanggan->rute->rute} 
         - {$pelanggan->petugas->nama}  
+        - {$pelanggan->desa->desa}  
         <br><b>Data Baru</b><br>";
         $request->nama == $pelanggan->nama ? $izin->ket .= "- {$request->nama}" : $izin->ket .= "<b>- {$request->nama}</b>";
         $request->nik == $pelanggan->nik ? $izin->ket .= "- {$request->nik}" : $izin->ket .= "<b>- {$request->nik}</b>";
@@ -427,14 +428,8 @@ class PelangganController extends Controller
         $request->wiljalan_nama == $pelanggan->wiljalan->jalan ? $izin->ket .= "- {$request->wiljalan_nama}" : $izin->ket .= "<b>- {$request->wiljalan_nama}</b>";
         $request->rute_nama == $pelanggan->rute->rute ? $izin->ket .= "- {$request->rute_nama}" : $izin->ket .= "</b>- {$request->rute_nama}<b>";
         $request->petugas_nama == $pelanggan->petugas->nama ? $izin->ket .= "- {$request->petugas_nama}" : $izin->ket .= "</b>- {$request->petugas_nama}<b>";
+        $request->desa_nama == $pelanggan->desa->desa ? $izin->ket .= "- {$request->desa_nama}" : $izin->ket .= "</b>- {$request->desa_nama}<b>";
 
-        // - {$request->nik} 
-        // - {$request->kk} 
-        // - {$request->golongan_nama} 
-        // - {$request->wiljalan_nama} 
-        // - {$request->rute_nama} 
-        // - {$request->petugas_nama}  
-        // ";
         $izin->pdam_id = $user->pdam_id;
         $izin->save();
 
