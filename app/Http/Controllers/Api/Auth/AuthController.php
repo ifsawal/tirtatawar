@@ -11,6 +11,7 @@ use App\Models\Master\Kabupaten;
 use App\Models\Master\Kecamatan;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Pelanggan;
+use App\Models\Master\UserWiljalan;
 use App\Models\Master\Wiljalan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -51,6 +52,12 @@ class AuthController extends Controller
         $golongan = Golongan::where('pdam_id', $user->pdam->id)->get(['id', 'golongan']);
         $wiljalan = Wiljalan::where('pdam_id', $user->pdam->id)->orderBy('jalan')->get(['id', 'jalan']);
         $rute = Rute::where('pdam_id', $user->pdam->id)->get(['id', 'rute']);
+        $userwiljalan = UserWiljalan::query();
+        $userwiljalan->select('wiljalans.id', 'wiljalans.jalan',);
+        $userwiljalan->join('wiljalans', 'wiljalans.id', '=', 'user_wiljalans.wiljalan_id');
+        $userwiljalan->where('user_wiljalans.user_id', $user->id);
+
+        $bagi_user = $userwiljalan->get();
 
         $jumlah_permisi = count($col);
         $user->j_permisi = $jumlah_permisi;
@@ -75,6 +82,7 @@ class AuthController extends Controller
                 'golongan' => $golongan,
                 'rute' => $rute,
                 'wiljalan' => $wiljalan,
+                'wiljalan_user' => $bagi_user,
             ], 201);
     }
 
