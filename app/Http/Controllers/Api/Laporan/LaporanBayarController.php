@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Penagih;
 use App\Models\Master\Setoran;
+use App\Models\Viewdatabase\RincianRekapView;
 use Illuminate\Support\Facades\Auth;
 
 class LaporanBayarController extends Controller
@@ -175,7 +176,6 @@ class LaporanBayarController extends Controller
         foreach ($setoran as $d) {
             $total = $total + $d->jumlah;
         }
-
 
         return response()->json([
             "sukses" => true,
