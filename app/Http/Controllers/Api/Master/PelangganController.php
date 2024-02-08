@@ -418,9 +418,10 @@ class PelangganController extends Controller
         - {$pelanggan->golongan->golongan} 
         - {$pelanggan->wiljalan->jalan} 
         - {$pelanggan->rute->rute} 
-        - {$pelanggan->petugas->nama}  
-        - {$pelanggan->desa->desa}  
-        <br><b>Data Baru</b><br>";
+        - {$pelanggan->petugas->nama}";
+        isset($pelanggan->desa->desa) ? $izin->ket .= "- {$pelanggan->desa->desa}" : "Desa belum update";
+        $izin->ket .= "<br><b>Data Baru</b><br>";
+
         $request->nama == $pelanggan->nama ? $izin->ket .= "- {$request->nama}" : $izin->ket .= "<b>- {$request->nama}</b>";
         $request->nik == $pelanggan->nik ? $izin->ket .= "- {$request->nik}" : $izin->ket .= "<b>- {$request->nik}</b>";
         $request->kk == $pelanggan->kk ? $izin->ket .= "- {$request->kk}" : $izin->ket .= "<b>- {$request->kk}</b>";
@@ -428,7 +429,7 @@ class PelangganController extends Controller
         $request->wiljalan_nama == $pelanggan->wiljalan->jalan ? $izin->ket .= "- {$request->wiljalan_nama}" : $izin->ket .= "<b>- {$request->wiljalan_nama}</b>";
         $request->rute_nama == $pelanggan->rute->rute ? $izin->ket .= "- {$request->rute_nama}" : $izin->ket .= "<b>- {$request->rute_nama}</b>";
         $request->petugas_nama == $pelanggan->petugas->nama ? $izin->ket .= "- {$request->petugas_nama}" : $izin->ket .= "<b>- {$request->petugas_nama}</b>";
-        $request->desa_nama == $pelanggan->desa->desa ? $izin->ket .= "- {$request->desa_nama}" : $izin->ket .= "<b>- {$request->desa_nama}</b>";
+        isset($pelanggan->desa->desa) && ($request->desa_nama == $pelanggan->desa->desa) ? $izin->ket .= "- {$request->desa_nama}" : $izin->ket .= "<b>- {$request->desa_nama}</b>";
 
         $izin->pdam_id = $user->pdam_id;
         $izin->save();
