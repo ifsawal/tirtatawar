@@ -374,8 +374,6 @@ class PelangganController extends Controller
             'desa_nama' => 'required',
         ]);
 
-
-
         $sebelumnya = IzinPerubahan::where('id_dirubah', $request->id)
             ->where('status', 0)
             ->first();
@@ -399,6 +397,7 @@ class PelangganController extends Controller
             'rute_id' => $request->rute_id,
             'user_id_petugas' => $request->petugas_id,
             'desa_id' => $request->desa_id,
+            'user_id_perubahan' => $request->user_id_perubahan,
         ];
 
         $user = Auth::user();
@@ -411,24 +410,39 @@ class PelangganController extends Controller
         $izin->final = 0;
         $izin->user_id = $user->id;
         $izin->ket = "Perubahan Pelanggan Nopel : {$pelanggan->id}<br>
-        <b>Data Lama</b><br>
-        {$pelanggan->nama} 
-        - {$pelanggan->nik} 
-        - {$pelanggan->kk} 
-        - {$pelanggan->golongan->golongan} 
-        - {$pelanggan->wiljalan->jalan} 
-        - {$pelanggan->rute->rute} 
-        - {$pelanggan->petugas->nama}  
-        - {$pelanggan->desa->desa}  
-        <br><b>Data Baru</b><br>";
-        $request->nama == $pelanggan->nama ? $izin->ket .= "- {$request->nama}" : $izin->ket .= "<b>- {$request->nama}</b>";
-        $request->nik == $pelanggan->nik ? $izin->ket .= "- {$request->nik}" : $izin->ket .= "<b>- {$request->nik}</b>";
-        $request->kk == $pelanggan->kk ? $izin->ket .= "- {$request->kk}" : $izin->ket .= "<b>- {$request->kk}</b>";
-        $request->golongan_nama == $pelanggan->golongan->golongan ? $izin->ket .= "- {$request->golongan_nama}" : $izin->ket .= "<b>- {$request->golongan_nama}</b>";
-        $request->wiljalan_nama == $pelanggan->wiljalan->jalan ? $izin->ket .= "- {$request->wiljalan_nama}" : $izin->ket .= "<b>- {$request->wiljalan_nama}</b>";
-        $request->rute_nama == $pelanggan->rute->rute ? $izin->ket .= "- {$request->rute_nama}" : $izin->ket .= "<b>- {$request->rute_nama}</b>";
-        $request->petugas_nama == $pelanggan->petugas->nama ? $izin->ket .= "- {$request->petugas_nama}" : $izin->ket .= "<b>- {$request->petugas_nama}</b>";
-        $request->desa_nama == $pelanggan->desa->desa ? $izin->ket .= "- {$request->desa_nama}" : $izin->ket .= "<b>- {$request->desa_nama}</b>";
+        <b>Perubahan data</b> oleh {$user->nama}<br>
+        {$pelanggan->nama} : ";
+        $request->nama == $pelanggan->nama ? $izin->ket .= "- {$request->nama}<br>" : $izin->ket .= "<b>- {$request->nama}</b><br>";
+
+        $izin->ket .= "- {$pelanggan->nik} : ";
+        $request->nik == $pelanggan->nik ? $izin->ket .= "- {$request->nik}<br>" : $izin->ket .= "<b>- {$request->nik}</b><br>";
+
+        $izin->ket .= "- {$pelanggan->kk} : ";
+        $request->kk == $pelanggan->kk ? $izin->ket .= "- {$request->kk}<br>" : $izin->ket .= "<b>- {$request->kk}</b><br>";
+
+        $izin->ket .= "- {$pelanggan->golongan->golongan} : ";
+        $request->golongan_nama == $pelanggan->golongan->golongan ? $izin->ket .= "- {$request->golongan_nama}<br>" : $izin->ket .= "<b>- {$request->golongan_nama}</b><br>";
+
+        $izin->ket .= "- {$pelanggan->wiljalan->jalan} : ";
+        $request->wiljalan_nama == $pelanggan->wiljalan->jalan ? $izin->ket .= "- {$request->wiljalan_nama}<br>" : $izin->ket .= "<b>- {$request->wiljalan_nama}</b><br>";
+
+        $izin->ket .= "- {$pelanggan->rute->rute} : ";
+        $request->rute_nama == $pelanggan->rute->rute ? $izin->ket .= "- {$request->rute_nama}<br>" : $izin->ket .= "<b>- {$request->rute_nama}</b><br>";
+
+        $izin->ket .= "- {$pelanggan->petugas->nama} : ";
+        $request->petugas_nama == $pelanggan->petugas->nama ? $izin->ket .= "- {$request->petugas_nama}<br>" : $izin->ket .= "<b>- {$request->petugas_nama}</b><br>";
+
+        isset($pelanggan->desa->desa) ? $izin->ket .= "- {$pelanggan->desa->desa} : " : "Desa belum update : ";
+        isset($pelanggan->desa->desa) && ($request->desa_nama == $pelanggan->desa->desa) ? $izin->ket .= "- {$request->desa_nama}<br>" : $izin->ket .= "<b>- {$request->desa_nama}</b><br>";
+
+
+
+
+
+
+
+
+
 
         $izin->pdam_id = $user->pdam_id;
         $izin->save();
