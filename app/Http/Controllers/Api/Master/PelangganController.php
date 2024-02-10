@@ -278,7 +278,7 @@ class PelangganController extends Controller
 
         return response()->json([
             'sukses' => true,
-            'pesan' => "Pendaftaran berhasil...",
+            'pesan' => "Pendaftaran berhasil dan menunggu disetujui Super Admin atau yang berwenang...",
             'id' => $pelanggan->id,
             'kode' => $pelanggan->kode,
         ], 201);
@@ -448,7 +448,7 @@ class PelangganController extends Controller
 
         return response()->json([
             'sukses' => true,
-            'pesan' => "Perubahan sukses dan menuggu disetujui...",
+            'pesan' => "Perubahan sukses dan menuggu disetujui Super Admin atau yang berwenang...",
             'id' => $izin,
         ], 202);
     }

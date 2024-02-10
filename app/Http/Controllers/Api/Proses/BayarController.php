@@ -107,6 +107,11 @@ class BayarController extends Controller
             if ($setoran) {
                 $tambahsetoran = Setoran::findOrFail($setoran->id);
                 $tambahsetoran->jumlah = $tambahsetoran->jumlah  + $penagih->jumlah;
+                $tambahsetoran->dasar=$tambahsetoran->dasar+$tagihan->jumlah;
+                $tambahsetoran->denda=$tambahsetoran->denda+$tagihan->denda;
+                $tambahsetoran->adm=$tambahsetoran->adm+$tagihan->biaya;
+                $tambahsetoran->pajak=$tambahsetoran->pajak+$tagihan->pajak;
+                $tambahsetoran->diskon=$tambahsetoran->diskon+$tagihan->diskon;
                 $tambahsetoran->save();
             } else {
                 $tambahsetoran = new Setoran();
@@ -114,6 +119,11 @@ class BayarController extends Controller
                 $tambahsetoran->user_id = $user_id;
                 $tambahsetoran->tanggal = date('Y-m-d');
                 $tambahsetoran->jumlah = $penagih->jumlah;
+                $tambahsetoran->dasar=$tambahsetoran->dasar+$tagihan->jumlah;
+                $tambahsetoran->denda=$tambahsetoran->denda+$tagihan->denda;
+                $tambahsetoran->adm=$tambahsetoran->adm+$tagihan->biaya;
+                $tambahsetoran->pajak=$tambahsetoran->pajak+$tagihan->pajak;
+                $tambahsetoran->diskon=$tambahsetoran->diskon+$tagihan->diskon;
                 $tambahsetoran->save();
             }
 
@@ -366,6 +376,11 @@ class BayarController extends Controller
             }
 
             $setoran->jumlah = $setoran->jumlah - $jumlah;
+            $setoran->dasar=$setoran->dasar-$tagihan->jumlah;
+            $setoran->denda=$setoran->denda-$tagihan->denda;
+            $setoran->adm=$setoran->adm-$tagihan->biaya;
+            $setoran->pajak=$setoran->pajak-$tagihan->pajak;
+            $setoran->diskon=$setoran->diskon-$tagihan->diskon;
             $setoran->save();
 
 

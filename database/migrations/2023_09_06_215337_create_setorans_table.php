@@ -17,6 +17,11 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->date("tanggal");
             $table->integer("jumlah");
+            $table->integer("dasar");
+            $table->integer("denda");
+            $table->integer("adm");
+            $table->integer("pajak");
+            $table->integer("diskon");
             $table->unsignedBigInteger('user_id_diserahkan')->nullable();
             $table->foreign('user_id_diserahkan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->integer("diterima")->default(0);
