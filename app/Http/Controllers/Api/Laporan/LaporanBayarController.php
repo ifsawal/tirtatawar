@@ -173,8 +173,18 @@ class LaporanBayarController extends Controller
         }
 
         $total = 0;
+        $dasar = 0;
+        $denda = 0;
+        $adm = 0;
+        $pajak = 0;
+        $diskon = 0;
         foreach ($setoran as $d) {
             $total = $total + $d->jumlah;
+            $dasar = $dasar + $d->dasar;
+            $denda = $denda + $d->denda;
+            $adm = $adm + $d->adm;
+            $pajak = $pajak + $d->pajak;
+            $diskon = $diskon + $d->diskon;
         }
 
         return response()->json([
@@ -182,6 +192,11 @@ class LaporanBayarController extends Controller
             "pesan" => "Ditemukan...",
             'setoran' => $setoran,
             'total' => $total,
+            'dasar' => $dasar,
+            'denda' => $denda,
+            'adm' => $adm,
+            'pajak' => $pajak,
+            'diskon' => $diskon,
         ], 202);
     }
 
