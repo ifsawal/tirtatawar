@@ -10,6 +10,7 @@ use App\Models\Master\Wiljalan;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\UserWiljalan;
 use App\Http\Controllers\Controller;
+use App\Models\Master\Penagih;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -108,9 +109,22 @@ class LaporanPetugasController extends Controller
                 "pesan" => "Data tidak ditemukan...",
             ], 404);
         }
+        $dataperorang['tagih_sendiri'] = $this->tagih_lapangan($user_id, $r);
         return response()->json($dataperorang, 202);
     }
 
+    public function tagih_lapangan($user_id, $r)
+    {
+        $data = Penagih::query();
+        // $data->select('tagihans.total');
+
+        $data->join('tagihans', 'tagihans.id', '=', 'penagihs.tagihan_id');
+        $data->join('pencatatans', 'pencatatans.id', '=', 'tagihans.pencatatan_id');
+        $data->where('pencatatans.bulan', '=', $r->bulan);
+        $data->where('pencatatans.tahun', '=', $r->tahun);
+        $data->where('penagihs.user_id', '=', $user_id);
+        return $data->sum('tagihans.total');
+    }
 
     public function data_pencatatan_banyak(Request $r) //proses
     {
@@ -122,7 +136,7 @@ class LaporanPetugasController extends Controller
         $user = Auth::user();
         $pdam_id = $user->pdam_id;
 
-        $ka = 2;
+        $ka = 2; //petugas
         $user = User::with('roles:id,name')
             ->where('pdam_id', $pdam_id)
             ->whereHas('roles', function ($q) use ($ka) {
@@ -135,6 +149,9 @@ class LaporanPetugasController extends Controller
         foreach ($user as $u) {
             $data = $this->ambil_data($r, $u['id'], $pdam_id, true);
             if ($data['sukses'] == false) continue;
+
+            $tagih_lapangan = (int)$this->tagih_lapangan($u['id'], $r);
+
 
             $lap = LapBayar::where('bulan', $r->bulan)
                 ->where('tahun', $r->tahun)
@@ -153,6 +170,7 @@ class LaporanPetugasController extends Controller
             $lap->total_rp =  $data['jumlah_rupiah'];
             $lap->rp_terbayar =  $data['jumlah_terbayar'];
             $lap->rp_no_bayar =  $data['jumlah_rupiah'] - $data['jumlah_terbayar'];
+            $lap->tagih_sendiri =  $tagih_lapangan;
             $lap->save();
 
             $da[] = $lap;
@@ -161,15 +179,33 @@ class LaporanPetugasController extends Controller
         return response()->json([
             "sukses" => true,
             "pesan" => "Proses selesai...",
+            "data" => $da,
         ], 201);
     }
 
 
     public static function rekap($r)
     {
-        return $lap = LapBayar::where('bulan', $r->bulan)
-            ->where('tahun', $r->tahun)
-            ->get();
+
+        $data = LapBayar::query();
+        $data->select(
+            'users.nama',
+            'lap_bayars.bulan',
+            'lap_bayars.tahun',
+            'lap_bayars.jumlah_p',
+            'lap_bayars.p_terbayar',
+            'lap_bayars.p_no_bayar',
+            'lap_bayars.total_rp',
+            'lap_bayars.rp_terbayar',
+            'lap_bayars.rp_no_bayar',
+        );
+        $data->join('users', 'users.id', '=', 'lap_bayars.user_id');
+        $data->where('lap_bayars.bulan', '=', $r->bulan);
+        $data->where('lap_bayars.tahun', '=', $r->tahun);
+        $hasil_data = $data->get();
+
+
+        return $hasil_data;
     }
 
 

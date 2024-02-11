@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('total_rp');
             $table->integer('rp_terbayar');
             $table->integer('rp_no_bayar');
+            $table->integer('tagih_sendiri');
 
             $table->unique(['user_id', 'bulan', 'tahun']);
             $table->timestamps();
