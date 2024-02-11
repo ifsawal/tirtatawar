@@ -40,6 +40,7 @@ class LaporanBayarExport implements FromCollection, WithHeadings, WithColumnWidt
             "Total Uang Bayar",
             "Uang Terbayar",
             "Uang Blm Terbayar",
+            "Total ditagih sendiri",
         ];
 
         $judul = [$judul_tab1, $enter, $judul_tab2];
@@ -58,6 +59,7 @@ class LaporanBayarExport implements FromCollection, WithHeadings, WithColumnWidt
             'G' => 20,
             'H' => 20,
             'I' => 20,
+            'J' => 20,
         ];
     }
 

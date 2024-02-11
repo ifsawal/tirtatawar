@@ -11,6 +11,7 @@ use App\Models\Master\Pelanggan;
 use App\Models\Master\UserWiljalan;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Penagih;
+use App\Models\Master\Tagihan;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -110,7 +111,80 @@ class LaporanPetugasController extends Controller
             ], 404);
         }
         $dataperorang['tagih_sendiri'] = $this->tagih_lapangan($user_id, $r);
+        // $dataperorang['tagih_selain_akun'] = $this->nama_penagih_selain_akun($user_id, $r);
+
+
+
+        // $akunlain = [];
+        // $jumlah = [];
+        // foreach ($dataperorang['tagih_selain_akun'] as $u) {
+
+        //     $akunlain[] = [
+        //         $u['nama'],
+        //         $this->jumlah_tagih_lapangan_selain_akun_kita($u['id'], $r, $user_id)
+        //     ];
+        // }
+        // $dataperorang['penginput_lain'] = $akunlain;
         return response()->json($dataperorang, 202);
+    }
+
+
+    public function data_pencatatan_selain_akun(Request $r) //DATA PENAGIH  selain akun KITA
+    {
+        $this->validate($r, [
+            'byuser' => 'required',
+            'bulan' => 'required',
+            'tahun' => 'required',
+        ]);
+        $data = $this->nama_penagih_selain_akun($r->byuser, $r);
+        $akunlain = [];
+        $jumlah = [];
+        foreach ($data as $u) {
+            $akunlain[] = [
+                'nama'  => $u['nama'],
+                'total' => $this->jumlah_tagih_lapangan_selain_akun_kita($u['id'], $r, $r->byuser),
+            ];
+        }
+
+        if ($data->count() == 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Data tidak ditemukan...",
+            ], 404);
+        }
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Data ditemukan...",
+            "data"  =>  $akunlain,
+            "bank"  => $this->ditagih_bank($r->byuser, $r),
+        ], 202);
+    }
+
+    public function ditagih_bank($id_petugas, $r)
+    {
+        $data = Tagihan::query();
+        $data->join('pencatatans', 'pencatatans.id', '=', 'tagihans.pencatatan_id');
+        $data->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+        $data->where('pencatatans.bulan', '=', $r->bulan);
+        $data->where('pencatatans.tahun', '=', $r->tahun);
+        $data->where('tagihans.status_bayar', '=', 'Y');
+        $data->where('tagihans.sistem_bayar', '=', 'Transfer');
+        $data->where('pelanggans.user_id_petugas', '=', $id_petugas);
+        return $data->sum('tagihans.total');
+    }
+    public function jumlah_tagih_lapangan_selain_akun_kita($user_id, $r, $id_yang_login)
+    {
+        $data = Penagih::query();
+        $data->join('tagihans', 'tagihans.id', '=', 'penagihs.tagihan_id');
+        $data->join('pencatatans', 'pencatatans.id', '=', 'tagihans.pencatatan_id');
+        $data->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+        $data->where('pencatatans.bulan', '=', $r->bulan);
+        $data->where('pencatatans.tahun', '=', $r->tahun);
+        $data->where('penagihs.user_id', '<>', $id_yang_login);
+        $data->where('penagihs.user_id', '=', $user_id);
+        $data->where('pelanggans.user_id_petugas', '=', $id_yang_login);
+        return $data->sum('tagihans.total');
     }
 
     public function tagih_lapangan($user_id, $r)
@@ -120,13 +194,31 @@ class LaporanPetugasController extends Controller
 
         $data->join('tagihans', 'tagihans.id', '=', 'penagihs.tagihan_id');
         $data->join('pencatatans', 'pencatatans.id', '=', 'tagihans.pencatatan_id');
+        $data->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
         $data->where('pencatatans.bulan', '=', $r->bulan);
         $data->where('pencatatans.tahun', '=', $r->tahun);
         $data->where('penagihs.user_id', '=', $user_id);
+        $data->where('pelanggans.user_id_petugas', '=', $user_id);
         return $data->sum('tagihans.total');
     }
 
-    public function data_pencatatan_banyak(Request $r) //proses
+    public function nama_penagih_selain_akun($user_id, $r)
+    {
+        $data = Penagih::query();
+        $data->distinct();
+
+        $data->join('tagihans', 'tagihans.id', '=', 'penagihs.tagihan_id');
+        $data->join('pencatatans', 'pencatatans.id', '=', 'tagihans.pencatatan_id');
+        $data->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+        $data->join('users', 'users.id', '=', 'penagihs.user_id');
+        $data->where('pencatatans.bulan', '=', $r->bulan);
+        $data->where('pencatatans.tahun', '=', $r->tahun);
+        $data->where('penagihs.user_id', '<>', $user_id);
+        $data->where('pelanggans.user_id_petugas', '=', $user_id);
+        return $data->get(['users.id', 'users.nama']);
+    }
+
+    public function data_pencatatan_banyak(Request $r) //proses dan simpan
     {
         $this->validate($r, [
             'bulan' => 'required',
@@ -198,6 +290,7 @@ class LaporanPetugasController extends Controller
             'lap_bayars.total_rp',
             'lap_bayars.rp_terbayar',
             'lap_bayars.rp_no_bayar',
+            'lap_bayars.tagih_sendiri',
         );
         $data->join('users', 'users.id', '=', 'lap_bayars.user_id');
         $data->where('lap_bayars.bulan', '=', $r->bulan);
