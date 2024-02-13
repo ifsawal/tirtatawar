@@ -29,9 +29,10 @@ class LaporanPetugasController extends Controller
         $data->select(
             'pelanggans.id',
             'pelanggans.nama',
-            'tagihans.total',
+            'tagihans.total_nodenda',
             'tagihans.status_bayar',
             'tagihans.sistem_bayar',
+            'tagihans.total',
         );
         $data->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
         $data->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
@@ -57,9 +58,11 @@ class LaporanPetugasController extends Controller
 
         $total = 0;
         $bayar = 0;
+        $total_drd = 0;
         $jumlah_terbayar = 0;
         foreach ($data->get() as $d) {
             $total += $d['total'];
+            $total_drd += $d['total_nodenda'];
             if ($d['status_bayar'] == "Y") {
                 $bayar += 1;
                 $jumlah_terbayar += $d['total'];
@@ -70,6 +73,7 @@ class LaporanPetugasController extends Controller
             return [
                 "sukses" => true,
                 "pesan" => "Sukses, data ditemukan...",
+                "drd" => $total_drd,
                 "jumlah_data" => $jumlah_data,
                 "jumlah_rupiah" => $total,
                 "jumlah_terbayar" => $jumlah_terbayar,
@@ -80,6 +84,7 @@ class LaporanPetugasController extends Controller
             return [
                 "sukses" => true,
                 "pesan" => "Sukses, data ditemukan...",
+                "drd" => $total_drd,
                 "jumlah_data" => $jumlah_data,
                 "jumlah_rupiah" => $total,
                 "jumlah_terbayar" => $jumlah_terbayar,
@@ -132,17 +137,20 @@ class LaporanPetugasController extends Controller
     public function data_pencatatan_selain_akun(Request $r) //DATA PENAGIH  selain akun KITA
     {
         $this->validate($r, [
-            'byuser' => 'required',
             'bulan' => 'required',
             'tahun' => 'required',
         ]);
-        $data = $this->nama_penagih_selain_akun($r->byuser, $r);
+        $user = Auth::user();
+        !isset($r->byuser) ? $byuser = $user->id : $byuser = $r->byuser;
+
+
+        $data = $this->nama_penagih_selain_akun($byuser, $r);
         $akunlain = [];
         $jumlah = [];
         foreach ($data as $u) {
             $akunlain[] = [
                 'nama'  => $u['nama'],
-                'total' => $this->jumlah_tagih_lapangan_selain_akun_kita($u['id'], $r, $r->byuser),
+                'total' => $this->jumlah_tagih_lapangan_selain_akun_kita($u['id'], $r, $byuser),
             ];
         }
 
@@ -157,7 +165,7 @@ class LaporanPetugasController extends Controller
             "sukses" => true,
             "pesan" => "Data ditemukan...",
             "data"  =>  $akunlain,
-            "bank"  => $this->ditagih_bank($r->byuser, $r),
+            "bank"  => $this->ditagih_bank($byuser, $r),
         ], 202);
     }
 

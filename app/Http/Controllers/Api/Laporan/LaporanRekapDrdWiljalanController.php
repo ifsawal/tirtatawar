@@ -42,7 +42,7 @@ class LaporanRekapDrdWiljalanController extends Controller
                     'pencatatans.tahun',
                     'pencatatans.pemakaian',
                     'tagihans.jumlah',
-                    'tagihans.total',
+                    'tagihans.total_nodenda',
                 );
                 $data->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
                 $data->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
@@ -57,7 +57,7 @@ class LaporanRekapDrdWiljalanController extends Controller
                 $pemakaian = 0;
                 foreach ($hasil as $h) {
                     $pemakaian += $h['pemakaian'];
-                    $total += $h['total'];
+                    $total += $h['total_nodenda'];
                 }
 
                 $drd = Drdjalan::where('bulan', $r->bulan)
