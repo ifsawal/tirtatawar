@@ -8,6 +8,7 @@ use App\Models\Master\Penagih;
 use App\Models\Master\Setoran;
 use App\Models\Viewdatabase\RincianRekapView;
 use Illuminate\Support\Facades\Auth;
+use Mpdf\Mpdf;
 
 class LaporanBayarController extends Controller
 {
@@ -65,6 +66,24 @@ class LaporanBayarController extends Controller
             'perbulan_tagih' => $perbulan_tagih,
         ], 202);
     }
+
+
+    public function download_laporan_bayar(Request $r)
+    {
+        $tanggal = now();
+        isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
+
+        $user = Auth::user();
+        $data['user'] = $user->nama;
+        $data['tanggal'] = date('d-m-Y', strtotime($tanggal));
+
+        // return view("api/pdf_laporan_bayar", compact('data'));
+        $mpdf = new Mpdf();
+        $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
+        $mpdf->Output('a.pdf', 'D');
+    }
+
+
 
     public function laporan_bayar_where(Request $r)
     {
