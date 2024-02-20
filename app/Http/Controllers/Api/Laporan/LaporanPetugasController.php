@@ -61,11 +61,13 @@ class LaporanPetugasController extends Controller
         $total_drd = 0;
         $jumlah_terbayar = 0;
         foreach ($data->get() as $d) {
-            $total += $d['total'];
             $total_drd += $d['total_nodenda'];
             if ($d['status_bayar'] == "Y") {
                 $bayar += 1;
                 $jumlah_terbayar += $d['total'];
+                $total += $d['total'];
+            } elseif ($d['status_bayar'] == "N") {
+                $total += $d['total_nodenda'];
             }
         }
 
