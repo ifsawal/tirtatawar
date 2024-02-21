@@ -15,15 +15,8 @@ class LaporanBayarController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $r)  //DATA LAPORAN BAYAR YANG TAMPIL
+    public function query($r, $user_id, $tanggal) //mengbil data pembayaran hari ini
     {
-        $user_id = Auth::user()->id;
-        isset($r->user) ? $user_id = $r->user : "";
-
-        $tanggal = now();
-        isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
-
-
         $queri = [
             'tagihan:id,jumlah,diskon,denda,total,status_bayar,sistem_bayar,pencatatan_id',
             'tagihan.pencatatan:id,awal,akhir,pemakaian,bulan,tahun,pelanggan_id',
@@ -56,14 +49,31 @@ class LaporanBayarController extends Controller
             ->whereDate('tanggal', $tanggal)
             ->first();
 
+        $hasil['penagih'] = $penagih;
+        $hasil['setoran'] = $setoran;
+        $hasil['perbulan_tagih'] = $perbulan_tagih;
+        return $hasil;
+    }
+
+    public function index(Request $r)  //DATA LAPORAN BAYAR YANG TAMPIL
+    {
+        $user_id = Auth::user()->id;
+        isset($r->user) ? $user_id = $r->user : "";
+
+        $tanggal = now();
+        isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
+
+
+        $hasil = $this->query($r, $user_id, $tanggal);
+
         // isset($r->bulan) ? $setoran = "-" : "";
 
         return response()->json([
             "sukses" => true,
             "pesan" => "Ditemukan...",
-            'penagih' => $penagih,
-            'setoran' => $setoran,
-            'perbulan_tagih' => $perbulan_tagih,
+            'penagih' => $hasil['penagih'],
+            'setoran' => $hasil['setoran'],
+            'perbulan_tagih' => $hasil['perbulan_tagih'],
         ], 202);
     }
 
@@ -74,13 +84,21 @@ class LaporanBayarController extends Controller
         isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
 
         $user = Auth::user();
+        isset($r->user) ? $user_id = $r->user : $user_id = $user->id;
+
+
         $data['user'] = $user->nama;
         $data['tanggal'] = date('d-m-Y', strtotime($tanggal));
+
+        $queri = $this->query($r, $user_id, $tanggal);
+        $data['trx'] = count($queri['penagih']);
+        $data['data'] = $queri['penagih'];
+        $data['setoran'] = $queri['setoran'];
 
         // return view("api/pdf_laporan_bayar", compact('data'));
         $mpdf = new Mpdf();
         $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
-        $mpdf->Output('a.pdf', 'D');
+        $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
     }
 
 
