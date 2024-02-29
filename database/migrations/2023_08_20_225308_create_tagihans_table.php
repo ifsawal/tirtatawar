@@ -33,6 +33,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id_perubahan')->nullable();
             $table->foreign('user_id_perubahan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->integer("total_nodenda");
+            $table->integer("off_denda")->nullable();
             $table->timestamps();
         });
     }

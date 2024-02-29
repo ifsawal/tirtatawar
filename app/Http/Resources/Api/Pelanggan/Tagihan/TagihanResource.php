@@ -53,6 +53,14 @@ class TagihanResource extends JsonResource
 
         $denda = self::denda($waktucatat, $kurangi1bulan, $dendaperbulan);
 
+        if ($tagihan->off_denda === 0) { //jika denda di 0 kan
+            $tagihan->denda = 0;
+            $tagihan->subtotal = $tagihan->total_nodenda;
+            $tagihan->total = $tagihan->total_nodenda;
+            $tagihan->save();
+            return $tagihan;
+        }
+
         if ($denda > 0 and $denda <> $denda_saatini) { //jika hasil penghitungan > 0; dan $denda tidak sama dengan denda di tabel tagihan
             $tagihan->denda = $denda;
 
