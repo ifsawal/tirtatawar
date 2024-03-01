@@ -34,12 +34,12 @@ class TagihanResource extends JsonResource
         } else if ($catatkurangi1bulan == $waktukurang1bulan) {
             return $denda = 0;
         } else {
-            // $date1 = date_create($sekarang . '-1'); //perhitungan lama (denda perbulan nambah)
-            // $date2 = date_create($waktucatat . '-1');
-            // $interval = date_diff($date1, $date2);
-            // return $denda = ($interval->m - 1) * $dendaperbulan;
+            $date1 = date_create($sekarang . '-1'); //perhitungan lama (denda perbulan nambah)
+            $date2 = date_create($waktucatat . '-1');
+            $interval = date_diff($date1, $date2);
+            return $denda = ($interval->m - 1) * $dendaperbulan;
 
-            return $denda = $dendaperbulan;
+            // return $denda = $dendaperbulan;
         }
     }
 
