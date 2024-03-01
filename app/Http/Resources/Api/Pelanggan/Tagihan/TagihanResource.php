@@ -66,8 +66,8 @@ class TagihanResource extends JsonResource
 
 
 
-        if ($denda <> $denda_saatini) { //perhitungan denda nambah //jika hasil penghitungan > 0; dan $denda tidak sama dengan denda di tabel tagihan
-            // if ($denda > 0 and $denda <> $denda_saatini) { //perhitungan denda nambah //jika hasil penghitungan > 0; dan $denda tidak sama dengan denda di tabel tagihan
+        // if ($denda <> $denda_saatini) { //perhitungan denda nambah //jika hasil penghitungan > 0; dan $denda tidak sama dengan denda di tabel tagihan
+        if ($denda > 0 and $denda <> $denda_saatini) { //perhitungan denda nambah //jika hasil penghitungan > 0; dan $denda tidak sama dengan denda di tabel tagihan
             $tagihan->denda = $denda;
 
             if ($denda_saatini == 0) {
