@@ -31,15 +31,17 @@ class TagihanResource extends JsonResource
         $denda = 0;
         if ($waktucatat == $sekarang) {
             return $denda = 0;
+        } else if ($waktucatat == $waktukurang1bulan) {
+            return $denda = 0;
         } else if ($catatkurangi1bulan == $waktukurang1bulan) {
             return $denda = 0;
         } else {
-            $date1 = date_create($sekarang . '-1'); //perhitungan lama (denda perbulan nambah)
-            $date2 = date_create($waktucatat . '-1');
-            $interval = date_diff($date1, $date2);
-            return $denda = ($interval->m - 1) * $dendaperbulan;
+            // $date1 = date_create($sekarang . '-1'); //perhitungan lama (denda perbulan nambah)
+            // $date2 = date_create($waktucatat . '-1');
+            // $interval = date_diff($date1, $date2);
+            // return $denda = ($interval->m - 1) * $dendaperbulan;
 
-            // return $denda = $dendaperbulan;
+            return $denda = $dendaperbulan;
         }
     }
 
@@ -64,7 +66,8 @@ class TagihanResource extends JsonResource
 
 
 
-        if ($denda > 0 and $denda <> $denda_saatini) { //perhitungan denda nambah //jika hasil penghitungan > 0; dan $denda tidak sama dengan denda di tabel tagihan
+        if ($denda <> $denda_saatini) { //perhitungan denda nambah //jika hasil penghitungan > 0; dan $denda tidak sama dengan denda di tabel tagihan
+            // if ($denda > 0 and $denda <> $denda_saatini) { //perhitungan denda nambah //jika hasil penghitungan > 0; dan $denda tidak sama dengan denda di tabel tagihan
             $tagihan->denda = $denda;
 
             if ($denda_saatini == 0) {
