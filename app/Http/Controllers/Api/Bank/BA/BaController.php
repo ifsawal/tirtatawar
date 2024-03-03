@@ -137,6 +137,13 @@ class BaController extends Controller
                 $transfer->kode_transfer = $kode_transfer;
                 $transfer->tagihan_id = $catat->tagihan->id;
                 $transfer->save();
+
+                if ($i == 1) {
+                    $bill_id = $transfer->id;
+                }
+
+                Transfer::where('id', $transfer->id)
+                    ->update(['bill_id' => $bill_id]);
             }
 
             $data['id'] = encrypt($transfer->id);
