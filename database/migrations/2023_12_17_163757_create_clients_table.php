@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('kode')->unique()->nullable();
             $table->string('channel')->nullable();
+            $table->string('ip')->nullable();
             $table->rememberToken()->nullable();
             $table->unsignedBigInteger('pdam_id')->nullable();
             $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');

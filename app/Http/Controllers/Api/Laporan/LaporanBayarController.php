@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Laporan;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Master\Golongan;
 use App\Models\Master\Penagih;
 use App\Models\Master\Setoran;
 use App\Models\Viewdatabase\RincianRekapView;
@@ -20,7 +21,9 @@ class LaporanBayarController extends Controller
         $queri = [
             'tagihan:id,jumlah,diskon,denda,total,status_bayar,sistem_bayar,pencatatan_id',
             'tagihan.pencatatan:id,awal,akhir,pemakaian,bulan,tahun,pelanggan_id',
-            'tagihan.pencatatan.pelanggan:id,nama'
+            'tagihan.pencatatan.pelanggan:id,nama,golongan_id,wiljalan_id',
+            'tagihan.pencatatan.pelanggan.golongan:id,golongan',
+            'tagihan.pencatatan.pelanggan.wiljalan:id,jalan',
         ];
 
         if (isset($r->bulan) && isset($r->tahun)) {
@@ -39,12 +42,25 @@ class LaporanBayarController extends Controller
                 ->get();
         }
 
+        $gol = Golongan::all('id', 'golongan');
+        $hitgol = [];
+        foreach ($gol as $go) {
+            $hitgol[$go->golongan] = 0;
+        }
+
+
         $perbulan_tagih = 0;
-        if (isset($r->bulan)) {
-            foreach ($penagih as $p) {
+        foreach ($penagih as $p) {
+            if (isset($r->bulan)) {
                 $perbulan_tagih += $p->tagihan->total;
             }
+            foreach ($gol as $g) {
+                if ($g->id == $p->tagihan->pencatatan->pelanggan->golongan->id) {
+                    $hitgol[$p->tagihan->pencatatan->pelanggan->golongan->golongan] += $p->jumlah;
+                }
+            }
         }
+
         $setoran = Setoran::where('user_id', $user_id)
             ->whereDate('tanggal', $tanggal)
             ->first();
@@ -52,6 +68,7 @@ class LaporanBayarController extends Controller
         $hasil['penagih'] = $penagih;
         $hasil['setoran'] = $setoran;
         $hasil['perbulan_tagih'] = $perbulan_tagih;
+        $hasil['pergolongan'] = $hitgol;
         return $hasil;
     }
 
@@ -93,6 +110,7 @@ class LaporanBayarController extends Controller
         $queri = $this->query($r, $user_id, $tanggal);
         $data['trx'] = count($queri['penagih']);
         $data['data'] = $queri['penagih'];
+        $data['pergolongan'] = $queri['pergolongan'];
         $data['setoran'] = $queri['setoran'];
 
         // return view("api/pdf_laporan_bayar", compact('data'));

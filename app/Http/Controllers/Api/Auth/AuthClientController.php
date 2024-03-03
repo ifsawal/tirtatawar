@@ -49,6 +49,6 @@ class AuthClientController extends Controller
 
         $client = Client::where('email', $r['email'])->firstOrFail();
 
-        return $token = $client->createToken('auth_token_client', ['client'])->plainTextToken;
+        return $token = $client->createToken('auth_token', ['client'])->plainTextToken;
     }
 }

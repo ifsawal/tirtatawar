@@ -3,7 +3,6 @@
 An.             : {{ $data['user'] }}
 Tanggal bayar   : {{ $data['tanggal'] }}
 
-DRD                         : Rp. 
 Total Penerimaan hari ini   : @rp($data['setoran']['jumlah'])
 
 Jumlah Transaksi            : {{ $data['trx'] }} Pelanggan
@@ -16,6 +15,13 @@ Rincian :
 
 4. Total Pajak              : @rp($data['setoran']['pajak'])
 
+
+Rincian Tagihan Pergolongan
+@foreach ($data['pergolongan'] as $key => $value)
+@if ($value != 0)
+{{ $key }} = @rp($value) -
+@endif
+@endforeach
 
 <b>Data Tagihan</b> 
 _____________________________________________________________
@@ -37,6 +43,12 @@ _____________________________________________________________
         <td>
             <center>Jumlah
         </td>
+        <td>
+            <center>Golongan
+        </td>
+        <td>
+            <center>Wilayah/jalan
+        </td>
     </tr>
     {{ $no = 1 }}
     <tbody>
@@ -47,6 +59,8 @@ _____________________________________________________________
                 <td>{{ $p['tagihan']['pencatatan']['pelanggan']['nama'] }}</td>
                 <td> {{ $p['tagihan']['pencatatan']['bulan'] }}-{{ $p['tagihan']['pencatatan']['tahun'] }} </td>
                 <td>@rp($p['jumlah'])</td>
+                <td>{{ $p['tagihan']['pencatatan']['pelanggan']['golongan']['golongan'] }}</td>
+                <td>{{ $p['tagihan']['pencatatan']['pelanggan']['wiljalan']['jalan'] }}</td>
             </tr>
         @endforeach
     </tbody>

@@ -1,31 +1,36 @@
 <?php
 
-use App\Exports\LaporanRekapBulananExport;
-use App\Http\Controllers\Api\Auth\AuthClientController;
 use App\Models\Master\Bank;
 use Illuminate\Http\Request;
 use App\Models\Keluhan\Keluhan;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\GolPenetapan;
 use Illuminate\Support\Facades\Route;
+use App\Exports\LaporanRekapBulananExport;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Bank\BA\BaController;
 use App\Http\Controllers\Api\Master\DesaController;
+use App\Http\Controllers\Api\Master\IzinController;
 use App\Http\Controllers\Api\Master\UserController;
 use App\Http\Controllers\Api\Singel\InfoController;
+use App\Http\Controllers\Api\Bank\BSI\BsiController;
 use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Controllers\Api\Master\SetoranController;
 use App\Http\Controllers\Api\Master\TagihanController;
 use App\Http\Controllers\Api\Proses\KeluhanController;
 use App\Http\Controllers\Api\Proses\WebhookController;
+use App\Http\Controllers\Api\Auth\AuthClientController;
 use App\Http\Controllers\Api\Auth\AuthMobileController;
-use App\Http\Controllers\Api\Bank\BSI\BsiController;
 use App\Http\Controllers\Api\Master\DownloadController;
+use App\Http\Controllers\Api\Server\CekAngkaController;
 use App\Http\Controllers\Api\Master\PelangganController;
+use App\Http\Controllers\Api\Server\PerubahanController;
 use App\Http\Controllers\Api\Master\PembayaranController;
 use App\Http\Controllers\Api\Master\PencatatanController;
 use App\Http\Controllers\Api\Master\PhotoRumahController;
 use App\Http\Controllers\Api\Pelanggan\MobBankController;
 use App\Http\Controllers\Api\Pengguna\PenggunaController;
+use App\Http\Controllers\Api\Server\IsiMeteranController;
 use App\Http\Controllers\Api\Data\DataPelangganController;
 use App\Http\Controllers\Api\Master\HpPelangganController;
 use App\Http\Controllers\Api\Master\GolPenetapanController;
@@ -34,22 +39,18 @@ use App\Http\Controllers\Api\Laporan\LaporanBayarController;
 use App\Http\Controllers\Api\Pelanggan\MobTagihanController;
 use App\Http\Controllers\Api\Proses\NotifikasiFcmController;
 use App\Http\Controllers\Api\Laporan\LaporanBulananController;
+use App\Http\Controllers\Api\Laporan\LaporanPetugasController;
 use App\Http\Controllers\Api\Pelanggan\MobTagihan10Controller;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
 use App\Http\Controllers\Api\Laporan\LaporanPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
-use App\Http\Controllers\Api\Laporan\LaporanPetugasController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
+use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapDrdGolonganController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapDrdWiljalanController;
-use App\Http\Controllers\Api\Master\IzinController;
-use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
-use App\Http\Controllers\Api\Server\CekAngkaController;
-use App\Http\Controllers\Api\Server\IsiMeteranController;
-use App\Http\Controllers\Api\Server\PerubahanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -244,6 +245,8 @@ Route::prefix('v1')->group(function () {
     Route::post('/daftarclient', [AuthClientController::class, 'daftarclient']);
 
     Route::group(['middleware' => ['auth:sanctum', 'abilities:client']], function () {
+        Route::get('/ba/tagihan/{id}', [BaController::class, 'tagihan']);
+        Route::post('/ba/callback', [BaController::class, 'callback']);
     });
 
     Route::get('/bsi/inquiry', [BsiController::class, 'inquiry']);
