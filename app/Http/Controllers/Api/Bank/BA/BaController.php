@@ -125,8 +125,8 @@ class BaController extends Controller
 
                 $transfer = new Transfer();
                 $transfer->vendor = "BA";
-                $transfer->vendor_id = $kode_transfer;
-                $transfer->bill_id = $transfer->id . $kode_transfer;
+                $transfer->vendor_id = 0;
+                $transfer->bill_id = 0;
                 $transfer->va = "-";
                 $transfer->tipe = "action";
                 $transfer->bank = "ba";
@@ -139,6 +139,8 @@ class BaController extends Controller
                 $transfer->save();
             }
 
+            $data['id'] = encrypt($transfer->id);
+            $data['decr'] = decrypt($data['id']);
 
             DB::commit();
             // DB::rollback();
