@@ -34,7 +34,9 @@ class BaController extends Controller
         $validasi = preg_match($val, $nopel); //cek hny angka
         if ($validasi == 0) {
             return response()->json([
+                "status" => false,
                 "message" => "Nopel salah",
+                "kode" => 02
             ], 422);
         }
 
@@ -43,9 +45,12 @@ class BaController extends Controller
         $this->checksum = hash("sha256", $nopel . $user->client_id);
         $this->nopel = $nopel;
 
-        if ($this->checksum <> $this->payload['tandatangan'][0]) {
+
+        if (!isset($this->payload['tandatangan'][0]) or ($this->checksum <> $this->payload['tandatangan'][0]) ) {
             return response()->json([
+                "status"    =>false,
                 "pesan" => "Tanda tangan tidak sah",
+                "kode" => 02
             ], 401);
         }
 
@@ -54,6 +59,7 @@ class BaController extends Controller
             return response()->json([
                 "status" => false,
                 "pesan" => "Data tidak ditemukan",
+                "kode" => 03
             ], 404);
         }
 
@@ -64,6 +70,7 @@ class BaController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Pelanggan tidak ditemukan...",
+                "kode" => 03
             ], 404);
         }
 
@@ -79,6 +86,7 @@ class BaController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Tagihan Tidak ditemukan...",
+                "kode" => 14
             ], 404);
         }
 
@@ -91,6 +99,7 @@ class BaController extends Controller
         $meteran = 0;
         $periode = "";
         $id = array();
+        $detil = array();
         $no = 0;
         foreach ($pencatatan as $catat) {
             $total += $catat->tagihan->total;
@@ -100,19 +109,28 @@ class BaController extends Controller
             $denda += $catat->tagihan->denda;
             $meteran += $catat->pemakaian;
             $periode .= $catat->bulan . "-" . $catat->tahun . ",";
+            
+            $detil[]=[
+                "periode"   =>  $catat->bulan."/".$catat->tahun,
+                "pemakaian"   =>  $catat->pemakaian,
+                "denda"   =>  $catat->tagihan->denda,
+                "tagihan"   =>  $catat->tagihan->jumlah,
+                "no reff"   =>  $catat->id,
+            ];
 
             $id[] = $catat->tagihan->id;
         }
 
         $data['pelanggan'] = $pelanggan->nama;
         $data['total_tagihan'] = $total;
-        $data['dasar_tagihan'] = $dasar;
+        $data['harga_air'] = $dasar;
         $data['adm'] = $adm;
         $data['pajak_air_permukaan'] = $pajak;
         $data['denda'] = $denda;
         $data['pemakaian_m3'] = $meteran;
         $data['jumlah_bulan'] = count($pencatatan);
         $data['periode_bayar'] = $periode;
+        $data['detil'] = $detil;
 
         DB::beginTransaction();
         try {
@@ -146,14 +164,16 @@ class BaController extends Controller
                     ->update(['bill_id' => $bill_id]);
             }
 
-            $data['id'] = encrypt($transfer->id);
-            $data['decr'] = decrypt($data['id']);
+            $data['id_transaksi'] = encrypt($bill_id);
+            $data['detil'] = $detil;
+            // $data['decr'] = decrypt($data['id']);
 
             DB::commit();
             // DB::rollback();
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Tagihan ditemukan...",
+                "kode"  => 00,
                 "data" => $data,
 
             ], 200);
@@ -162,6 +182,7 @@ class BaController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Gagal membayar, coba sesaat lagi...",
+                'kode'  => 02
             ], 404);
         }
     }
