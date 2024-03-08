@@ -8,6 +8,7 @@ use App\Models\Master\Transfer;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class BaStatusController extends Controller
 {
@@ -26,14 +27,34 @@ class BaStatusController extends Controller
         $user = Auth::user();
         $this->payload = request()->header();
 
-
+        
         $data = $r->getContent();
         $data = json_decode($data, true);
+
+
+        $validator = Validator::make($data, [
+            'id_transaksi' => 'required|max:255',
+            'no_trx' => 'required',
+            'status' => "required|in:Y,N",
+            'waktu' => "required|date_format:Y-m-d H:i:s",
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "status"    =>false,
+                "pesan" => $validator->errors(),
+                "kode" => 02
+            ], 404);
+        }
+
+
         $this->id_transaksi     = $data['id_transaksi'];
         $this->no_trx          = $data['no_trx'];
         $this->status          = $data['status'];
         $this->waktu            = $data['waktu'];
 
+
+
+        
         $this->checksum = hash("sha256", $this->id_transaksi.$this->no_trx.$this->status.$this->waktu.$user->client_id);
 
         if (!isset($this->payload['tandatangan'][0]) or ($this->checksum <> $this->payload['tandatangan'][0]) ) {
@@ -52,8 +73,18 @@ class BaStatusController extends Controller
         DB::beginTransaction();
         try {
         foreach ($transfer as $tran){
+            if($tran->status_bayar=="Y"){
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Status sukses sudah diterima dan dikirim sebelumnya",
+                    "kode"  => 90
+                ], 200); 
+                break;
+            }
+
+
             Transfer::where('id', $tran->id)
-            ->update(['status_bayar' =>  $this->status, 'status_bayar_vendor' => $this->no_trx]);
+            ->update(['status_bayar' =>  $this->status, 'status_bayar_vendor' =>'SUCCESSFUL', 'vendor_id_string'=> $this->no_trx]);
 
         if ($this->status == 'Y') {
 

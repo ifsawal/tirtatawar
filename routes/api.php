@@ -21,9 +21,10 @@ use App\Http\Controllers\Api\Proses\KeluhanController;
 use App\Http\Controllers\Api\Proses\WebhookController;
 use App\Http\Controllers\Api\Auth\AuthClientController;
 use App\Http\Controllers\Api\Auth\AuthMobileController;
-use App\Http\Controllers\Api\Bank\BA\BaStatusController;
+use App\Http\Controllers\Api\Bank\BA\BaResetController;
 use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Server\CekAngkaController;
+use App\Http\Controllers\Api\Bank\BA\BaStatusController;
 use App\Http\Controllers\Api\Master\PelangganController;
 use App\Http\Controllers\Api\Server\PerubahanController;
 use App\Http\Controllers\Api\Master\PembayaranController;
@@ -248,7 +249,8 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => ['auth:sanctum', 'abilities:client']], function () {
         Route::get('/ba/tagihan/{id}', [BaController::class, 'tagihan']);
         Route::post('/ba/status', [BaStatusController::class, 'status']);
-        Route::post('/ba/reset', [BaStatusController::class, 'reset']);
+        Route::post('/ba/inquery', [BaStatusController::class, 'inqury']);
+        Route::post('/ba/reset', [BaResetController::class, 'reset']);
     });
 
     Route::get('/bsi/inquiry', [BsiController::class, 'inquiry']);
