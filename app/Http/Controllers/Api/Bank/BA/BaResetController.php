@@ -10,13 +10,16 @@ use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Route;
+
 
 class BaResetController extends Controller
 {
     public function reset()
     {
 
-        // App::isLocal();
+        return Route::getCurrentRoute()->subdomain;
+
         if (app()->isLocal()) {
             return 4343;
         } else {
