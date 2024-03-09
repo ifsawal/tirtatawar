@@ -21,11 +21,10 @@ class BaResetController extends Controller
     public function reset()
     {
 
-        return URL::to('/');
-        // return Request::url();
+        $urldasar = URL::to('/');
 
-        if (app()->isLocal()) {
-            return 4343;
+
+        if ($urldasar == "https://www.sandbox.tirtatawar.com" or $urldasar == "http://localhost:85/tirtatawar/public") {
         } else {
             return response()->json([
                 "sukses" => false,
