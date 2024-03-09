@@ -103,7 +103,8 @@ class BaStatusController extends Controller
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Sukses...",
-                "kode"  => "00"
+                "kode"  => "00",
+                "data"  => $data,
             ], 200);
         } catch (\Exception $e) {
             DB::rollback();

@@ -3,17 +3,32 @@
 namespace App\Http\Controllers\Api\Bank\BA;
 
 use Illuminate\Http\Request;
-use App\Models\Master\Pelanggan;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\Master\Pencatatan;
 use App\Models\Master\Tagihan;
 use App\Models\Master\Transfer;
+use App\Models\Master\Pelanggan;
+use App\Models\Master\Pencatatan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\App;
+use App\Http\Controllers\Controller;
 
 class BaResetController extends Controller
 {
     public function reset()
     {
+
+        // App::isLocal();
+        if (app()->isLocal()) {
+            return 4343;
+        } else {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Enpoint ini hanya bisa di akses melakui Sandbox atau pengujian...",
+                "kode"  => "03"
+            ], 404);
+        }
+
+
+
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
 
