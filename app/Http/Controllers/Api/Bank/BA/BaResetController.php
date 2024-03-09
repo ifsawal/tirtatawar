@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Api\Bank\BA;
 
-use Illuminate\Http\Request;
+
+
 use App\Models\Master\Tagihan;
 use App\Models\Master\Transfer;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 
 
 class BaResetController extends Controller
@@ -18,7 +21,8 @@ class BaResetController extends Controller
     public function reset()
     {
 
-        return Route::getCurrentRoute()->subdomain;
+        return URL::to('/');
+        // return Request::url();
 
         if (app()->isLocal()) {
             return 4343;
