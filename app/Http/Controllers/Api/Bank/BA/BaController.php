@@ -36,7 +36,7 @@ class BaController extends Controller
             return response()->json([
                 "status" => false,
                 "message" => "Nopel salah",
-                "kode" => 02
+                "kode" => "02"
             ], 422);
         }
 
@@ -46,11 +46,11 @@ class BaController extends Controller
         $this->nopel = $nopel;
 
 
-        if (!isset($this->payload['tandatangan'][0]) or ($this->checksum <> $this->payload['tandatangan'][0]) ) {
+        if (!isset($this->payload['tandatangan'][0]) or ($this->checksum <> $this->payload['tandatangan'][0])) {
             return response()->json([
-                "status"    =>false,
+                "status"    => false,
                 "pesan" => "Tanda tangan tidak sah",
-                "kode" => 02
+                "kode" => "02"
             ], 401);
         }
 
@@ -59,7 +59,7 @@ class BaController extends Controller
             return response()->json([
                 "status" => false,
                 "pesan" => "Data tidak ditemukan",
-                "kode" => 03
+                "kode" => "03"
             ], 404);
         }
 
@@ -70,7 +70,7 @@ class BaController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Pelanggan tidak ditemukan...",
-                "kode" => 03
+                "kode" => "03"
             ], 404);
         }
 
@@ -86,7 +86,7 @@ class BaController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Tagihan Tidak ditemukan...",
-                "kode" => 14
+                "kode" => "14"
             ], 404);
         }
 
@@ -109,9 +109,9 @@ class BaController extends Controller
             $denda += $catat->tagihan->denda;
             $meteran += $catat->pemakaian;
             $periode .= $catat->bulan . "-" . $catat->tahun . ",";
-            
-            $detil[]=[
-                "periode"   =>  $catat->bulan."/".$catat->tahun,
+
+            $detil[] = [
+                "periode"   =>  $catat->bulan . "/" . $catat->tahun,
                 "pemakaian"   =>  $catat->pemakaian,
                 "denda"   =>  $catat->tagihan->denda,
                 "tagihan"   =>  $catat->tagihan->jumlah,
@@ -173,7 +173,7 @@ class BaController extends Controller
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Tagihan ditemukan...",
-                "kode"  => 00,
+                "kode"  => "00",
                 "data" => $data,
 
             ], 200);
@@ -182,7 +182,7 @@ class BaController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Gagal membayar, coba sesaat lagi...",
-                'kode'  => 02
+                'kode'  => "02"
             ], 404);
         }
     }

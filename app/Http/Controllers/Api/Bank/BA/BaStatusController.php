@@ -22,12 +22,13 @@ class BaStatusController extends Controller
 
     protected $checksum;
     protected $payload;
-    
-    public function status(Request $r){
+
+    public function status(Request $r)
+    {
         $user = Auth::user();
         $this->payload = request()->header();
 
-        
+
         $data = $r->getContent();
         $data = json_decode($data, true);
 
@@ -40,9 +41,9 @@ class BaStatusController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                "status"    =>false,
+                "status"    => false,
                 "pesan" => $validator->errors(),
-                "kode" => 02
+                "kode" => "02"
             ], 404);
         }
 
@@ -54,72 +55,63 @@ class BaStatusController extends Controller
 
 
 
-        
-        $this->checksum = hash("sha256", $this->id_transaksi.$this->no_trx.$this->status.$this->waktu.$user->client_id);
 
-        if (!isset($this->payload['tandatangan'][0]) or ($this->checksum <> $this->payload['tandatangan'][0]) ) {
+        $this->checksum = hash("sha256", $this->id_transaksi . $this->no_trx . $this->status . $this->waktu . $user->client_id);
+
+        if (!isset($this->payload['tandatangan'][0]) or ($this->checksum <> $this->payload['tandatangan'][0])) {
             return response()->json([
-                "status"    =>false,
+                "status"    => false,
                 "pesan" => "Tanda tangan tidak sah",
-                "kode" => 02
+                "kode" => "02"
             ], 401);
         }
 
-        $id_trx_dasar=decrypt($this->id_transaksi);
+        $id_trx_dasar = decrypt($this->id_transaksi);
 
-        $transfer=Transfer::where("bill_id",$id_trx_dasar)->get();
+        $transfer = Transfer::where("bill_id", $id_trx_dasar)->get();
 
 
         DB::beginTransaction();
         try {
-        foreach ($transfer as $tran){
-            if($tran->status_bayar=="Y"){
-                return response()->json([
-                    "sukses" => false,
-                    "pesan" => "Status sukses sudah diterima dan dikirim sebelumnya",
-                    "kode"  => 90
-                ], 200); 
-                break;
+            foreach ($transfer as $tran) {
+                if ($tran->status_bayar == "Y") {
+                    return response()->json([
+                        "sukses" => false,
+                        "pesan" => "Status sukses sudah diterima dan dikirim sebelumnya",
+                        "kode"  => "90"
+                    ], 200);
+                    break;
+                }
+
+
+                Transfer::where('id', $tran->id)
+                    ->update(['status_bayar' =>  $this->status, 'status_bayar_vendor' => 'SUCCESSFUL', 'vendor_id_string' => $this->no_trx]);
+
+                if ($this->status == 'Y') {
+
+                    //proses transfer pelanggan
+                    if ($tran->tagihan_id <> NULL) {
+                        Tagihan::where('id', $tran->tagihan_id)
+                            ->update(['status_bayar' => 'Y', 'sistem_bayar' => 'Transfer', 'tgl_bayar' => date('Y-m-d H:i:s')]);
+                    }
+                }
             }
 
 
-            Transfer::where('id', $tran->id)
-            ->update(['status_bayar' =>  $this->status, 'status_bayar_vendor' =>'SUCCESSFUL', 'vendor_id_string'=> $this->no_trx]);
 
-        if ($this->status == 'Y') {
-
-            //proses transfer pelanggan
-            if ($tran->tagihan_id <> NULL) {
-                Tagihan::where('id', $tran->tagihan_id)
-                    ->update(['status_bayar' => 'Y', 'sistem_bayar' => 'Transfer', 'tgl_bayar' => date('Y-m-d H:i:s')]);
-            }
-
+            DB::commit();
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Sukses...",
+                "kode"  => "00"
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Gagal...",
+                "kode" => "03",
+            ], 404);
         }
     }
-    
-
-
-    DB::commit();
-    return response()->json([
-        "sukses" => true,
-        "pesan" => "Sukses...",
-        "kode"  => 00
-    ], 200);
-
-} catch (\Exception $e) {
-    DB::rollback();
-    return response()->json([
-        "sukses" => false,
-        "pesan" => "Gagal...",
-        "kode" => 03,
-    ], 404);
 }
-
-
-    }
-
-
-
-
-
-    }

@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\Proses\KeluhanController;
 use App\Http\Controllers\Api\Proses\WebhookController;
 use App\Http\Controllers\Api\Auth\AuthClientController;
 use App\Http\Controllers\Api\Auth\AuthMobileController;
+use App\Http\Controllers\Api\Bank\BA\BaLaporan;
 use App\Http\Controllers\Api\Bank\BA\BaResetController;
 use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Server\CekAngkaController;
@@ -249,7 +250,7 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => ['auth:sanctum', 'abilities:client']], function () {
         Route::get('/ba/tagihan/{id}', [BaController::class, 'tagihan']);
         Route::post('/ba/status', [BaStatusController::class, 'status']);
-        Route::post('/ba/inquery', [BaStatusController::class, 'inqury']);
+        Route::get('/ba/laporan/{tanggal}', [BaLaporan::class, 'laporan']);
         Route::post('/ba/reset', [BaResetController::class, 'reset']);
     });
 
