@@ -62,7 +62,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::get('/alamat/provinsi', [AlamatController::class, 'index'])->name('alamat');
+    Route::get('/alamat/provinsi', [AlamatController::class, 'index'])->name('alamat_provinsi');
     Route::post('/simpan_provinsi', [AlamatController::class, 'simpan_provinsi'])->name('simpan_provinsi');
     Route::delete('/hapus_provinsi', [AlamatController::class, 'hapus_provinsi'])->name('hapus_provinsi');
 

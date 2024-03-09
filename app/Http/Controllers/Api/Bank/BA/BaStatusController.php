@@ -69,7 +69,13 @@ class BaStatusController extends Controller
         $id_trx_dasar = decrypt($this->id_transaksi);
 
         $transfer = Transfer::where("bill_id", $id_trx_dasar)->get();
-
+        if (count($transfer) == 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "ID transaksi tagihan salah...",
+                "kode"  => "02"
+            ], 404);
+        }
 
         DB::beginTransaction();
         try {
