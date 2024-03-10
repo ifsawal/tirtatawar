@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api\Bank\BA;
 
 use Illuminate\Http\Request;
 
+use App\Models\Master\Tagihan;
 use App\Models\Master\Transfer;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -29,15 +31,24 @@ class BaController extends Controller
 
     public function tagihan($nopel)
     {
-        $val = "/^\\d+$/";
-
-        $validasi = preg_match($val, $nopel); //cek hny angka
-        if ($validasi == 0) {
+        // $val = "/^\\d+$/";
+        // $validasi = preg_match($val, $nopel); //cek hny angka
+        // if ($validasi == 0) {
+        //     return response()->json([
+        //         "status" => false,
+        //         "message" => "Nopel salah",
+        //         "kode" => "02"
+        //     ], 422);
+        // }
+        $validator = Validator::make(["nopel" => $nopel], [
+            'nopel' => 'required|integer',
+        ]);
+        if ($validator->fails()) {
             return response()->json([
-                "status" => false,
-                "message" => "Nopel salah",
+                "status"    => false,
+                "pesan" => $validator->errors(),
                 "kode" => "02"
-            ], 422);
+            ], 404);
         }
 
         $user = Auth::user();
@@ -54,14 +65,18 @@ class BaController extends Controller
             ], 401);
         }
 
-
-        if ($nopel >= 4) {
-            return response()->json([
-                "status" => false,
-                "pesan" => "Data tidak ditemukan",
-                "kode" => "03"
-            ], 404);
+        $urldasar = URL::to('/');
+        if ($urldasar == "https://www.sandbox.tirtatawar.com" or $urldasar == "http://localhost:85/tirtatawar/public") {
+            if ($nopel >= 5) {
+                return response()->json([
+                    "status" => false,
+                    "pesan" => "Data tidak ditemukan.",
+                    "kode" => "03"
+                ], 404);
+            }
         }
+
+
 
 
         $pelanggan = Pelanggan::with('golongan:id,denda')
@@ -162,6 +177,9 @@ class BaController extends Controller
 
                 Transfer::where('id', $transfer->id)
                     ->update(['bill_id' => $bill_id]);
+
+                Tagihan::where('id', $catat->tagihan->id)
+                    ->update(['bayar_bank' => date('Y-m-d H:i:s')]);
             }
 
             $data['id_transaksi'] = encrypt($bill_id);
@@ -183,7 +201,7 @@ class BaController extends Controller
                 "sukses" => false,
                 "pesan" => "Gagal membayar, coba sesaat lagi...",
                 'kode'  => "02"
-            ], 404);
+            ], 500);
         }
     }
 }

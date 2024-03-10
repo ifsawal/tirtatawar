@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Proses;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Master\Penagih;
 use App\Models\Master\Setoran;
@@ -76,7 +77,6 @@ class BayarController extends Controller
         try {
             $tagihan = Tagihan::where('id', '=', $r->id)
                 ->where('status_bayar', '=', 'Y')
-                // ->where('sistem_bayar', '=', 'Cash')
                 ->first();
             if ($tagihan) {
                 DB::rollback();
@@ -87,6 +87,18 @@ class BayarController extends Controller
             }
 
             $tagihan = Tagihan::findOrFail($r->id);
+
+            if ($tagihan->bayar_bank <> NULL) { //jika ada pembayara bank dalam 1 jam terakhir
+                $entry_date = Carbon::parse($tagihan->bayar_bank);
+                $jam    = Carbon::now()->diffInMinutes($entry_date);
+                if ($jam < 60) {
+                    return response()->json([
+                        "sukses" => false,
+                        "pesan" => "Tagihan sedang di proses Bank, silahkan cek 1 jam lagi",
+                    ], 202);
+                }
+            }
+
             $tagihan->status_bayar = "Y";
             $tagihan->sistem_bayar = "Cash";
             $tagihan->tgl_bayar = date('Y-m-d H:i:s');
