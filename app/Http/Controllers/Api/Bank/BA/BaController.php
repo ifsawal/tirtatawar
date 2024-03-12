@@ -33,7 +33,7 @@ class BaController extends Controller
 
     public function tagihan($nopel)
     {
-
+        Log::info("Cek Tagihan " .  Request::ip());
         // $val = "/^\\d+$/";
         // $validasi = preg_match($val, $nopel); //cek hny angka
         // if ($validasi == 0) {
