@@ -4,22 +4,25 @@ namespace App\Http\Controllers\Api\Bank\BA;
 
 
 
+use Illuminate\Http\Request;
 use App\Models\Master\Tagihan;
 use App\Models\Master\Transfer;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Request;
+
 
 
 class BaResetController extends Controller
 {
-    public function reset()
+    public function reset(Request $r)
     {
+        Log::info("Reset oleh " . $r->getClientIp());
 
         $urldasar = URL::to('/');
 
@@ -36,6 +39,7 @@ class BaResetController extends Controller
 
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
 
 
 

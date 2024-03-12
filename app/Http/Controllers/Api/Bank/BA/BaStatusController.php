@@ -28,6 +28,7 @@ class BaStatusController extends Controller
     {
 
         // Log::info($r->getContent());
+        return Log::info("Update status " .  $r->getClientIp());
 
         $user = Auth::user();
         $this->payload = request()->header();

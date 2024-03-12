@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Bank\BA;
 
-use Illuminate\Http\Request;
+
 
 use App\Models\Master\Tagihan;
 use App\Models\Master\Transfer;
@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\Api\Pelanggan\Tagihan\PelangganResource;
 use App\Http\Resources\Api\Pelanggan\Tagihan\PencatatanResource;
@@ -32,6 +33,7 @@ class BaController extends Controller
 
     public function tagihan($nopel)
     {
+
         // $val = "/^\\d+$/";
         // $validasi = preg_match($val, $nopel); //cek hny angka
         // if ($validasi == 0) {
