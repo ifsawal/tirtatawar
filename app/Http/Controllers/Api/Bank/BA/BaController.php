@@ -9,6 +9,7 @@ use App\Models\Master\Transfer;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +41,9 @@ class BaController extends Controller
         //         "kode" => "02"
         //     ], 422);
         // }
+
+        // Log::info(request()->header());
+
         $validator = Validator::make(["nopel" => $nopel], [
             'nopel' => 'required|integer',
         ]);

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Master\Tagihan;
 use App\Models\Master\Transfer;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -25,6 +26,9 @@ class BaStatusController extends Controller
 
     public function status(Request $r)
     {
+
+        // Log::info($r->getContent());
+
         $user = Auth::user();
         $this->payload = request()->header();
 
@@ -104,14 +108,16 @@ class BaStatusController extends Controller
             }
 
 
-
-            DB::commit();
-            return response()->json([
+            $ret = response()->json([
                 "sukses" => true,
                 "pesan" => "Sukses...",
                 "kode"  => "00",
                 "data"  => $data,
             ], 200);
+
+            DB::commit();
+            // Log::info($ret);
+            return $ret;
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
