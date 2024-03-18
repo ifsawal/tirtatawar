@@ -260,19 +260,19 @@ class PencatatanController extends Controller
             ], 404);
         }
 
-        if (($input == "2024-01" or $input == "2024-02" or $input == "2023-12" or $input == "2023-11") and ($user_id == 26 or $user_id == 1)) {
-        } else //HAPUS NANTIK 2 baris ini
+        // if (($input == "2024-01" or $input == "2024-02" or $input == "2023-12" or $input == "2023-11") and ($user_id == 26 or $user_id == 1)) {
+        // } else //HAPUS NANTIK 2 baris ini
 
-            if ($input == "2024-02") {
-            } else //HAPUS NANTIK 2 baris ini
+        // if ($input == "2024-02") {
+        // } else //HAPUS NANTIK 2 baris ini
 
-                if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
-                    return response()->json([
-                        "sukses" => false,
-                        "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
-                        "kode" => 2,
-                    ], 404);
-                }
+        if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
+                "kode" => 2,
+            ], 404);
+        }
 
 
         $cek = Pencatatan::with('tagihan:id,status_bayar,pencatatan_id')
@@ -412,10 +412,10 @@ class PencatatanController extends Controller
 
         if (isset($request->tanggal)) $waktu = Carbon::create($request->tanggal);
         else $waktu = Carbon::now();
-        // $bulan = $waktu->month;  //BERUBAH JIKA MUNDUR
-        // $tahun = $waktu->year;
-        $bulan = 2;  //manual  ex. 2 (tanpa 0)
-        $tahun = 2024;
+        $bulan = $waktu->month;  //BERUBAH JIKA MUNDUR
+        $tahun = $waktu->year;
+        // $bulan = 2;  //manual  ex. 2 (tanpa 0)
+        // $tahun = 2024;
 
         $cek = Pencatatan::with('tagihan:id,status_bayar,pencatatan_id') //PASTIKAN APAKAH UPDATE ATAU DAFTAR BARU
             ->where('pelanggan_id', '=', $request->pelanggan_id)
