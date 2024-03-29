@@ -291,7 +291,7 @@ class PencatatanController extends Controller
                 ], 404);
             }
 
-            if ($cek->manual == NULL) {
+            if ($cek->manual === NULL) {
                 return response()->json([
                     "sukses" => false,
                     "pesan" => "Input otomatis, tidak dapat dirubah...",

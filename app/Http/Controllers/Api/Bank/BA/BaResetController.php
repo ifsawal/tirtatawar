@@ -27,7 +27,7 @@ class BaResetController extends Controller
         $urldasar = URL::to('/');
 
 
-        if ($urldasar == "https://www.sandbox.tirtatawar.com" or $urldasar == "http://localhost:85/tirtatawar/public") {
+        if ($urldasar == "https://www.sandbox.tirtatawar.com" or $urldasar == "http://localhost:85/tirtatawar/public" or $urldasar == "http://127.0.0.1:8000") {
         } else {
             return response()->json([
                 "sukses" => false,
@@ -38,11 +38,11 @@ class BaResetController extends Controller
 
 
 
+
+
+
+
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-
-
-
-
         DB::beginTransaction();
         try {
 
@@ -82,7 +82,7 @@ class BaResetController extends Controller
                     }
                 }
             }
-
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             DB::commit();
             return response()->json([
                 "sukses" => true,
@@ -90,6 +90,7 @@ class BaResetController extends Controller
                 "kode"  => "00"
             ], 200);
         } catch (\Exception $e) {
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             DB::rollback();
             return response()->json([
                 "sukses" => false,
@@ -97,7 +98,5 @@ class BaResetController extends Controller
                 "kode" => "03",
             ], 404);
         }
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

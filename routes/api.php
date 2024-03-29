@@ -54,6 +54,7 @@ use App\Http\Controllers\Api\Laporan\LaporanRekapDrdGolonganController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapDrdWiljalanController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
+use App\Http\Controllers\Api\Server\AtestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -203,11 +204,14 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/isimeteran', [IsiMeteranController::class, 'isi_meteran']);
     Route::post('/isimeteranbelumisi', [IsiMeteranController::class, 'isi_meteran_belum_isi']);
 });
+Route::get('/atest', [AtestController::class, 'test1']);
+
 
 
 Route::get('/tampilphoto/{folder}/{nama}', [PhotoRumahController::class, 'tampilphoto']);
 Route::get('/tampilphotoc/{tahun}/{bulan}/{photo}', [PhotoCatatanController::class, 'tampilphotoc']);
 Route::get('/tampilphotopengerjaan/{tanggal}/{photo}', [KeluhanController::class, 'tampilphotopengerjaan']);
+
 
 
 
