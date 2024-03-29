@@ -77,7 +77,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/loginmobile', [AuthMobileController::class, 'loginmobile']);
 Route::post('/daftarpelanggan', [AuthController::class, 'daftarpelanggan']);
 
-Route::get('/coba', [AtestController::class, 'test1']);
+Route::post('/coba', [AtestController::class, 'test1']);
 
 
 
