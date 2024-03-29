@@ -77,7 +77,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/loginmobile', [AuthMobileController::class, 'loginmobile']);
 Route::post('/daftarpelanggan', [AuthController::class, 'daftarpelanggan']);
 
-
+Route::get('/coba', [AtestController::class, 'test1']);
 
 
 
@@ -204,7 +204,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/isimeteran', [IsiMeteranController::class, 'isi_meteran']);
     Route::post('/isimeteranbelumisi', [IsiMeteranController::class, 'isi_meteran_belum_isi']);
 });
-Route::get('/atest', [AtestController::class, 'test1']);
+
 
 
 
