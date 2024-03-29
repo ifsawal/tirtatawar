@@ -288,7 +288,7 @@ class KeluhanController extends Controller
             $tim->status = $r->jabatan;
             $tim->save();
 
-            if ($keluhan->kirim_petugas == NULL) {
+            if ($keluhan->kirim_petugas === NULL) {
                 $keluhan->kirim_petugas = 1;
                 $keluhan->save();
             }

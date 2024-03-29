@@ -154,7 +154,7 @@ class AuthController extends Controller
             ], 204);
         }
 
-        if ($user->email == NULL) {
+        if ($user->email === NULL) {
             $user->email = $request->email;
             $user->password = bcrypt($request->password);
             $user->save();

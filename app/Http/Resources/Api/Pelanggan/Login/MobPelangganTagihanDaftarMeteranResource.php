@@ -22,7 +22,7 @@ class MobPelangganTagihanDaftarMeteranResource extends JsonResource
             "bulan" => $this->bulan,
             "tahun" => $this->tahun,
             "photo" => $this->photo,
-            "created_at" => ($this->created_at <> NULL) ? date('d-m-Y', strtotime($this->created_at)) : NULL,
+            "created_at" => ($this->created_at !== NULL) ? date('d-m-Y', strtotime($this->created_at)) : NULL,
         ];
     }
 }

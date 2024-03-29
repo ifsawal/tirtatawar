@@ -101,7 +101,7 @@ class BaStatusController extends Controller
                 if ($this->status == 'Y') {
 
                     //proses transfer pelanggan
-                    if ($tran->tagihan_id <> NULL) {
+                    if ($tran->tagihan_id !== NULL) {
                         Tagihan::where('id', $tran->tagihan_id)
                             ->update(['status_bayar' => 'Y', 'sistem_bayar' => 'Transfer', 'tgl_bayar' => date('Y-m-d H:i:s')]);
                     }

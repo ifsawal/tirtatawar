@@ -51,7 +51,7 @@ class WebhookController extends Controller
                 if ($status_bayar == 'Y') {
 
                     //proses transfer pelanggan
-                    if ($tran->tagihan_id <> NULL) {
+                    if ($tran->tagihan_id !== NULL) {
                         Tagihan::where('id', $tran->tagihan_id)
                             ->update(['status_bayar' => 'Y', 'sistem_bayar' => 'Transfer', 'tgl_bayar' => date('Y-m-d H:i:s')]);
                     }

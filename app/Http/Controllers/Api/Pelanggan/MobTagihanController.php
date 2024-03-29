@@ -100,8 +100,8 @@ class MobTagihanController extends Controller
                 "pesan" => "Pelanggan tidak ditemukan...",
             ], 404);
         }
-        if ($pelanggan->email == NULL) $pelanggan->email = "tirtatawar1@gmail.com";
-        if ($pelanggan->desa == NULL) $pelanggan->desa = "Desa Test";
+        if ($pelanggan->email === NULL) $pelanggan->email = "tirtatawar1@gmail.com";
+        if ($pelanggan->desa === NULL) $pelanggan->desa = "Desa Test";
 
 
         if (isset($r->id)) {  //jika tagihan.a satu2

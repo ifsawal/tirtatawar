@@ -88,7 +88,7 @@ class BayarController extends Controller
 
             $tagihan = Tagihan::findOrFail($r->id);
 
-            if ($tagihan->bayar_bank <> NULL) { //jika ada pembayara bank dalam 1 jam terakhir
+            if ($tagihan->bayar_bank !== NULL) { //jika ada pembayara bank dalam 1 jam terakhir
                 $entry_date = Carbon::parse($tagihan->bayar_bank);
                 $jam    = Carbon::now()->diffInMinutes($entry_date);
                 if ($jam < 60) {
@@ -314,7 +314,7 @@ class BayarController extends Controller
             }
 
 
-            if ($penagih->user_id_izinhapus == NULL) {
+            if ($penagih->user_id_izinhapus === NULL) {
 
                 $data = Tagihan::with('pencatatan', 'pencatatan.pelanggan')
                     ->where('id', $tagihan->id)

@@ -15,7 +15,7 @@ class DataPelangganTanpaHalamanResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        if ($this->lat == NULL or $this->long == NULL or $this->desa_id == NULL or $this->rute_id == NULL  or $this->hp == NULL) {
+        if ($this->lat === NULL or $this->long === NULL or $this->desa_id === NULL or $this->rute_id === NULL  or $this->hp === NULL) {
             $lengkap = "";
         } else {
             $lengkap = "lengkap";
