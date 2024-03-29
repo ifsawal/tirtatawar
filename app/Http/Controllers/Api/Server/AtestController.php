@@ -23,6 +23,6 @@ class AtestController extends Controller
             "status"    => false,
             "pesan" => $jawab,
             "kode" => "02"
-        ], 404);
+        ], 202);
     }
 }
