@@ -71,7 +71,7 @@ class LaporanPetugasController extends Controller
             }
         }
 
-        if ($tampil_data == NULL) {
+        if ($tampil_data === NULL) {
             return [
                 "sukses" => true,
                 "pesan" => "Sukses, data ditemukan...",

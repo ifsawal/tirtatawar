@@ -28,6 +28,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id_perubahan')->nullable();
             $table->foreign('user_id_perubahan')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             $table->integer('kunci')->default(0);
+            $table->integer('kunci_edit')->nullable();
+            $table->string("ket")->nullable();
             $table->unique(array('bulan', 'tahun', 'pelanggan_id'));
             $table->softDeletes();
             $table->timestamps();

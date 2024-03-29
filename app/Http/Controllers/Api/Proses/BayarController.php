@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Master\PenagihHapus;
 use App\Http\Controllers\Controller;
 use App\Models\Master\IzinPerubahan;
+use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\Auth;
 
 class BayarController extends Controller
@@ -319,13 +320,18 @@ class BayarController extends Controller
                 $data = Tagihan::with('pencatatan', 'pencatatan.pelanggan')
                     ->where('id', $tagihan->id)
                     ->first();
-
+                if ($data->pencatatan->kunci_edit === NULL) {
+                    $pencatat = Pencatatan::findOrFail($data->pencatatan->id);
+                    $pencatat->kunci_edit = 1;
+                    $pencatat->save();
+                }
 
                 // $user = Auth::user();
                 $cek_izin = IzinPerubahan::where('id_dirubah', $penagih->id)
                     ->where('status', 0)
                     ->first();
                 if ($cek_izin) {
+                    DB::rollback();
                     return response()->json([
                         "sukses" => false,
                         "pesan" => "Izin pembatalan sebelumnya belum disetujui...",

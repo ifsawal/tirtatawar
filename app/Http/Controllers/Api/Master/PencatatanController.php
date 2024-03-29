@@ -89,7 +89,7 @@ class PencatatanController extends Controller
         $pencatatan = Pencatatan::with('user:id,nama', 'user_perubahan:id,nama')
             ->where('pelanggan_id', '=', $request->pelanggan_id)
             // ->where('manual', 1)
-            ->select(['id', 'awal', 'akhir', 'pemakaian', 'bulan', 'tahun', 'user_id', 'user_id_perubahan', 'manual'])
+            ->select(['id', 'awal', 'akhir', 'pemakaian', 'bulan', 'tahun', 'user_id', 'user_id_perubahan', 'manual', 'kunci_edit', 'ket'])
             ->orderBy('tahun', 'desc')
             ->orderBy('bulan', 'desc')
             ->limit(50)
@@ -250,7 +250,10 @@ class PencatatanController extends Controller
 
         $input = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->format("Y-m");
         $sekarang = Carbon::now();
-        $tambahbulan = $sekarang->addMonth()->format('Y-m');
+        $tambahbulan = $sekarang->addMonth()->format('Y-m'); //tambah 1 bulan ke depan dari sekarang
+
+        $kurangbulan = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonth()->format('m');  //kurangi 1 bulan
+        $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonth()->format('Y');  //kurangi tahun berdasarkan bulan
 
         if ($input >= $tambahbulan) {
             return response()->json([
@@ -274,6 +277,10 @@ class PencatatanController extends Controller
             ], 404);
         }
 
+        $cek_bln_lalu = Pencatatan::where('pelanggan_id', '=', $r->pelanggan_id)
+            ->where('bulan', $kurangbulan)
+            ->where('tahun', $kurangtahun)
+            ->first();
 
         $cek = Pencatatan::with('tagihan:id,status_bayar,pencatatan_id')
             ->where('pelanggan_id', '=', $r->pelanggan_id)
@@ -281,12 +288,27 @@ class PencatatanController extends Controller
             ->where('tahun', '=', $r->tahun)
             ->first();
 
-        if ($cek) {
+        $ket = NULL;
+        if ($cek_bln_lalu) {
+            if ($cek_bln_lalu->akhir == $r->awal) {
+                $ket = NULL;
+            } else $ket = "Awal salah"; //artinya tidak sama
+        } else $ket = NULL;
 
+
+        if ($cek) {
             if (isset($cek->tagihan->status_bayar) && $cek->tagihan->status_bayar == "Y") {
                 return response()->json([
                     "sukses" => false,
                     "pesan" => "Meteran ini tidak dapat di rubah, karena sudah di bayar...",
+                    "kode" => 0,
+                ], 404);
+            }
+
+            if ($cek->kunci_edit === 1) {
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Meteran ini tidak dapat di rubah, karena sudah pernah melakukan pembayaran...",
                     "kode" => 0,
                 ], 404);
             }
@@ -307,6 +329,7 @@ class PencatatanController extends Controller
                 $cek->tahun = $r->tahun; //
                 $cek->pelanggan_id = $r->pelanggan_id;
                 $cek->user_id_perubahan = $user_id; //
+                $cek->ket = $ket; //
                 $cek->save();
 
                 $this->simpanTagihan($cek->id, $r->pelanggan_id, $cek->pemakaian, 'ubah');
@@ -339,6 +362,7 @@ class PencatatanController extends Controller
             $pencatatan->pelanggan_id = $r->pelanggan_id;
             $pencatatan->user_id = $user_id; //
             $pencatatan->manual = 1; //
+            $pencatatan->ket = $ket; //
             $pencatatan->save();
 
             $this->simpanTagihan($pencatatan->id, $pencatatan->pelanggan_id, $pemakaian);
@@ -556,7 +580,7 @@ class PencatatanController extends Controller
 
             return response()->json([
                 "sukses" => true,
-                "pesan" => "Berhasil tercatat...",
+                "pesan" => "Sukses tercatat...",
                 "data" => $pencatatan->setVisible(['awal', 'akhir', 'pemakaian', 'bulan', 'tahun']),
             ], 201);
         } catch (\Exception $e) {
@@ -594,16 +618,34 @@ class PencatatanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function izinkan_update(Request $r)
     {
-        //
+        $pencatatan = Pencatatan::findOrFail($r->id);
+        $pencatatan->kunci_edit = NULL;
+        $pencatatan->save();
+        return response()->json([
+
+            "sukses" => true,
+            "pesan" => "Sukses... Pencatatan sudah dapat diedit...",
+        ], 201);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function catat_keterangan(Request $r)
     {
-        //
+        $this->validate($r, [
+            'id' => 'required',  //id pencatatan
+            'ket' => 'required',
+        ]);
+
+        $pencatatan = Pencatatan::findOrFail($r->id);
+        $pencatatan->ket = $r->ket;
+        $pencatatan->save();
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Sukses... Pencatatan berhasil dibuat...",
+        ], 201);
     }
 }
