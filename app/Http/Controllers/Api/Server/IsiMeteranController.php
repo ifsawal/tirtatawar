@@ -107,7 +107,7 @@ class IsiMeteranController extends Controller
         // $p = new Prosespencatatan();
         // return $p->proses_catatan($r);
         $waktu = Carbon::createFromDate($r->tahun, $r->bulan, 1);
-        $waktu = $waktu->subMonth(1);
+        $waktu = $waktu->subMonthsNoOverflow(1);
         $tahun = $waktu->format("Y");
         $bulanlalu = $waktu->format("m");
 
@@ -129,12 +129,12 @@ class IsiMeteranController extends Controller
             'nama',
         );
         $pel->whereNotIn('id', $rekap->get());
-        
+
         $sukses = 0;
         $gagal = 0;
         $bulan_lalu_tidak_ditemukan = 0;
-        
-        foreach($pel->get() as $p){
+
+        foreach ($pel->get() as $p) {
             DB::beginTransaction();
             try {
 
@@ -167,8 +167,8 @@ class IsiMeteranController extends Controller
                 $pencatatan->manual = 1; //
                 $pencatatan->save();
 
-                $tag=new Prosespencatatan();
-                $tag->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian); 
+                $tag = new Prosespencatatan();
+                $tag->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian);
                 // $this->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian);
                 DB::commit();
                 $sukses += 1;
@@ -184,7 +184,6 @@ class IsiMeteranController extends Controller
             "gagal" => $gagal,
             "bulan_lalu_tidak_ditemukan" => $bulan_lalu_tidak_ditemukan,
         ], 202);
-
     }
 
 
@@ -193,7 +192,7 @@ class IsiMeteranController extends Controller
     {
 
         $waktu = Carbon::createFromDate($r->tahun, $r->bulan, 1);
-        $waktu = $waktu->subMonth(1);
+        $waktu = $waktu->subMonthsNoOverflow(1);
         $tahun = $waktu->format("Y");
         $bulanlalu = $waktu->format("m");
 
@@ -242,8 +241,8 @@ class IsiMeteranController extends Controller
                 $pencatatan->manual = 1; //
                 $pencatatan->save();
 
-                $tag=new Prosespencatatan();
-                $tag->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian); 
+                $tag = new Prosespencatatan();
+                $tag->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian);
                 // $this->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian);
                 DB::commit();
                 $sukses += 1;

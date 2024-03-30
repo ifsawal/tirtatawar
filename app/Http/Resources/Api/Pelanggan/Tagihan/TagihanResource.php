@@ -50,7 +50,7 @@ class TagihanResource extends JsonResource
         // DB::beginTransaction();
         // try {
         $waktucatat = $tahun . '-' . $bulan . '-' . '1';
-        $kurangi1bulan = date('Y-m', strtotime(Carbon::create($tahun, $bulan, 1)->subMonths(1)));
+        $kurangi1bulan = date('Y-m', strtotime(Carbon::create($tahun, $bulan, 1)->subMonthsNoOverflow(1)));
 
         $tagihan = Tagihan::findOrFail($tagihan_id);
 

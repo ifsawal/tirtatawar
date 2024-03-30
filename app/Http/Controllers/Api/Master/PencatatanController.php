@@ -252,8 +252,8 @@ class PencatatanController extends Controller
         $sekarang = Carbon::now();
         $tambahbulan = $sekarang->addMonth()->format('Y-m'); //tambah 1 bulan ke depan dari sekarang
 
-        $kurangbulan = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonth()->format('m');  //kurangi 1 bulan
-        $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonth()->format('Y');  //kurangi tahun berdasarkan bulan
+        $kurangbulan = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('m');  //kurangi 1 bulan
+        $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('Y');  //kurangi tahun berdasarkan bulan
 
         if ($input >= $tambahbulan) {
             return response()->json([
