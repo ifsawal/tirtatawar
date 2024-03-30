@@ -26,12 +26,12 @@ class TagihanResource extends JsonResource
         // if ($waktucatat == "2023-12") return 0;  //BULAN 12 TIDAK ADA DENDA
 
         $catatkurangi1bulan = $kurangi1bulan;
-        $waktukurang1bulan = date('Y-m', strtotime(Carbon::now()->subMonths(1)));
+        $waktukurang1bulan = date('Y-m', strtotime(Carbon::now()->subMonthsNoOverflow(1)));
 
         $denda = 0;
         if ($waktucatat == $sekarang) {
             return $denda = 0;
-        } else if ($waktucatat == $waktukurang1bulan) {
+        } else if ($waktucatat == $waktukurang1bulan) { // ini belum berlaku
             return $denda = 0;
         } else if ($catatkurangi1bulan == $waktukurang1bulan) {
             return $denda = 0;
