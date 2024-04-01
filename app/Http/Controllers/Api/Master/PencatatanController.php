@@ -266,16 +266,16 @@ class PencatatanController extends Controller
         // if (($input == "2024-01" or $input == "2024-02" or $input == "2023-12" or $input == "2023-11") and ($user_id == 26 or $user_id == 1)) {
         // } else //HAPUS NANTIK 2 baris ini
 
-        // if ($input == "2024-02") {
-        // } else //HAPUS NANTIK 2 baris ini
+        if ($input == "2024-03") {
+        } else //HAPUS NANTIK 2 baris ini
 
-        if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
-            return response()->json([
-                "sukses" => false,
-                "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
-                "kode" => 2,
-            ], 404);
-        }
+            if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
+                    "kode" => 2,
+                ], 404);
+            }
 
         $cek_bln_lalu = Pencatatan::where('pelanggan_id', '=', $r->pelanggan_id)
             ->where('bulan', $kurangbulan)
