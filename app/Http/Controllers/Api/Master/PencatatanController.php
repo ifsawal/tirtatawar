@@ -255,7 +255,7 @@ class PencatatanController extends Controller
         $kurangbulan = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('m');  //kurangi 1 bulan
         $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('Y');  //kurangi tahun berdasarkan bulan
 
-        if ($input >= $tambahbulan) {
+        if ($input >= $tambahbulan or (date('Y-m') == $input && date('d') <= 20)) {
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Meteran bulan depan tidak dapat di isi...",
