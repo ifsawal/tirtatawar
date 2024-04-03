@@ -356,7 +356,7 @@ class BayarController extends Controller
                 // DB::rollback();
                 return response()->json([
                     "sukses" => true,
-                    "pesan" => "Pembatalan menunggu izin...",
+                    "pesan" => "Pembatalan menunggu izin... pastikan izin diberikan hari ini, karena pembatalan hanya berlaku 1 hari",
                 ], 202);
             }
 

@@ -271,19 +271,19 @@ class PencatatanController extends Controller
             ], 404);
         }
 
-        // if (($input == "2024-01" or $input == "2024-02" or $input == "2023-12" or $input == "2023-11") and ($user_id == 26 or $user_id == 1)) {
-        // } else //HAPUS NANTIK 2 baris ini
-
-        if ($input == "2024-03") {
+        if (($input == "2024-03" or $input == "2024-01" or $input == "2024-02" or $input == "2023-12" or $input == "2023-11") and ($user_id == 26 or $user_id == 1)) {
         } else //HAPUS NANTIK 2 baris ini
 
-            if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
-                return response()->json([
-                    "sukses" => false,
-                    "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
-                    "kode" => 2,
-                ], 404);
-            }
+            if ($input == "2024-03") {
+            } else //HAPUS NANTIK 2 baris ini
+
+                if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
+                    return response()->json([
+                        "sukses" => false,
+                        "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
+                        "kode" => 2,
+                    ], 404);
+                }
 
         $cek_bln_lalu = Pencatatan::where('pelanggan_id', '=', $r->pelanggan_id)
             ->where('bulan', $kurangbulan)
@@ -391,6 +391,60 @@ class PencatatanController extends Controller
     }
 
 
+    //catat manual banyak
+    public function catat_manual_banyak(Request $r)
+    {
+    }
+
+    public function ambil_data_belum_tercatat(Request $r)
+    {
+        $user = Auth::user();
+        $catat = Pelanggan::query();
+        $catat->select(
+            'pelanggans.id',
+        );
+        $catat->leftjoin('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
+
+        $catat->where('pelanggans.user_id_petugas', '=', $user->id);
+        $catat->Where('pencatatans.tahun', '=', $r->tahun);
+        $catat->Where('pencatatans.bulan', '=', $r->bulan);
+        // return $catat->get();
+        $pel = Pelanggan::query();
+        $pel->select(
+            'pelanggans.id',
+            'pelanggans.nama',
+            'wiljalans.jalan',
+        );
+
+        $pel->join('wiljalans', 'wiljalans.id', '=', 'pelanggans.wiljalan_id');
+        $pel->whereNotIn('pelanggans.id', $catat->get());
+        $pel->where('pelanggans.user_id_petugas', '=', $user->id);
+        $pel->limit(20);
+        $pel->get();
+
+        $bulan_sebelumnya = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('n');
+        $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('Y');  //kurangi tahun berdasarkan bulan
+
+        $hasil = $pel->get()->map(function ($da) use ($bulan_sebelumnya, $kurangtahun) {
+            $catatansebelumnya = Pencatatan::where('pelanggan_id', $da->id)
+                ->select('id', 'awal', 'akhir')
+                ->where('bulan', $bulan_sebelumnya)
+                ->where('tahun', $kurangtahun)
+                ->first();
+            return [
+                "id" => $da->id,
+                "nama" => $da->nama,
+                "wiljalan" => $da->jalan,
+                "catatan" => $catatansebelumnya,
+            ];
+        });
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Data ditemukan...",
+            "data" => $hasil
+        ], 202);
+    }
 
 
 

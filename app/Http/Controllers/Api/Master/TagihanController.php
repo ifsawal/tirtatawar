@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Resources\Api\Pelanggan\Tagihan\TagihanResource;
+use App\Models\Master\Penagih;
 
 class TagihanController extends Controller
 {
@@ -78,11 +79,19 @@ class TagihanController extends Controller
         $tagihan = Tagihan::where('pencatatan_id', $pencatatan->id)
             ->first();
 
+        $izin_hapus = NULL;
+        $penagih = Penagih::where('tagihan_id', $tagihan->id)->first();
+
+        if ($penagih) {
+            $izin_hapus = $penagih->user_id_izinhapus;
+        }
+
         if ($tagihan->status_bayar == "Y") {  //jika sudah bayar jangan di proses lagi
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Ditemukan...",
                 'tagihan' => $tagihan,
+                'izin_hapus' => $izin_hapus,
 
             ], 202);
         }

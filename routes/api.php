@@ -98,6 +98,8 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/datameteranmanual', [PencatatanController::class, 'datameteranmanual']);
     Route::post('/catat', [PencatatanController::class, 'store']);
     Route::post('/catatmanual', [PencatatanController::class, 'catat_manual']);
+    Route::post('/databanyak', [PencatatanController::class, 'ambil_data_belum_tercatat']);
+
     Route::post('/izinkanupdate', [PencatatanController::class, 'izinkan_update']);
     Route::post('/catatketerangan', [PencatatanController::class, 'catat_keterangan']);
     Route::post('/laporanpencatatan', [LaporanPencatatanController::class, 'laporanpencatatan']);
