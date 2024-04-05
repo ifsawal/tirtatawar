@@ -181,9 +181,24 @@ class TagihanController extends Controller
      * Show the form for creating a new resource.
      */
 
-    public function create()
+    public function hapus_denda(Request $r)
     {
-        //
+        $this->validate($r, [
+            'id' => 'required', //id pencatatan
+        ]);
+
+        $user= Auth::user();
+        $catat = Pencatatan::where('id', '=', $r->id)
+            ->first();
+        $tagih = Tagihan::where('pencatatan_id', '=', $catat->id)
+            ->first();
+        $tagih->off_denda=1;
+        $tagih->save();
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Sukses dihapus...",
+        ], 201);
     }
 
     /**
