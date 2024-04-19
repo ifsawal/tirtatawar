@@ -425,9 +425,15 @@ class PencatatanController extends Controller
         $bulan_sebelumnya = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('n');
         $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('Y');  //kurangi tahun berdasarkan bulan
 
+        if (count($pel->get()) === 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Data tidak ditemukan...",
+            ], 404);
+        }
         $hasil = $pel->get()->map(function ($da) use ($bulan_sebelumnya, $kurangtahun) {
             $catatansebelumnya = Pencatatan::where('pelanggan_id', $da->id)
-                ->select('id', 'awal', 'akhir')
+                ->select('id', 'awal', 'akhir', 'pemakaian')
                 ->where('bulan', $bulan_sebelumnya)
                 ->where('tahun', $kurangtahun)
                 ->first();

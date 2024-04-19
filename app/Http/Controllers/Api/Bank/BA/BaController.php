@@ -49,6 +49,10 @@ class BaController extends Controller
         $validator = Validator::make(["nopel" => $nopel], [
             'nopel' => 'required|integer',
         ]);
+
+        $ip = Request::ip();
+
+
         if ($validator->fails()) {
             return response()->json([
                 "status"    => false,
@@ -61,6 +65,16 @@ class BaController extends Controller
         $this->payload = request()->header();
         $this->checksum = hash("sha256", $nopel . $user->client_id);
         $this->nopel = $nopel;
+        $urldasar = URL::to('/');
+
+
+        if ($user->ip <> $ip && $urldasar == "https://www.tirtatawar.com") {
+            return response()->json([
+                "status"    => false,
+                "pesan" => "Akses tidak di izinkan",
+                "kode" => "02"
+            ], 401);
+        }
 
 
         if (!isset($this->payload['tandatangan'][0]) or ($this->checksum <> $this->payload['tandatangan'][0])) {
@@ -71,7 +85,7 @@ class BaController extends Controller
             ], 401);
         }
 
-        $urldasar = URL::to('/');
+        //sample 4 user
         if ($urldasar == "https://www.sandbox.tirtatawar.com" or $urldasar == "http://localhost:85/tirtatawar/public") {
             if ($nopel >= 5) {
                 return response()->json([
