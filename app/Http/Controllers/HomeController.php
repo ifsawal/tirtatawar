@@ -27,4 +27,6 @@ class HomeController extends Controller
         // $log=Auth::user()->nama;
         return view('home');
     }
+
+
 }

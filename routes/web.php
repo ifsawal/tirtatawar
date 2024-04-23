@@ -95,6 +95,8 @@ Route::middleware('auth')->group(function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/hapusakun', [App\Http\Controllers\GeneralController::class, 'hapus_akun'])->name("hapus_akun");
+Route::post('/proseshapusakun', [App\Http\Controllers\GeneralController::class, 'proses_hapus_akun'])->name("proses_hapus_akun");
 
 //privasi
 Route::get('/privacy ', [SingelController::class, 'privacy']);
