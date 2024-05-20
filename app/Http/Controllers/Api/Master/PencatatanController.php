@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Master;
 
+use App\Fungsi\Respon;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Master\Tagihan;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Master\GolPenetapan;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use DragonCode\Support\Facades\Helpers\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Spatie\Permission\Models\Role;
@@ -271,12 +273,12 @@ class PencatatanController extends Controller
             ], 404);
         }
 
-        if (($input == "2024-03" or 
-        $input == "2024-01" or 
-        $input == "2024-02" or 
-        $input == "2024-04" or 
-        $input == "2023-12" or 
-        $input == "2023-11") and ($user_id == 1 or $user_id == 26)) {
+        if (($input == "2024-03" or
+            $input == "2024-01" or
+            $input == "2024-02" or
+            $input == "2024-04" or
+            $input == "2023-12" or
+            $input == "2023-11") and ($user_id == 1 or $user_id == 26)) {
         } else //HAPUS NANTIK 2 baris ini
 
             // if ($input == "2024-04") {
@@ -397,9 +399,90 @@ class PencatatanController extends Controller
 
 
     //catat manual banyak
-    public function catat_manual_banyak(Request $r)
+    public function simpan_data_banyak(Request $r)
     {
+        $this->validate($r, [
+            'bulan' => 'required',
+            'tahun' => 'required',
+            'nopel' => 'required',
+            'meteran' => 'required',
+        ]);
+
+        $user_id = Auth::user()->id;
+
+        $nopel = explode(" ", str_replace(array('(', ')'), "", $r->nopel));
+        $meteran = explode(" ", str_replace(array('(', ')'), "", $r->meteran));
+        if (count($nopel) <> count($meteran)) {
+            return Respon::respon([]);
+        }
+
+
+        $pelanggan = Pelanggan::whereIn('id', $nopel)->get();
+        if (count($pelanggan) !== count($nopel)) {
+            return Respon::respon2("Mohon di cek, ada nomor pelanggan yang salah");
+        }
+
+        $bulan_sebelumnya = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('n');
+        $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('Y');  //kurangi tahun berdasarkan bulan
+
+        $sebelumnya = Pencatatan::whereIn('pelanggan_id', $nopel)
+            ->where('bulan', $bulan_sebelumnya)
+            ->where('tahun', $kurangtahun)
+            ->get();
+
+        if (count($sebelumnya) !== count($nopel)) {
+            return Respon::respon2("Gagal, ada data catatan lalu yang tidak ditemukan...");
+        }
+
+        $pel = array();
+        $status = "";
+        for ($i = 0; $i < count($nopel); $i++) {
+            $pakai = $meteran[$i] - $sebelumnya[$i]['akhir'];
+
+            if ($pakai < 0) {
+                $status = "Gagal, karena minus";
+            } else if ($pakai > 99) {
+                $status = "Gagal... di atas 99m3";
+            } else {
+
+                DB::beginTransaction();
+                try {
+                    $pencatatan =  new Pencatatan();
+                    $pencatatan->awal = $sebelumnya[$i]['akhir']; //
+                    $pencatatan->akhir = $meteran[$i]; //
+                    $pencatatan->pemakaian = $pakai; //
+                    $pencatatan->bulan = $r->bulan; //
+                    $pencatatan->tahun = $r->tahun; //
+                    $pencatatan->pelanggan_id = $nopel[$i];
+                    $pencatatan->user_id = $user_id; //
+                    $pencatatan->manual = 1; //
+                    $pencatatan->ket = NULL; //
+                    $pencatatan->save();
+
+                    $this->simpanTagihan($pencatatan->id, $pencatatan->pelanggan_id, $pakai);
+                    DB::commit();
+
+                    $status = "Sukses";
+                } catch (\Exception $e) {
+                    $status = "Gagal, error data";
+                }
+            }
+
+            $pel[] = [
+                "nopel" =>  $nopel[$i],
+                "meteran" => $meteran[$i],
+                "pemakaian" => $pakai,
+                "status" => $status,
+            ];
+        }
+
+        return Respon::respon($pel);
     }
+
+
+
+
+
 
     public function ambil_data_belum_tercatat(Request $r)
     {
@@ -408,12 +491,12 @@ class PencatatanController extends Controller
         $catat->select(
             'pelanggans.id',
         );
-        $catat->leftjoin('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
-
+        $catat->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
         $catat->where('pelanggans.user_id_petugas', '=', $user->id);
         $catat->Where('pencatatans.tahun', '=', $r->tahun);
         $catat->Where('pencatatans.bulan', '=', $r->bulan);
-        // return $catat->get();
+        // $catat->get();
+
         $pel = Pelanggan::query();
         $pel->select(
             'pelanggans.id',
