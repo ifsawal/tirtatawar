@@ -470,6 +470,7 @@ class PencatatanController extends Controller
 
             $pel[] = [
                 "nopel" =>  $nopel[$i],
+                "nama" =>  $pelanggan[$i]['nama'],
                 "meteran" => $meteran[$i],
                 "pemakaian" => $pakai,
                 "status" => $status,
