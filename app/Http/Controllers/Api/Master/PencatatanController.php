@@ -218,7 +218,9 @@ class PencatatanController extends Controller
     }
 
 
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //simpan catatan manual
     public function catat_manual(Request $r)
@@ -397,27 +399,41 @@ class PencatatanController extends Controller
         }
     }
 
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //catat manual banyak
     public function simpan_data_banyak(Request $r)
     {
         $this->validate($r, [
             'bulan' => 'required',
             'tahun' => 'required',
-            'nopel' => 'required',
             'meteran' => 'required',
         ]);
 
         $user_id = Auth::user()->id;
 
-        $nopel = explode(" ", str_replace(array('(', ')'), "", $r->nopel));
-        $meteran = explode(" ", str_replace(array('(', ')'), "", $r->meteran));
-        if (count($nopel) <> count($meteran)) {
-            return Respon::respon([]);
+        $bukakurung = str_replace(array('('), "[", $r->meteran);
+        $tutupkurung = str_replace(array(')'), "]", $bukakurung);
+        $koma = str_replace(array(' '), ",", $tutupkurung);
+        if (!json_decode($koma)) {
+            return Respon::respon2("Format data salah...");
         }
+        $j = json_decode($koma);
 
 
-        $pelanggan = Pelanggan::whereIn('id', $nopel)->get();
+        $urut = collect($j)->sortBy('nopel');
+        $nopel = array();
+        foreach ($urut as $u) {
+            $nopel[] = $u->nopel;
+        }
+        // return $nopel;
+
+
+        $pelanggan = Pelanggan::whereIn('id', $nopel)
+            ->orderBy('id')
+            ->get();
         if (count($pelanggan) !== count($nopel)) {
             return Respon::respon2("Mohon di cek, ada nomor pelanggan yang salah");
         }
@@ -425,9 +441,11 @@ class PencatatanController extends Controller
         $bulan_sebelumnya = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('n');
         $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('Y');  //kurangi tahun berdasarkan bulan
 
+
         $sebelumnya = Pencatatan::whereIn('pelanggan_id', $nopel)
             ->where('bulan', $bulan_sebelumnya)
             ->where('tahun', $kurangtahun)
+            ->orderBy('pelanggan_id')
             ->get();
 
         if (count($sebelumnya) !== count($nopel)) {
@@ -436,8 +454,9 @@ class PencatatanController extends Controller
 
         $pel = array();
         $status = "";
-        for ($i = 0; $i < count($nopel); $i++) {
-            $pakai = $meteran[$i] - $sebelumnya[$i]['akhir'];
+        $i = 0;
+        foreach ($urut as $p) {
+            $pakai = $p->meteran - $sebelumnya[$i]['akhir'];
 
             if ($pakai < 0) {
                 $status = "Gagal, karena minus";
@@ -449,11 +468,11 @@ class PencatatanController extends Controller
                 try {
                     $pencatatan =  new Pencatatan();
                     $pencatatan->awal = $sebelumnya[$i]['akhir']; //
-                    $pencatatan->akhir = $meteran[$i]; //
+                    $pencatatan->akhir = $p->meteran; //
                     $pencatatan->pemakaian = $pakai; //
                     $pencatatan->bulan = $r->bulan; //
                     $pencatatan->tahun = $r->tahun; //
-                    $pencatatan->pelanggan_id = $nopel[$i];
+                    $pencatatan->pelanggan_id = $p->nopel;
                     $pencatatan->user_id = $user_id; //
                     $pencatatan->manual = 1; //
                     $pencatatan->ket = NULL; //
@@ -462,19 +481,23 @@ class PencatatanController extends Controller
                     $this->simpanTagihan($pencatatan->id, $pencatatan->pelanggan_id, $pakai);
                     DB::commit();
 
-                    $status = "Sukses";
+                $status = "Sukses";
                 } catch (\Exception $e) {
                     $status = "Gagal, error data";
                 }
             }
 
             $pel[] = [
-                "nopel" =>  $nopel[$i],
+                "nopel" =>  $p->nopel,
+                "meteran" => $p->meteran,
+                "nopel_database" => $pelanggan[$i]['id'],
+                "meteran_lalu" => $sebelumnya[$i]['akhir'],
                 "nama" =>  $pelanggan[$i]['nama'],
-                "meteran" => $meteran[$i],
+                "nopel_di_pencatatan" =>  $sebelumnya[$i]['pelanggan_id'],
                 "pemakaian" => $pakai,
                 "status" => $status,
             ];
+            $i++;
         }
 
         return Respon::respon($pel);
@@ -487,6 +510,7 @@ class PencatatanController extends Controller
 
     public function ambil_data_belum_tercatat(Request $r)
     {
+        
         $user = Auth::user();
         $catat = Pelanggan::query();
         $catat->select(
@@ -508,6 +532,7 @@ class PencatatanController extends Controller
         $pel->join('wiljalans', 'wiljalans.id', '=', 'pelanggans.wiljalan_id');
         $pel->whereNotIn('pelanggans.id', $catat->get());
         $pel->where('pelanggans.user_id_petugas', '=', $user->id);
+        isset($r->wiljalan_id) ? $pel->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : '';
         $pel->limit(20);
         $pel->get();
 
@@ -544,6 +569,10 @@ class PencatatanController extends Controller
 
 
     //simpan catatan rutin otomatis
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public function store(Request $request)
     {
 
