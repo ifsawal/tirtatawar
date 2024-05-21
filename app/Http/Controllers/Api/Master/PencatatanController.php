@@ -218,46 +218,16 @@ class PencatatanController extends Controller
     }
 
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //simpan catatan manual
-    public function catat_manual(Request $r)
+
+
+
+    public function cek_tanggal_input($bulan, $tahun, $user_id)
     {
-        $this->validate($r, [
-            'awal' => 'required|integer',
-            'akhir' => 'required|integer',
-            'bulan' => 'required|integer',
-            'tahun' => 'required|integer',
-            'pelanggan_id' => 'required',
-        ]);
-        $user_id = Auth::user()->id;
-
-        $pemakaian = $this->hitung($r->awal, $r->akhir);
-        if ($pemakaian < 0) {
-            return response()->json([
-                "sukses" => false,
-                "pesan" => "Sepertinya input meteran terbalik...",
-                "kode" => 2,
-            ], 404);
-        } else if ($pemakaian > 50)  //JIKA  TERLALU BESAR PEMAKAIAN
-        {
-            if (!isset($r->pemakaian_besar)) {
-                return response()->json([
-                    "sukses" => false,
-                    "pesan" => "Total pemakaian : " . $pemakaian . " m3<br> Pemakaian diatas 50 m3, Contreng persetujuan...",
-                    "kode" => 4, //harus conteng pemakaian besar
-                ], 404);
-            }
-        }
-
-        $input = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->format("Y-m");
+        $input = Carbon::parse($tahun . "-" . $bulan . "-1")->format("Y-m");
         $sekarang = Carbon::now();
         $tambahbulan = $sekarang->addMonth()->format('Y-m'); //tambah 1 bulan ke depan dari sekarang
 
-        $kurangbulan = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('m');  //kurangi 1 bulan
-        $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('Y');  //kurangi tahun berdasarkan bulan
 
         if (date('Y-m') == $input && date('d') <= 20) {
             return response()->json([
@@ -293,6 +263,51 @@ class PencatatanController extends Controller
                     "kode" => 2,
                 ], 404);
             }
+        return "Ok";
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //simpan catatan manual
+    public function catat_manual(Request $r)
+    {
+        $this->validate($r, [
+            'awal' => 'required|integer',
+            'akhir' => 'required|integer',
+            'bulan' => 'required|integer',
+            'tahun' => 'required|integer',
+            'pelanggan_id' => 'required',
+        ]);
+        $user_id = Auth::user()->id;
+
+        $pemakaian = $this->hitung($r->awal, $r->akhir);
+        if ($pemakaian < 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Sepertinya input meteran terbalik...",
+                "kode" => 2,
+            ], 404);
+        } else if ($pemakaian > 50)  //JIKA  TERLALU BESAR PEMAKAIAN
+        {
+            if (!isset($r->pemakaian_besar)) {
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Total pemakaian : " . $pemakaian . " m3<br> Pemakaian diatas 50 m3, Contreng persetujuan...",
+                    "kode" => 4, //harus conteng pemakaian besar
+                ], 404);
+            }
+        }
+
+
+        if ($this->cek_tanggal_input($r->bulan, $r->tahun, $user_id) == "Ok") {
+        } else {
+            return $this->cek_tanggal_input($r->bulan, $r->tahun, $user_id);
+        }
+
+
+        $kurangbulan = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('m');  //kurangi 1 bulan
+        $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('Y');  //kurangi tahun berdasarkan bulan
 
         $cek_bln_lalu = Pencatatan::where('pelanggan_id', '=', $r->pelanggan_id)
             ->where('bulan', $kurangbulan)
@@ -333,7 +348,7 @@ class PencatatanController extends Controller
             if ($cek->manual === NULL) {
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Input otomatis, tidak dapat dirubah...",
+                    "pesan" => "Input otomatis, tidak dapat dirubah manual...",
                     "kode" => 1,
                 ], 404);
             }
@@ -411,8 +426,16 @@ class PencatatanController extends Controller
             'tahun' => 'required',
             'meteran' => 'required',
         ]);
-
         $user_id = Auth::user()->id;
+
+
+
+        if ($this->cek_tanggal_input($r->bulan, $r->tahun, $user_id) == "Ok") {
+        } else {
+            return $this->cek_tanggal_input($r->bulan, $r->tahun, $user_id);
+        }
+
+
 
         $bukakurung = str_replace(array('('), "[", $r->meteran);
         $tutupkurung = str_replace(array(')'), "]", $bukakurung);
@@ -460,8 +483,8 @@ class PencatatanController extends Controller
 
             if ($pakai < 0) {
                 $status = "Gagal, karena minus";
-            } else if ($pakai > 99) {
-                $status = "Gagal... di atas 99m3";
+            } else if ($pakai > 60) {
+                $status = "Gagal... di atas 60m3";
             } else {
 
                 DB::beginTransaction();
@@ -481,7 +504,7 @@ class PencatatanController extends Controller
                     $this->simpanTagihan($pencatatan->id, $pencatatan->pelanggan_id, $pakai);
                     DB::commit();
 
-                $status = "Sukses";
+                    $status = "Sukses";
                 } catch (\Exception $e) {
                     $status = "Gagal, error data";
                 }
@@ -510,7 +533,7 @@ class PencatatanController extends Controller
 
     public function ambil_data_belum_tercatat(Request $r)
     {
-        
+
         $user = Auth::user();
         $catat = Pelanggan::query();
         $catat->select(
@@ -581,6 +604,9 @@ class PencatatanController extends Controller
             'photo' => 'required',
             'pelanggan_id' => 'required',
         ]);
+
+
+
 
         $pelanggan = Pelanggan::where("id", $request->pelanggan_id)->first();
         if (!$pelanggan) {
