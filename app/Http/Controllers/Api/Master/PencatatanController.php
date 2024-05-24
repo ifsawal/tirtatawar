@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Api\Master;
 
-use App\Fungsi\Respon;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Fungsi\Respon;
 use Illuminate\Http\Request;
 use App\Models\Master\Tagihan;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use App\Models\Master\GolPenetapan;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use DragonCode\Support\Facades\Helpers\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Spatie\Permission\Models\Role;
+use DragonCode\Support\Facades\Helpers\Arr;
 
 class PencatatanController extends Controller
 {
@@ -222,7 +223,7 @@ class PencatatanController extends Controller
 
 
 
-    public function cek_tanggal_input($bulan, $tahun, $user_id)
+    public function cek_tanggal_input($bulan, $tahun, $user_id,$edit=false)
     {
         $input = Carbon::parse($tahun . "-" . $bulan . "-1")->format("Y-m");
         $sekarang = Carbon::now();
@@ -253,7 +254,7 @@ class PencatatanController extends Controller
             $input == "2023-11") and ($user_id == 1 or $user_id == 26)) {
         } else //HAPUS NANTIK 2 baris ini
 
-            // if ($input == "2024-04") {
+            // if ($input == "2024-05" && $edit==true) {
             // } else //HAPUS NANTIK 2 baris ini
 
             if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
@@ -428,7 +429,7 @@ class PencatatanController extends Controller
         ]);
         $user_id = Auth::user()->id;
 
-
+        
 
         if ($this->cek_tanggal_input($r->bulan, $r->tahun, $user_id) == "Ok") {
         } else {
@@ -445,6 +446,8 @@ class PencatatanController extends Controller
         }
         $j = json_decode($koma);
 
+
+        Log::info($user_id." Input Manual Kolektif " .  $koma);  ///catat log input kolektif banyak
 
         $urut = collect($j)->sortBy('nopel');
         $nopel = array();
