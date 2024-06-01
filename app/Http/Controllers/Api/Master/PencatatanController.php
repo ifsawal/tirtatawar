@@ -301,9 +301,9 @@ class PencatatanController extends Controller
         }
 
 
-        if ($this->cek_tanggal_input($r->bulan, $r->tahun, $user_id) == "Ok") {
+        if ($this->cek_tanggal_input($r->bulan, $r->tahun, $user_id,true) == "Ok") {
         } else {
-            return $this->cek_tanggal_input($r->bulan, $r->tahun, $user_id);
+            return $this->cek_tanggal_input($r->bulan, $r->tahun, $user_id,true);
         }
 
 
