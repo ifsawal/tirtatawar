@@ -254,8 +254,8 @@ class PencatatanController extends Controller
             $input == "2023-11") and ($user_id == 1 or $user_id == 26)) {
         } else //HAPUS NANTIK 2 baris ini
 
-            // if ($input == "2024-05" && $edit==true) {
-            // } else //HAPUS NANTIK 2 baris ini
+            if ($input == "2024-05" && $edit==true) {
+            } else //HAPUS NANTIK 2 baris ini
 
             if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
                 return response()->json([
@@ -560,7 +560,7 @@ class PencatatanController extends Controller
         $pel->where('pelanggans.user_id_petugas', '=', $user->id);
         isset($r->wiljalan_id) ? $pel->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : '';
         $pel->limit(20);
-        $pel->get();
+        // return$pel->get();
 
         $bulan_sebelumnya = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('n');
         $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('Y');  //kurangi tahun berdasarkan bulan
