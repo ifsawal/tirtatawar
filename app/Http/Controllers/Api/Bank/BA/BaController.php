@@ -72,7 +72,7 @@ class BaController extends Controller
 
 
         if ($user->ip <> $ip and $urldasar == "https://www.tirtatawar.com") { //for production
-        // if ($user->ip <> $ip or $urldasar <> "http://127.0.0.1/tirtatawar/public") {  //for localh
+        // if ($user->ip <> $ip and $urldasar == "http://127.0.0.1/tirtatawar/public") {  //for localh
             return response()->json([
                 "status"    => false,
                 "pesan" => "Akses server tidak di izinkan",
