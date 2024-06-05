@@ -27,17 +27,16 @@ class BaStatusController extends Controller
     public function status(Request $r)
     {
 
-        // Log::info($r->getContent());
-        Log::info("Update status " .  $r->getClientIp());
 
+        
         $user = Auth::user();
         $this->payload = request()->header();
-
-
+        
+        
         $data = $r->getContent();
         $data = json_decode($data, true);
-
-
+        
+        
         $validator = Validator::make($data, [
             'id_transaksi' => 'required|max:255',
             'no_trx' => 'required',
@@ -51,7 +50,8 @@ class BaStatusController extends Controller
                 "kode" => "02"
             ], 404);
         }
-
+        
+        Log::info("Update status " .  $r->getClientIp()." ".$data['id_transaksi']);
 
         $this->id_transaksi     = $data['id_transaksi'];
         $this->no_trx          = $data['no_trx'];
