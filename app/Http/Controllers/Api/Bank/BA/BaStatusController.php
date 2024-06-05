@@ -7,9 +7,11 @@ use App\Models\Master\Tagihan;
 use App\Models\Master\Transfer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Request as Re;
 
 class BaStatusController extends Controller
 {
@@ -37,6 +39,8 @@ class BaStatusController extends Controller
         $data = json_decode($data, true);
         
         
+
+        
         $validator = Validator::make($data, [
             'id_transaksi' => 'required|max:255',
             'no_trx' => 'required',
@@ -52,6 +56,21 @@ class BaStatusController extends Controller
         }
         
         Log::info("Update status " .  $r->getClientIp()." ".$data['id_transaksi']);
+
+        $ip = Re::ip();
+        $urldasar = URL::to('/');
+
+
+        if ($user->ip <> $ip and $urldasar == "https://www.tirtatawar.com") { //for production
+            // if ($user->ip <> $ip or $urldasar <> "http://127.0.0.1/tirtatawar/public") {  //for localh
+                return response()->json([
+                    "status"    => false,
+                    "pesan" => "Akses server tidak di izinkan",
+                    "kode" => "02"
+                ], 401);
+            }
+
+
 
         $this->id_transaksi     = $data['id_transaksi'];
         $this->no_trx          = $data['no_trx'];

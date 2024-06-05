@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\Api\Pelanggan\Tagihan\PelangganResource;
 use App\Http\Resources\Api\Pelanggan\Tagihan\PencatatanResource;
 
+
 class BaController extends Controller
 {
     protected $nopel;
@@ -66,13 +67,15 @@ class BaController extends Controller
         $this->payload = request()->header();
         $this->checksum = hash("sha256", $nopel . $user->client_id);
         $this->nopel = $nopel;
+
         $urldasar = URL::to('/');
 
 
-        if ($user->ip <> $ip && $urldasar == "https://www.tirtatawar.com") {
+        if ($user->ip <> $ip and $urldasar == "https://www.tirtatawar.com") { //for production
+        // if ($user->ip <> $ip or $urldasar <> "http://127.0.0.1/tirtatawar/public") {  //for localh
             return response()->json([
                 "status"    => false,
-                "pesan" => "Akses tidak di izinkan",
+                "pesan" => "Akses server tidak di izinkan",
                 "kode" => "02"
             ], 401);
         }
