@@ -250,6 +250,7 @@ class PencatatanController extends Controller
             $input == "2024-01" or
             $input == "2024-02" or
             $input == "2024-04" or
+            $input == "2024-05" or
             $input == "2023-12" or
             $input == "2023-11") and ($user_id == 1 or $user_id == 26)) {
         } else //HAPUS NANTIK 2 baris ini
