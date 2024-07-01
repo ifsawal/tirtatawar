@@ -251,12 +251,13 @@ class PencatatanController extends Controller
             $input == "2024-02" or
             $input == "2024-04" or
             $input == "2024-05" or
+            $input == "2024-06" or
             $input == "2023-12" or
             $input == "2023-11") and ($user_id == 1 or $user_id == 26)) {
         } else //HAPUS NANTIK 2 baris ini
 
-            // if ($input == "2024-05" && $edit==true) {
-            // } else //HAPUS NANTIK 2 baris ini
+            if ($input == "2024-06" && $edit==true) {
+            } else //HAPUS NANTIK 2 baris ini
 
             if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
                 return response()->json([
