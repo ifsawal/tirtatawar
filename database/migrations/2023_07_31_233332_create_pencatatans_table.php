@@ -30,6 +30,7 @@ return new class extends Migration
             $table->integer('kunci')->default(0);
             $table->integer('kunci_edit')->nullable();
             $table->string("ket")->nullable();
+            $table->integer("is_rusak")->nullable();
             $table->unique(array('bulan', 'tahun', 'pelanggan_id'));
             $table->softDeletes();
             $table->timestamps();

@@ -27,7 +27,7 @@ class BaResetController extends Controller
         $urldasar = URL::to('/');
 
         // return $urldasar;
-        if ($urldasar == "https://www.sandbox.tirtatawar.com" or $urldasar == "http://localhost/tirtatawar/public" or $urldasar == "http://127.0.0.1:8000") {
+        if ($urldasar == "https://www.sandbox.tirtatawar.com" or $urldasar == "http://localhost/tirtatawar/public" or $urldasar == "http://127.0.0.1:8000" or $urldasar="http://127.0.0.1/tirtatawar/public/") {
         } else {
             return response()->json([
                 "sukses" => false,

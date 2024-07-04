@@ -95,6 +95,7 @@ class LaporanBayarController extends Controller
     }
 
 
+
     public function download_laporan_bayar(Request $r)
     {
         $tanggal = now();
@@ -118,6 +119,50 @@ class LaporanBayarController extends Controller
         $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
         $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
     }
+
+    public static function query2(Request $r, $user_id, $tanggal)
+    {
+        $query = Penagih::with(
+            "tagihan:id,jumlah,diskon,biaya,pajak,denda,total,status_bayar,total_nodenda,pencatatan_id",
+            "tagihan.pencatatan:id,bulan,tahun,pelanggan_id",
+            "tagihan.pencatatan.pelanggan:id,nama,golongan_id,wiljalan_id",
+            "tagihan.pencatatan.pelanggan.golongan:id,golongan",
+            "tagihan.pencatatan.pelanggan.wiljalan:id,jalan"
+        )
+            ->wheredate("waktu", $tanggal)
+            ->where('user_id', $user_id)
+            ->get()
+            ->sortByDesc('tagihan.pencatatan.bulan');
+
+            
+        return $data[] = [
+            "semua"     => $query,
+
+        ];
+    }
+
+    public function laporan_bayar_pecah_perbulan(Request $r) //download
+    {
+        $tanggal = now();
+        isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
+
+        $user = Auth::user();
+        isset($r->user) ? $user_id = $r->user : $user_id = $user->id;
+
+        $data['user'] = $user->nama;
+        $data['tanggal'] = date('d-m-Y', strtotime($tanggal));
+
+        $semua_data = self::query2($r, $user_id, $tanggal);
+
+        return $data['semua_data'] = $semua_data['semua'];
+
+
+        $mpdf = new Mpdf();
+        $mpdf->WriteHTML(view("api/pdf_laporan_bayar_pecah", compact('data')));
+        $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
+    }
+
+
 
 
 
