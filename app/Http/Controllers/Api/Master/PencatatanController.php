@@ -223,7 +223,7 @@ class PencatatanController extends Controller
 
 
 
-    public function cek_tanggal_input($bulan, $tahun, $user_id,$edit=false)
+    public function cek_tanggal_input($bulan, $tahun, $user_id, $edit = false)
     {
         $input = Carbon::parse($tahun . "-" . $bulan . "-1")->format("Y-m");
         $sekarang = Carbon::now();
@@ -303,9 +303,12 @@ class PencatatanController extends Controller
         }
 
 
-        if ($this->cek_tanggal_input($r->bulan, $r->tahun, $user_id,true) == "Ok") {
+        $input_dan_edit = false;
+        if ($this->cek_tanggal_input($r->bulan, $r->tahun, $user_id, true) == "Ok") {
+            $input_dan_edit = true;
         } else {
-            return $this->cek_tanggal_input($r->bulan, $r->tahun, $user_id,true);
+            $input_dan_edit = false;
+            return $this->cek_tanggal_input($r->bulan, $r->tahun, $user_id, true);
         }
 
 
@@ -332,6 +335,17 @@ class PencatatanController extends Controller
 
 
         if ($cek) {
+
+            //di aktifkan fungsian ini. bila hanya untuk EDIT
+            // if ($input_dan_edit && (date("m") !== $r->bulan)) {
+            //     return response()->json([
+            //         "sukses" => false,
+            //         "pesan" => "Meteran sudah di input, dan update data tidak di izinkan karena lewat batas waktu update...",
+            //         "kode" => 0,
+            //     ], 404);
+            // }
+
+
             if (isset($cek->tagihan->status_bayar) && $cek->tagihan->status_bayar == "Y") {
                 return response()->json([
                     "sukses" => false,
@@ -355,6 +369,11 @@ class PencatatanController extends Controller
                     "kode" => 1,
                 ], 404);
             }
+
+
+
+
+
             DB::beginTransaction();
             try {
                 $cek->awal = $r->awal; //
@@ -431,7 +450,7 @@ class PencatatanController extends Controller
         ]);
         $user_id = Auth::user()->id;
 
-        
+
 
         if ($this->cek_tanggal_input($r->bulan, $r->tahun, $user_id) == "Ok") {
         } else {
@@ -449,7 +468,7 @@ class PencatatanController extends Controller
         $j = json_decode($koma);
 
 
-        Log::info($user_id." Input Manual Kolektif " .  $koma);  ///catat log input kolektif banyak
+        Log::info($user_id . " Input Manual Kolektif " .  $koma);  ///catat log input kolektif banyak
 
         $urut = collect($j)->sortBy('nopel');
         $nopel = array();
