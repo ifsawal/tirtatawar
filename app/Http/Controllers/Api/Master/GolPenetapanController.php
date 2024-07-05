@@ -56,6 +56,12 @@ class GolPenetapanController extends Controller
 
     public function simpan_inti($id, $harga, $pajak, $alasan, $ket)
     {
+
+        return response()->json([
+            'sukses' => false,
+            'pesan' => "Fitur sedang di nonaktifkan...",
+        ], 404);
+
         $user_id = Auth::user()->id;
 
         $pelanggan = Pelanggan::where('id', $id)->first();
