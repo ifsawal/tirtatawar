@@ -121,8 +121,10 @@ class BaController extends Controller
             ->get();
 
 
-        $pencatatan = PencatatanResource::customCollection($pencatatan, $pelanggan->golongan->denda);
-        // $pencatatan = CekDanUpdateTagihan::ambilTagihan($pencatatan,$pelanggan->golongan->denda);
+        // $pencatatan = PencatatanResource::customCollection($pencatatan, $pelanggan->golongan->denda);
+        $pencatatan = CekDanUpdateTagihan::ambilTagihan($pencatatan,$pelanggan->golongan->denda);
+        $pencatatan=json_decode(collect($pencatatan));
+
         if (count($pencatatan) == 0) {
             return response()->json([
                 "sukses" => false,
@@ -156,11 +158,12 @@ class BaController extends Controller
                 "pemakaian"   =>  $catat->pemakaian,
                 "denda"   =>  $catat->tagihan->denda,
                 "tagihan"   =>  $catat->tagihan->jumlah,
-                "no reff"   =>  $catat->id,
+                "no reff"   =>  decrypt($catat->id),
             ];
 
             $id[] = $catat->tagihan->id;
         }
+        // return $detil;
 
         $data['pelanggan'] = $pelanggan->nama;
         $data['total_tagihan'] = $total;
@@ -173,6 +176,7 @@ class BaController extends Controller
         $data['periode_bayar'] = $periode;
         $data['detil'] = $detil;
 
+        // return $data;
         DB::beginTransaction();
         try {
             $i = 0;
@@ -194,7 +198,7 @@ class BaController extends Controller
                 $transfer->url = "-";
                 $transfer->ket = "";
                 $transfer->kode_transfer = $kode_transfer;
-                $transfer->tagihan_id = $catat->tagihan->id;
+                $transfer->tagihan_id = decrypt($catat->tagihan->id);
                 $transfer->save();
 
                 if ($i == 1) {
@@ -204,7 +208,7 @@ class BaController extends Controller
                 Transfer::where('id', $transfer->id)
                     ->update(['bill_id' => $bill_id]);
 
-                Tagihan::where('id', $catat->tagihan->id)
+                Tagihan::where('id', decrypt($catat->tagihan->id))
                     ->update(['bayar_bank' => date('Y-m-d H:i:s')]);
             }
 
