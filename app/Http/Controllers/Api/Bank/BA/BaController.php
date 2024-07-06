@@ -121,8 +121,8 @@ class BaController extends Controller
             ->get();
 
 
-        // $pencatatan = PencatatanResource::customCollection($pencatatan, $pelanggan->golongan->denda);
-        $pencatatan = CekDanUpdateTagihan::ambilTagihan($pencatatan,$pelanggan->golongan->denda);
+        $pencatatan = PencatatanResource::customCollection($pencatatan, $pelanggan->golongan->denda);
+        // $pencatatan = CekDanUpdateTagihan::ambilTagihan($pencatatan,$pelanggan->golongan->denda);
         if (count($pencatatan) == 0) {
             return response()->json([
                 "sukses" => false,
