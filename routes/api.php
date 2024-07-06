@@ -139,6 +139,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/infotransfer', [TagihanController::class, 'infotransfer']);
     Route::post('/detilinfotransfer', [TagihanController::class, 'detilinfotransfer']);
     Route::post('/hapusdenda', [TagihanController::class, 'hapus_denda']);
+    Route::post('/invoice_all', [TagihanController::class, 'invoice_all']);
 
     Route::post('/bayar', [BayarController::class, 'store']);
     Route::post('/batalbayar', [BayarController::class, 'destroy']);
@@ -152,6 +153,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
 
     Route::post('/laporanpelanggan', [LaporanPelangganController::class, 'laporan_pelanggan']);
     Route::post('/laporanbayarbank', [LaporanBayarBankController::class, 'laporanbayarbank']);
+    Route::post('/laporanbayarbankdownload', [LaporanBayarBankController::class, 'laporanbayarbankdownload']);
     Route::post('/laporanbulanan', [LaporanBulananController::class, 'laporan_bulanan']);
     Route::post('/laporanrekapbulanan', [LaporanRekapBulananController::class, 'ambil_rekap']);
     Route::post('/prosesrekap', [LaporanRekapBulananController::class, 'proses_rekap']);

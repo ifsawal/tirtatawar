@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Master;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Master\Penagih;
 use App\Models\Master\Tagihan;
 use App\Models\Master\Transfer;
 use App\Models\Master\Pelanggan;
@@ -13,7 +14,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Resources\Api\Pelanggan\Tagihan\TagihanResource;
-use App\Models\Master\Penagih;
+use App\Http\Resources\Api\Pelanggan\Tagihan\PencatatanResource;
+use App\Repository\Tagihan\CekDanUpdateTagihan;
 
 class TagihanController extends Controller
 {
@@ -187,12 +189,12 @@ class TagihanController extends Controller
             'id' => 'required', //id pencatatan
         ]);
 
-        $user= Auth::user();
+        $user = Auth::user();
         $catat = Pencatatan::where('id', '=', $r->id)
             ->first();
         $tagih = Tagihan::where('pencatatan_id', '=', $catat->id)
             ->first();
-        $tagih->off_denda=1;
+        $tagih->off_denda = 1;
         $tagih->save();
 
         return response()->json([
@@ -204,9 +206,54 @@ class TagihanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function invoice_all(Request $r)
     {
-        //
+        $this->validate($r, [
+            'id' => 'required|integer', //id pencatatan
+        ]);
+
+
+
+        $pelanggan = Pelanggan::with('golongan:id,denda')
+            ->where('id', $r->id)->first();
+        if (!$pelanggan) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pelanggan tidak ditemukan...",
+            ], 404);
+        }
+
+        $pencatatan = Pencatatan::with('tagihan', 'pelanggan')
+            ->where('pelanggan_id', $r->id)
+            ->whereRelation('tagihan', 'status_bayar', '=', 'N')
+            ->orderBy('id', 'desc')
+            ->get();
+
+
+        $pencatatanResource = CekDanUpdateTagihan::ambilTagihan($pencatatan,$pelanggan->golongan->denda);
+            
+        if (count($pencatatan) == 0) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Tagihan Tidak ditemukan...",
+            ], 404);
+        }
+
+
+        $tex = "";
+        $jumlah = 0;
+
+        foreach ($pencatatanResource as $p) {
+            $jumlah += $p['tagihan']['total'];
+            $tex .= $p['bulan'] . "-" . $p['tahun'] . ",";
+        }
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Tagihan ditemukan...",
+            "data"  => $tex,
+            "jumlah"  => $jumlah,
+        ], 202);
     }
 
     /**

@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Repository\Tagihan\CekDanUpdateTagihan;
 use App\Http\Resources\Api\Pelanggan\Tagihan\PelangganResource;
 use App\Http\Resources\Api\Pelanggan\Tagihan\PencatatanResource;
 
@@ -121,6 +122,7 @@ class BaController extends Controller
 
 
         $pencatatan = PencatatanResource::customCollection($pencatatan, $pelanggan->golongan->denda);
+        $pencatatan = CekDanUpdateTagihan::ambilTagihan($pencatatan,$pelanggan->golongan->denda);
         if (count($pencatatan) == 0) {
             return response()->json([
                 "sukses" => false,

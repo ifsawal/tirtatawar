@@ -41,9 +41,20 @@ class LaporanBayarBankController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function laporanbayarbankdownload(Request $r)
     {
-        //
+        isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : $tanggal = date('Y-m-d');
+
+        return $tagihan = Tagihan::with('pencatatan:id,bulan,tahun,pelanggan_id', 'pencatatan.pelanggan:id,nama','transfer:id,tagihan_id,vendor,va,bank,tipe,status_bayar,kode_transfer')
+        ->whereYear('tgl_bayar', date('Y',strtotime($tanggal)))
+        ->whereMonth('tgl_bayar', date('m',strtotime($tanggal)))
+        ->where('status_bayar', 'Y')
+        ->where('sistem_bayar', 'Transfer')
+        ->limit(50)
+        ->orderBy('tgl_bayar', 'DESC')
+        ->get();
+
+
     }
 
     /**
