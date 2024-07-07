@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Laporan;
 use Illuminate\Http\Request;
 use App\Models\Master\Tagihan;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanBayarBankExport;
 
 class LaporanBayarBankController extends Controller
 {
@@ -43,18 +45,53 @@ class LaporanBayarBankController extends Controller
      */
     public function laporanbayarbankdownload(Request $r)
     {
+
+        return Excel::download(new LaporanBayarBankExport($r), 'laporan_bayar_bank.xlsx');
+    }
+
+    public static function laporanbayarbankdata($r)
+    {
         isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : $tanggal = date('Y-m-d');
 
-        return $tagihan = Tagihan::with('pencatatan:id,bulan,tahun,pelanggan_id', 'pencatatan.pelanggan:id,nama','transfer:id,tagihan_id,vendor,va,bank,tipe,status_bayar,kode_transfer')
-        ->whereYear('tgl_bayar', date('Y',strtotime($tanggal)))
-        ->whereMonth('tgl_bayar', date('m',strtotime($tanggal)))
-        ->where('status_bayar', 'Y')
-        ->where('sistem_bayar', 'Transfer')
-        ->limit(50)
-        ->orderBy('tgl_bayar', 'DESC')
-        ->get();
+        $rekap = Tagihan::query();
+        $rekap->select(
+            'tagihans.tgl_bayar',
+            'pelanggans.id',
+            'pelanggans.nama',
+            'golongans.golongan',
+            'wiljalans.jalan',
+            'pencatatans.bulan',
+            'pencatatans.tahun',
+            'pencatatans.pemakaian',
+            'tagihans.jumlah',
+            'tagihans.biaya',
+            'tagihans.diskon',
+            'tagihans.denda',
+            'tagihans.pajak',
+            'tagihans.total',
+            'tagihans.status_bayar',
+            'transfers.vendor',
+            'transfers.va',
+            'transfers.bank',
+            'transfers.tipe',
+            'transfers.jumlah as jumlah_bayar',
+            'pencatatans.id as no_ref',
+            'transfers.status_bayar as status_trasfer',
+        );
+        $rekap->join('pencatatans', 'pencatatans.id', '=', 'tagihans.pencatatan_id');
+        $rekap->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+        $rekap->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id');
+        $rekap->join('wiljalans', 'pelanggans.wiljalan_id', '=', 'wiljalans.id');
+        $rekap->join('transfers', 'transfers.tagihan_id', '=', 'tagihans.id');
+        $rekap->whereYear('tagihans.tgl_bayar', '=', date('Y', strtotime($tanggal)));
+        $rekap->whereMonth('tagihans.tgl_bayar', '=', date('m', strtotime($tanggal)));
+        $rekap->where('tagihans.status_bayar', '=', "Y");
+        $rekap->where('transfers.status_bayar', '=', "Y");
+        $rekap->where('tagihans.sistem_bayar', '=', "Transfer");
+        $rekap->orderBy('tagihans.tgl_bayar', "desc");
 
 
+        return $rekap->get();
     }
 
     /**
@@ -62,7 +99,6 @@ class LaporanBayarBankController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
