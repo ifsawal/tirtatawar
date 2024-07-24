@@ -46,6 +46,7 @@ use App\Http\Controllers\Api\Laporan\LaporanPetugasController;
 use App\Http\Controllers\Api\Pelanggan\MobTagihan10Controller;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
+use App\Http\Controllers\Api\Laporan\LaporanInputCatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
@@ -160,6 +161,8 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/prosesdrdwiljalanexport', [LaporanRekapDrdWiljalanController::class, 'drd_wiljalan']);
     Route::post('/prosesdrdgolongan', [LaporanRekapDrdGolonganController::class, 'drd_golongan']);
 
+    Route::post('/download-input-catatan', [LaporanInputCatatanController::class, 'download_input_catatan']);
+    
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
     Route::post('/downloadlaporanbayar', [LaporanBayarController::class, 'download_laporan_bayar']);
     Route::post('/laporan-bayar-pecah-perbulan', [LaporanBayarController::class, 'laporan_bayar_pecah_perbulan']);
