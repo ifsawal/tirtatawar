@@ -126,7 +126,7 @@ class LaporanRekapBulananController extends Controller
             $h_harga_dasar = $catat->sum('tagihans.jumlah');
             $h_adm = $catat->sum('tagihans.biaya');
             $h_pajak = $catat->sum('tagihans.pajak');
-            $h_total = $catat->sum('tagihans.total');
+            $h_total = $catat->sum('tagihans.total_nodenda');
 
 
 
