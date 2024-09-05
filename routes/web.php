@@ -26,7 +26,7 @@ use App\Http\Controllers\Master\DownloadController;
 
 Route::get('/', function () {
 
-    Log::info("Akses IP " .  Request::ip().":".Request::userAgent());
+    Log::info("Akses IP " .  Request::ip()."::".Request::userAgent()."::".Request::url());
     return view('singel.perawatan');
 });
 
