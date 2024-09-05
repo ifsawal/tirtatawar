@@ -1,15 +1,17 @@
 <?php
 
 use App\Models\Role\Hakakses;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
+use App\Http\Controllers\SingelController;
 use App\Http\Controllers\Role\IzinController;
 use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\Master\PdamController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\AlamatController;
-use App\Http\Controllers\Master\DownloadController;
 use App\Http\Controllers\Role\HakaksesController;
-use App\Http\Controllers\SingelController;
+use App\Http\Controllers\Master\DownloadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +25,8 @@ use App\Http\Controllers\SingelController;
 */
 
 Route::get('/', function () {
+
+    Log::info("Akses IP " .  Request::ip().":".Request::userAgent());
     return view('singel.perawatan');
 });
 
