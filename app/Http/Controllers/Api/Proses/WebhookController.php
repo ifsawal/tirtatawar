@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api\Proses;
 
 use Illuminate\Http\Request;
+use App\Models\Master\Tagihan;
 use App\Models\Master\Transfer;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Models\Master\Tagihan;
 
 class WebhookController extends Controller
 {
@@ -23,6 +24,7 @@ class WebhookController extends Controller
         $data = isset($r->data) ? $r->data : null;
         $token = isset($r->token) ? $r->token : null;
 
+        
         // $hasil = $token . "----" . $data;
         // $fp = fopen(public_path() . "/files2/tek.txt", "wb");
         // fwrite($fp, $hasil);
@@ -30,8 +32,11 @@ class WebhookController extends Controller
         if ($token <> config('external.token_flip')) {
             return "";
         }
-
+        
         $data = json_decode($data);
+        Log::channel('custom-flip')->info("webhook " .  $r->getClientIp()."-".$data);
+
+        
         $status_bayar = ($data->status == "SUCCESSFUL") ? "Y" : "N";
         // return ($data);
 

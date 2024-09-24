@@ -64,6 +64,12 @@ return [
             'level' => 'debug',
         ],
 
+        'custom-flip' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/custom-flip.log'),
+            'level' => 'debug',
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
