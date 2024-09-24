@@ -7,25 +7,29 @@ use App\Models\Master\Pelanggan;
 use App\Models\Master\GolPenetapan;
 use Illuminate\Support\Facades\Route;
 use App\Exports\LaporanRekapBulananExport;
+use App\Http\Controllers\Api\Bank\BA\BaLaporan;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Bank\BA\BaController;
+use App\Http\Controllers\Api\Bank\P3\P3Controller;
 use App\Http\Controllers\Api\Master\DesaController;
 use App\Http\Controllers\Api\Master\IzinController;
 use App\Http\Controllers\Api\Master\UserController;
 use App\Http\Controllers\Api\Singel\InfoController;
 use App\Http\Controllers\Api\Bank\BSI\BsiController;
 use App\Http\Controllers\Api\Proses\BayarController;
+use App\Http\Controllers\Api\Server\AtestController;
 use App\Http\Controllers\Api\Master\SetoranController;
 use App\Http\Controllers\Api\Master\TagihanController;
 use App\Http\Controllers\Api\Proses\KeluhanController;
 use App\Http\Controllers\Api\Proses\WebhookController;
 use App\Http\Controllers\Api\Auth\AuthClientController;
 use App\Http\Controllers\Api\Auth\AuthMobileController;
-use App\Http\Controllers\Api\Bank\BA\BaLaporan;
 use App\Http\Controllers\Api\Bank\BA\BaResetController;
 use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Server\CekAngkaController;
+use App\Http\Controllers\Api\Auth\AuthClient2Controller;
 use App\Http\Controllers\Api\Bank\BA\BaStatusController;
+use App\Http\Controllers\Api\Bank\P3\P3TagihanController;
 use App\Http\Controllers\Api\Master\PelangganController;
 use App\Http\Controllers\Api\Server\PerubahanController;
 use App\Http\Controllers\Api\Master\PembayaranController;
@@ -46,16 +50,15 @@ use App\Http\Controllers\Api\Laporan\LaporanPetugasController;
 use App\Http\Controllers\Api\Pelanggan\MobTagihan10Controller;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
-use App\Http\Controllers\Api\Laporan\LaporanInputCatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
+use App\Http\Controllers\Api\Laporan\LaporanInputCatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapDrdGolonganController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapDrdWiljalanController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
-use App\Http\Controllers\Api\Server\AtestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +78,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/daftar', [AuthController::class, 'daftar']);
 Route::post('/login', [AuthController::class, 'login']);
+
+
 Route::post('/loginmobile', [AuthMobileController::class, 'loginmobile']);
 Route::post('/daftarpelanggan', [AuthController::class, 'daftarpelanggan']);
 
@@ -263,14 +268,28 @@ Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthClientController::class, 'login']);
     Route::post('/daftarclient', [AuthClientController::class, 'daftarclient']);
 
+    Route::post('/daftarapi', [AuthClient2Controller::class, 'daftar']);
+    Route::post('/loginapi', [AuthClient2Controller::class, 'login']);
+
+
+
     Route::group(['middleware' => ['auth:sanctum', 'abilities:client']], function () {
         Route::get('/ba/tagihan/{id}', [BaController::class, 'tagihan']);
         Route::post('/ba/status', [BaStatusController::class, 'status']);
         Route::get('/ba/laporan/{tanggal}', [BaLaporan::class, 'laporan']);
         Route::post('/ba/reset', [BaResetController::class, 'reset']);
     });
-
+    
+    Route::group(['middleware' => ['auth:sanctum', 'abilities:client2']], function () {
+        Route::get('/p3/cek-tagihan/{id}/{bank?}', [P3Controller::class, 'cek_tagihan']);
+        Route::post('/p3/buat-tagihan', [P3TagihanController::class, 'buat_tagihan']);
+    });
+    
     Route::get('/bsi/inquiry', [BsiController::class, 'inquiry']);
     Route::get('/bsi/payment', [BsiController::class, 'payment']);
     Route::get('/bsi/reversal', [BsiController::class, 'reversal']);
+
+
+
+
 });
