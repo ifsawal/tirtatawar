@@ -34,7 +34,7 @@ class WebhookController extends Controller
         }
         
         $data = json_decode($data);
-        Log::channel('custom-flip')->info("webhook " .  $r->getClientIp());
+        Log::channel('custom-flip')->info("webhook " .  $r->getClientIp()."-". implode($data));
 
 
         $status_bayar = ($data->status == "SUCCESSFUL") ? "Y" : "N";
