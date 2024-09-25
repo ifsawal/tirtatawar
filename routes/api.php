@@ -29,6 +29,8 @@ use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Server\CekAngkaController;
 use App\Http\Controllers\Api\Auth\AuthClient2Controller;
 use App\Http\Controllers\Api\Bank\BA\BaStatusController;
+use App\Http\Controllers\Api\Bank\P3\P3LaporanController;
+use App\Http\Controllers\Api\Bank\P3\P3ResetController;
 use App\Http\Controllers\Api\Bank\P3\P3TagihanController;
 use App\Http\Controllers\Api\Master\PelangganController;
 use App\Http\Controllers\Api\Server\PerubahanController;
@@ -283,6 +285,8 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => ['auth:sanctum', 'abilities:client2']], function () {
         Route::get('/p3/cek-tagihan/{id}/{bank?}', [P3Controller::class, 'cek_tagihan']);
         Route::post('/p3/buat-tagihan', [P3TagihanController::class, 'buat_tagihan']);
+        Route::get('/p3/laporan/{tanggal}', [P3LaporanController::class, 'laporan']);
+        Route::post('/p3/reset', [P3ResetController::class, 'reset']);
     });
     
     Route::get('/bsi/inquiry', [BsiController::class, 'inquiry']);

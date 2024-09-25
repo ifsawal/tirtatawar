@@ -78,7 +78,7 @@ class P3TagihanController extends Controller
             ], 401);
         }
 
-        if ($user->contoh === NULL) {
+        if ($user->contoh === NULL or $user->contoh == "") {
         } else {
             $pecah = explode(",", $user->contoh);
             if (!in_array($this->nopel, $pecah)) {

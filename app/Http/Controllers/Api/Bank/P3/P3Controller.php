@@ -65,7 +65,7 @@ class P3Controller extends Controller
         }
 
 
-        if ($user->contoh === NULL) {
+        if ($user->contoh === NULL or $user->contoh == "") {
         } else {
             $pecah = explode(",", $user->contoh);
             if (!in_array($nopel, $pecah)) {
