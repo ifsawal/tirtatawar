@@ -20,7 +20,7 @@ class P3ResetController extends Controller
         Log::info("Reset oleh " . $r->getClientIp());
 
         $jenis_akses = env("APP_JENIS", "");
-        if ($jenis_akses == "sandbox") {
+        if ($jenis_akses === "sandbox") {
         } else {
             return response()->json([
                 "sukses" => false,
@@ -84,13 +84,13 @@ class P3ResetController extends Controller
                 $tam[]=$tampung_hapus;
             }
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            // DB::commit();
-            DB::rollback();
+            DB::commit();
+            // DB::rollback();
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Reset sukses...",
                 "kode"  => "00",
-                "data"  => $tam
+                // "data"  => $tam
             ], 200);
         } catch (\Exception $e) {
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
