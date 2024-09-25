@@ -42,6 +42,15 @@ class P3Controller extends Controller
         $this->payload = request()->header();
         $this->checksum = hash("sha256", $nopel . $user->client_id);
         $this->nopel = $nopel;
+        $ip = Request::ip();
+
+        $jenis_prod = env("APP_ENV", "");
+        if ($user->ip <> $ip and $jenis_prod == "production") {
+                return response()->json([
+                    "status"    => false,
+                    "pesan" => "Akses server tidak di izinkan",
+                ], 401);
+            }
 
 
         if (!isset($this->payload['tanda-tangan'][0]) or ($this->checksum <> $this->payload['tanda-tangan'][0])) {

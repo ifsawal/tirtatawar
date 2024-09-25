@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Repository\Tagihan\CekDanUpdateTagihan;
+use Illuminate\Support\Facades\Request as Request2;
 
 class P3TagihanController extends Controller
 {
@@ -56,7 +57,15 @@ class P3TagihanController extends Controller
         $this->checksum = hash("sha256", $data['nopel'] . $data['kode_bank'] . $data['waktu'] . $user->client_id);
         $this->nopel = $data['nopel'];
         $this->kode_bank = $data['kode_bank'];
+        $ip = Request2::ip();
 
+        $jenis_prod = env("APP_ENV", "");
+        if ($user->ip <> $ip and $jenis_prod == "production") {
+                return response()->json([
+                    "status"    => false,
+                    "pesan" => "Akses server tidak di izinkan",
+                ], 401);
+            }
 
         if (!isset($this->payload['tanda-tangan'][0]) or ($this->checksum <> $this->payload['tanda-tangan'][0])) {
             return response()->json([
