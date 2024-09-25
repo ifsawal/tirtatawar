@@ -37,7 +37,7 @@ class WebhookController extends Controller
         $data = json_decode($data);
 
         // $untuk_log=implode("--",$data);
-        Log::channel('custom-flip')->info("webhook " .  $r->getClientIp()."--".$data->bill_title."--".$data->email."--". $data->bill_link_id."--".$data->status."--".$data->bill_link);
+        Log::channel('custom-flip')->info("webhook " .  $r->getClientIp()."--".$data->bill_title."--".$data->sender_email."--". $data->bill_link_id."--".$data->status."--".$data->bill_link);
 
 
         $status_bayar = ($data->status == "SUCCESSFUL") ? "Y" : "N";
@@ -48,7 +48,7 @@ class WebhookController extends Controller
             ->get();
 
 
-        $cekP3=Client2::where('email',$data->email)->first();
+        $cekP3=Client2::where('email',$data->sender_email)->first();
         if($cekP3){
             Log::channel('custom-flip')->info("Kirim Callback");
         }
