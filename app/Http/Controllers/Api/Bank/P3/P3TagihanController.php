@@ -60,11 +60,15 @@ class P3TagihanController extends Controller
         $ip = Request2::ip();
 
         $jenis_prod = env("APP_ENV", "");
+        $jenis_akses = env("APP_JENIS", "");
         if ($user->ip <> $ip and $jenis_prod == "production") {
+            if ($jenis_akses === "sandbox") {
+            } else {
                 return response()->json([
                     "status"    => false,
                     "pesan" => "Akses server tidak di izinkan",
                 ], 401);
+            }
             }
 
         if (!isset($this->payload['tanda-tangan'][0]) or ($this->checksum <> $this->payload['tanda-tangan'][0])) {
