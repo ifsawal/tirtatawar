@@ -8,6 +8,7 @@ use App\Models\Master\Transfer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Master\Client2;
 
 class WebhookController extends Controller
 {
@@ -36,7 +37,7 @@ class WebhookController extends Controller
         $data = json_decode($data);
 
         // $untuk_log=implode("--",$data);
-        Log::channel('custom-flip')->info("webhook " .  $r->getClientIp()."--".$data->bill_title."--". $data->bill_link_id."--".$data->status."--".$data->bill_link);
+        Log::channel('custom-flip')->info("webhook " .  $r->getClientIp()."--".$data->bill_title."--".$data->email."--". $data->bill_link_id."--".$data->status."--".$data->bill_link);
 
 
         $status_bayar = ($data->status == "SUCCESSFUL") ? "Y" : "N";
@@ -47,7 +48,10 @@ class WebhookController extends Controller
             ->get();
 
 
-
+        $cekP3=Client2::where('email',$data->email)->first();
+        if($cekP3){
+            Log::channel('custom-flip')->info("Kirim Callback");
+        }
 
         DB::beginTransaction();
         try {
