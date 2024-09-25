@@ -213,6 +213,9 @@ class P3TagihanController extends Controller
 
             $hasil_flip['customer']=$hasil->customer;
             $hasil_flip['bill_payment']=$hasil->bill_payment;
+            if ($jenis_akses === "sandbox") {
+                $hasil_flip['simulasi_pembayaran']=$hasil->payment_url;
+            } 
             DB::commit();
             // DB::rollback();
             return response()->json([
