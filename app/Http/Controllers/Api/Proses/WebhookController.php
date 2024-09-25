@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Api\Proses;
 
 use Illuminate\Http\Request;
+use App\Models\Master\Client2;
 use App\Models\Master\Tagihan;
 use App\Models\Master\Transfer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Models\Master\Client2;
+use Illuminate\Support\Facades\Http;
 
 class WebhookController extends Controller
 {
@@ -50,6 +51,14 @@ class WebhookController extends Controller
 
         $cekP3=Client2::where('email',$data->sender_email)->first();
         if($cekP3){
+            // $promise = Http::async()->get('http://localhost')->then(function ($response) {
+            //     echo "Response received!";
+            //     echo $response->body();
+            // });
+
+            $kirim=Http::async()->post("https://www.sandbox.tirtatawar.com/api/test",$data)->then(function ($response){
+                Log::channel('custom-flip')->info("balasan ".$response->body());
+            });
             Log::channel('custom-flip')->info("Kirim Callback");
         }
 

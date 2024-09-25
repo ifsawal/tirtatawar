@@ -293,7 +293,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/bsi/payment', [BsiController::class, 'payment']);
     Route::get('/bsi/reversal', [BsiController::class, 'reversal']);
 
+});
 
-
-
+Route::post('/test', function (Request $request) {
+    return $request;
 });
