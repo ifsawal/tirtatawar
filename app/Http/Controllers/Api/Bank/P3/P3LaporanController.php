@@ -63,7 +63,7 @@ class P3LaporanController extends Controller
             return [
                 // "id" => encrypt($data->bill_id),
                 "vendor" => $data->vendor,
-                "vendor_id_string" => $data->vendor_id_string,
+                "vendor_id_string" => $data->bill_id,
                 "status_bayar" => $data->status_bayar,
                 "jumlah" => $data->jumlah,
                 "tanggal_bayar" => $data->tgl_bayar,
