@@ -55,11 +55,7 @@ class P3ResetController extends Controller
 
                     $c = Pencatatan::where('id', '=', $p->id)->first();
 
-                    if ($c->pelanggan_id == 1 && $c->bulan == 2 && $c->tahun = 2024) {
-                    } else if ($c->pelanggan_id == 2 && ($c->bulan == 2 or $c->bulan == 1) && $c->tahun = 2024) {
-                    } else if ($c->pelanggan_id == 3 && ($c->bulan == 2 or $c->bulan == 1) && $c->tahun = 2024) {
-                    } else if ($c->pelanggan_id == 3 && ($c->bulan == 11) && $c->tahun = 2023) {
-                    } else if ($c->pelanggan_id == 4) {
+                    if (($c->bulan == 1 or $c->bulan == 2 or $c->bulan == 3 or $c->bulan == 4) && $c->tahun = 2024) { 
                     } else {
                         $c->forceDelete();
                     }
