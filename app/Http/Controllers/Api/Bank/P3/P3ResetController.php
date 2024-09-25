@@ -44,19 +44,23 @@ class P3ResetController extends Controller
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::beginTransaction();
         try {
-
+            $tam=[];
             for ($i = 0; $i< count($pecah); $i++) {
 
                 $pelanggan = Pelanggan::whereId($pecah[$i])
                     ->first();
 
                 $pencatatan = Pencatatan::where('pelanggan_id', '=', $pelanggan->id)->get();
+                $tampung_hapus=[];
                 foreach ($pencatatan as $p) {
-
                     $c = Pencatatan::where('id', '=', $p->id)->first();
 
+                    // if ($i=0 && ($c->bulan == 1) && $c->tahun = 2024) {}else
+                    // if ($i=1 && ($c->bulan == 1 or $c->bulan == 2) && $c->tahun = 2024) {}else
+                    // if ($i=2 && ($c->bulan == 1 or $c->bulan == 2 or $c->bulan == 3) && $c->tahun = 2024) {}else 
                     if (($c->bulan == 1 or $c->bulan == 2 or $c->bulan == 3 or $c->bulan == 4) && $c->tahun = 2024) { 
                     } else {
+                        $tampung_hapus[]=$c->id."-".$c->bulan."-".$c->tahun;
                         $c->forceDelete();
                     }
 
@@ -76,20 +80,24 @@ class P3ResetController extends Controller
                         $tagihan->save();
                     }
                 }
+                $tam[]=$pecah[$i];
+                $tam[]=$tampung_hapus;
             }
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            DB::commit();
+            // DB::commit();
+            DB::rollback();
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Reset sukses...",
-                "kode"  => "00"
+                "kode"  => "00",
+                "data"  => $tam
             ], 200);
         } catch (\Exception $e) {
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             DB::rollback();
             return response()->json([
                 "sukses" => false,
-                "pesan" => "Reset Gagal...",
+                "pesan" => "Reset Gagal...$e",
                 "kode" => "03",
             ], 404);
         }
