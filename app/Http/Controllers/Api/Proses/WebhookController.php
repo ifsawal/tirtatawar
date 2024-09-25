@@ -56,7 +56,7 @@ class WebhookController extends Controller
             //     echo $response->body();
             // });
 
-            $kirim=Http::async()->post("https://www.sandbox.tirtatawar.com/api/test",$data)->then(function ($response){
+            $kirim=Http::async()->post("https://www.sandbox.tirtatawar.com/api/test")->then(function ($response){
                 Log::channel('custom-flip')->info("balasan ".$response->body());
             });
             Log::channel('custom-flip')->info("Kirim Callback");

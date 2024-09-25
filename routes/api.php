@@ -296,5 +296,6 @@ Route::prefix('v1')->group(function () {
 });
 
 Route::post('/test', function (Request $request) {
-    return $request;
+    // return $request;
+    return "OK";
 });
