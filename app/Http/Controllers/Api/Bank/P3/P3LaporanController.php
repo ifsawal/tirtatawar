@@ -54,7 +54,7 @@ class P3LaporanController extends Controller
         );
         $rekap->join('tagihans', 'tagihans.id', '=', 'transfers.tagihan_id');
         $rekap->whereDate('tagihans.tgl_bayar', '=', $tanggal);
-        $rekap->where('transfers.vendor', '=', "BA");
+        $rekap->where('transfers.vendor', '=', "flip");
         $rekap->where('transfers.status_bayar', '=', "Y");
         $rekap->distinct('transfers.bill_id');
 
