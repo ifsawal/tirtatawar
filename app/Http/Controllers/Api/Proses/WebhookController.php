@@ -49,18 +49,18 @@ class WebhookController extends Controller
             ->get();
 
 
-        $cekP3=Client2::where('email',$data->sender_email)->first();
-        if($cekP3){
-            // $promise = Http::async()->get('http://localhost')->then(function ($response) {
-            //     echo "Response received!";
-            //     echo $response->body();
-            // });
+        // $cekP3=Client2::where('email',$data->sender_email)->first();
+        // if($cekP3){
+        //     // $promise = Http::async()->get('http://localhost')->then(function ($response) {
+        //     //     echo "Response received!";
+        //     //     echo $response->body();
+        //     // });
 
-            $kirim=Http::async()->post("https://www.sandbox.tirtatawar.com/api/test")->then(function ($response){
-                Log::channel('custom-flip')->info("balasan ".$response->body());
-            });
-            Log::channel('custom-flip')->info("Kirim Callback");
-        }
+        //     $kirim=Http::async()->post("https://www.sandbox.tirtatawar.com/api/test")->then(function ($response){
+        //         Log::channel('custom-flip')->info("balasan ".$response->body());
+        //     });
+        //     Log::channel('custom-flip')->info("Kirim Callback");
+        // }
 
         DB::beginTransaction();
         try {

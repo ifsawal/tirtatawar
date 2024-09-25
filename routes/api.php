@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Models\Keluhan\Keluhan;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\GolPenetapan;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Exports\LaporanRekapBulananExport;
 use App\Http\Controllers\Api\Bank\BA\BaLaporan;
@@ -25,15 +27,15 @@ use App\Http\Controllers\Api\Proses\WebhookController;
 use App\Http\Controllers\Api\Auth\AuthClientController;
 use App\Http\Controllers\Api\Auth\AuthMobileController;
 use App\Http\Controllers\Api\Bank\BA\BaResetController;
+use App\Http\Controllers\Api\Bank\P3\P3ResetController;
 use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Server\CekAngkaController;
 use App\Http\Controllers\Api\Auth\AuthClient2Controller;
 use App\Http\Controllers\Api\Bank\BA\BaStatusController;
-use App\Http\Controllers\Api\Bank\P3\P3LaporanController;
-use App\Http\Controllers\Api\Bank\P3\P3ResetController;
-use App\Http\Controllers\Api\Bank\P3\P3TagihanController;
 use App\Http\Controllers\Api\Master\PelangganController;
 use App\Http\Controllers\Api\Server\PerubahanController;
+use App\Http\Controllers\Api\Bank\P3\P3LaporanController;
+use App\Http\Controllers\Api\Bank\P3\P3TagihanController;
 use App\Http\Controllers\Api\Master\PembayaranController;
 use App\Http\Controllers\Api\Master\PencatatanController;
 use App\Http\Controllers\Api\Master\PhotoRumahController;
@@ -296,6 +298,14 @@ Route::prefix('v1')->group(function () {
 });
 
 Route::post('/test', function (Request $request) {
-    // return $request;
+    Log::channel('custom-flip')->info("Panggilan dari ascy");
     return "OK";
 });
+// Route::post('/test2', function (Request $request) {
+    
+//     $k=Http::async()->post("https://www.sandbox.tirtatawar.com/api/p3")->then(function($response){
+//         // return $response->body();
+//         return "okkkk";
+//     });
+//     return $k;
+// });
