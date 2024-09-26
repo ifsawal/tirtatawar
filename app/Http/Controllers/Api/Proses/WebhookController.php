@@ -49,13 +49,6 @@ class WebhookController extends Controller
             ->where('vendor', 'flip')
             ->get();
 
-
-        $cekP3=Client2::where('email',$data->sender_email)->first();
-        if($cekP3){
-            dispatch(new KirimCallback());
-            Log::channel('custom-flip')->info("Kirim Callback");
-        }
-
         DB::beginTransaction();
         try {
             foreach ($transfer as $tran) {
@@ -80,6 +73,14 @@ class WebhookController extends Controller
 
 
             DB::commit();
+
+            $cekP3=Client2::where('email',$data->sender_email)->first();
+            if($cekP3){
+                dispatch(new KirimCallback());
+                Log::channel('custom-flip')->info("Kirim Callback");
+            }
+
+
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Sukses...",
