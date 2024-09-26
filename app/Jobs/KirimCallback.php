@@ -16,9 +16,13 @@ class KirimCallback implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    protected $rahasia;
+    protected $bill_id;
+
+     public function __construct($rahasia,$bill_id)
     {
-        //
+        $this->rahasia=$rahasia;
+        $this->bill_id=$bill_id;
     }
 
     /**
@@ -26,6 +30,6 @@ class KirimCallback implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::channel('custom-flip')->info("Calback udah di test");
+        Log::channel('custom-flip')->info("Calback udah di test kunci : ".$this->rahasia." ".$this->bill_id);
     }
 }

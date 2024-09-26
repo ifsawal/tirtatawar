@@ -27,7 +27,7 @@ class WebhookController extends Controller
         $data = isset($r->data) ? $r->data : null;
         $token = isset($r->token) ? $r->token : null;
 
-        
+
         // $hasil = $token . "----" . $data;
         // $fp = fopen(public_path() . "/files2/tek.txt", "wb");
         // fwrite($fp, $hasil);
@@ -35,11 +35,11 @@ class WebhookController extends Controller
         if ($token <> config('external.token_flip')) {
             return "";
         }
-        
+
         $data = json_decode($data);
 
         // $untuk_log=implode("--",$data);
-        Log::channel('custom-flip')->info("webhook " .  $r->getClientIp()."--".$data->bill_title."--".$data->sender_email."--". $data->bill_link_id."--".$data->status."--".$data->bill_link);
+        Log::channel('custom-flip')->info("webhook " .  $r->getClientIp() . "--" . $data->bill_title . "--" . $data->sender_email . "--" . $data->bill_link_id . "--" . $data->status . "--" . $data->bill_link);
 
 
         $status_bayar = ($data->status == "SUCCESSFUL") ? "Y" : "N";
@@ -74,12 +74,11 @@ class WebhookController extends Controller
 
             DB::commit();
 
-            $cekP3=Client2::where('email',$data->sender_email)->first();
-            if($cekP3){
-                dispatch(new KirimCallback());
+            $cekP3 = Client2::where('email', $data->sender_email)->first();
+            if ($cekP3 && $status_bayar=="Y") {
+                dispatch(new KirimCallback($cekP3->client_id,$data->bill_link_id));
                 Log::channel('custom-flip')->info("Kirim Callback");
             }
-
 
             return response()->json([
                 "sukses" => true,
