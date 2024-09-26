@@ -301,11 +301,3 @@ Route::post('/test', function (Request $request) {
     Log::channel('custom-flip')->info("Panggilan dari ascy");
     return "OK";
 });
-// Route::post('/test2', function (Request $request) {
-    
-//     $k=Http::async()->post("https://www.sandbox.tirtatawar.com/api/p3")->then(function($response){
-//         // return $response->body();
-//         return "okkkk";
-//     });
-//     return $k;
-// });
