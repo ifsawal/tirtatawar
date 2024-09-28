@@ -31,8 +31,8 @@ class P3Controller extends Controller
         if ($validator->fails()) {
             return response()->json([
                 "status"    => false,
-                "pesan" => $validator->errors(),
-            ], 404);
+                "pesan" => $validator->errors()
+            ], 400);
         }
 
 
@@ -82,6 +82,7 @@ class P3Controller extends Controller
         if (!$pelanggan) {
             return response()->json([
                 "sukses" => false,
+                "kode" => "4041",
                 "pesan" => "Pelanggan tidak ditemukan.",
             ], 404);
         }
@@ -99,7 +100,6 @@ class P3Controller extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Tagihan Tidak ditemukan...",
-                "kode" => "14"
             ], 404);
         }
 

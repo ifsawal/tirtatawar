@@ -30,6 +30,7 @@ class KirimCallback implements ShouldQueue
      */
     public function handle(): void
     {
+        
         Log::channel('custom-flip')->info("Calback udah di test kunci : ".$this->rahasia." ".$this->bill_id);
     }
 }

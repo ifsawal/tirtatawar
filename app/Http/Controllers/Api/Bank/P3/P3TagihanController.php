@@ -122,7 +122,6 @@ class P3TagihanController extends Controller
                 return response()->json([
                     "sukses" => false,
                     "pesan" => "Tagihan Tidak ditemukan...",
-                    "kode" => "14"
                 ], 404);
             }
 
@@ -224,7 +223,7 @@ class P3TagihanController extends Controller
                 "data" => $hasil_flip,
                 // "data_server" => $b->setVisible(['nama', 'jenis', 'ket']),
 
-            ], 202);
+            ], 201);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([

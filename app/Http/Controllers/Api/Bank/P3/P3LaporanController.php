@@ -25,7 +25,6 @@ class P3LaporanController extends Controller
             return response()->json([
                 "status"    => false,
                 "pesan" => $validator->errors(),
-                "kode" => "02"
             ], 404);
         }
 
@@ -37,7 +36,6 @@ class P3LaporanController extends Controller
             return response()->json([
                 "status"    => false,
                 "pesan" => "Tanda tangan tidak sah",
-                "kode" => "02"
             ], 401);
         }
 
@@ -74,13 +72,11 @@ class P3LaporanController extends Controller
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Data tidak ditemukan...",
-                "kode" => "03",
             ], 404);
         }
         return response()->json([
             "sukses" => true,
             "pesan" => "Data ditemukan...",
-            "kode"  => "00",
             "data"  => $hasil
         ], 200);
     }
