@@ -32,7 +32,7 @@ class P3LaporanController extends Controller
         $tandatangan = hash("sha256", $data['tanggal'] . $user->client_id);
 
 
-        if (!isset($payload['tandatangan'][0]) or ($tandatangan <> $payload['tandatangan'][0])) {
+        if (!isset($payload['tanda-tangan'][0]) or ($tandatangan <> $payload['tanda-tangan'][0])) {
             return response()->json([
                 "status"    => false,
                 "pesan" => "Tanda tangan tidak sah",

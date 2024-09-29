@@ -82,7 +82,6 @@ class P3Controller extends Controller
         if (!$pelanggan) {
             return response()->json([
                 "sukses" => false,
-                "kode" => "4041",
                 "pesan" => "Pelanggan tidak ditemukan.",
             ], 404);
         }
@@ -135,6 +134,7 @@ class P3Controller extends Controller
         }
         // return $detil;
 
+        $data['no_pelanggan'] = $pelanggan->id;
         $data['pelanggan'] = $pelanggan->nama;
         $data['total_tagihan'] = $total;
         $data['harga_air'] = $dasar;
