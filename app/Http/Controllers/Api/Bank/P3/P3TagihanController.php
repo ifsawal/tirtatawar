@@ -202,7 +202,7 @@ class P3TagihanController extends Controller
                 $transfer->nama = $hasil->customer->name;
                 $transfer->jumlah = $total_jumlah;
                 $transfer->url = $hasil->payment_url;
-                $transfer->ket = "";
+                $transfer->ket = $user->kode;
                 $transfer->kode_transfer = $kode_transfer;
                 $transfer->tagihan_id = decrypt($catat->tagihan->id);
                 $transfer->save();
