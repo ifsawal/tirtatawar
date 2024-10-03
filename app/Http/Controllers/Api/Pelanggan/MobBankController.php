@@ -22,8 +22,9 @@ class MobBankController extends Controller
     }
     public function cekbank($bank)
     {
-        Log::channel('custom')->info("log flip cek status bank" .Request2::ip() .'-'.Request2::server("SERVER_ADDR"));
-        return Flip::gangguan($bank);
+        $f=Flip::gangguan($bank);
+        Log::channel('custom')->info("log flip cek status bank" .$f .Request2::ip() .'-'.Request2::server("SERVER_ADDR"));
+        return $f;
     }
 
     public function pilihbank()
