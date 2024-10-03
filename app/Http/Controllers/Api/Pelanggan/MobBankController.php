@@ -29,7 +29,7 @@ class MobBankController extends Controller
     {
         $perawatan = Flip::perawatan();
         $a = json_decode($perawatan);
-        Log::channel('custom')->info("log flip" .   $perawatan .Request2::ip());
+        Log::channel('custom')->info("log flip" .   $perawatan .Request2::ip() .'-'.Request2::server("SERVER_ADDR"));
         if ($a->maintenance == 1) {
             return response()->json([
                 "sukses" => true,
