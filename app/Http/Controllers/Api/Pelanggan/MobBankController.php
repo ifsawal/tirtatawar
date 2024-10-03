@@ -6,6 +6,7 @@ use App\Fungsi\Flip;
 use App\Models\Master\Bank;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\Return_;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class MobBankController extends Controller
@@ -26,6 +27,7 @@ class MobBankController extends Controller
     {
         $perawatan = Flip::perawatan();
         $a = json_decode($perawatan);
+        Log::channel('custom')->info("log flip" .   $perawatan);
         if ($a->maintenance == 1) {
             return response()->json([
                 "sukses" => true,
