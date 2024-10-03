@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\Return_;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Request as Request2;
+
 
 class MobBankController extends Controller
 {
@@ -27,7 +29,7 @@ class MobBankController extends Controller
     {
         $perawatan = Flip::perawatan();
         $a = json_decode($perawatan);
-        Log::channel('custom')->info("log flip" .   $perawatan);
+        Log::channel('custom')->info("log flip" .   $perawatan .Request2::ip());
         if ($a->maintenance == 1) {
             return response()->json([
                 "sukses" => true,
