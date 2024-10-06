@@ -72,6 +72,16 @@ class BayarController extends Controller
             'pelanggan_id' => 'required',
         ]);
         $user_id = Auth::user()->id;
+        
+        $u = Auth::user()->getAllPermissions();
+        $c = collect($u);
+        $hit = $c->where("name", 'penagihan');
+        if (count($hit) == 0) {
+            return response()->json([
+                "sukses" => true,
+                "pesan" => "Akses tidak diberikan...",
+            ], 404);
+        }
 
 
         DB::beginTransaction();

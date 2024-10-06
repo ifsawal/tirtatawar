@@ -23,9 +23,7 @@ class TagihanController extends Controller
      * Display a listing of the resource.
      */
 
-    public function cari()
-    {
-    }
+    public function cari() {}
 
     public function detilinfotransfer(Request $r)
     {
@@ -75,8 +73,7 @@ class TagihanController extends Controller
             'id' => 'required', //pencatatan id
         ]);
 
-
-        $pencatatan = Pencatatan::where('id', $r->id)
+         $pencatatan = Pencatatan::where('id', $r->id)
             ->first();
         $tagihan = Tagihan::where('pencatatan_id', $pencatatan->id)
             ->first();
@@ -230,8 +227,8 @@ class TagihanController extends Controller
             ->get();
 
 
-        $pencatatanResource = CekDanUpdateTagihan::ambilTagihan($pencatatan,$pelanggan->golongan->denda);
-            
+        $pencatatanResource = CekDanUpdateTagihan::ambilTagihan($pencatatan, $pelanggan->golongan->denda);
+
         if (count($pencatatan) == 0) {
             return response()->json([
                 "sukses" => false,

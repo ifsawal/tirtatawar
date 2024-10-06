@@ -117,9 +117,7 @@ class PencatatanController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -562,7 +560,7 @@ class PencatatanController extends Controller
     {
 
         $user = Auth::user();
-        $catat = Pelanggan::query();
+        $catat = Pelanggan::query(); //cari pelanggan yang sudah tercatat
         $catat->select(
             'pelanggans.id',
         );
@@ -570,7 +568,9 @@ class PencatatanController extends Controller
         $catat->where('pelanggans.user_id_petugas', '=', $user->id);
         $catat->Where('pencatatans.tahun', '=', $r->tahun);
         $catat->Where('pencatatans.bulan', '=', $r->bulan);
-        // $catat->get();
+
+
+
 
         $pel = Pelanggan::query();
         $pel->select(
@@ -586,15 +586,43 @@ class PencatatanController extends Controller
         $pel->limit(20);
         // return$pel->get();
 
+
+
+
+
+
+
+
         $bulan_sebelumnya = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('n');
         $kurangtahun = Carbon::parse($r->tahun . "-" . $r->bulan . "-1")->subMonthsNoOverflow()->format('Y');  //kurangi tahun berdasarkan bulan
 
         if (count($pel->get()) === 0) {
-            return response()->json([
-                "sukses" => false,
-                "pesan" => "Data tidak ditemukan...",
-            ], 404);
+
+            $pel = Pelanggan::query();
+            $pel->select(
+                'pelanggans.id',
+                'pelanggans.nama',
+                'wiljalans.jalan',
+            );
+            $pel->join('user_wiljalans', 'user_wiljalans.wiljalan_id', '=', 'pelanggans.wiljalan_id');
+            $pel->join('wiljalans', 'wiljalans.id', '=', 'user_wiljalans.wiljalan_id');
+            $pel->whereNotIn('pelanggans.id', $catat->get());
+            $pel->where('user_wiljalans.user_id', '=', $user->id);
+            isset($r->wiljalan_id) ? $pel->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : '';
+            $pel->limit(20);
+
+            if (count($pel->get()) === 0) {
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Data tidak ditemukan...",
+                ], 404);
+            }
         }
+
+
+
+
+
         $hasil = $pel->get()->map(function ($da) use ($bulan_sebelumnya, $kurangtahun) {
             $catatansebelumnya = Pencatatan::where('pelanggan_id', $da->id)
                 ->select('id', 'awal', 'akhir', 'pemakaian')
