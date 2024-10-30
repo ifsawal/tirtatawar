@@ -12,6 +12,14 @@ use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\AlamatController;
 use App\Http\Controllers\Role\HakaksesController;
 use App\Http\Controllers\Master\DownloadController;
+use App\Livewire\Beranda;
+use App\Livewire\Blog;
+use App\Livewire\BlogDetil;
+use App\Livewire\DetilLayanan;
+use App\Livewire\Faq;
+use App\Livewire\Hal;
+use App\Livewire\HalamanAnggota;
+use App\Livewire\HalamanLayanan;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,3 +119,15 @@ Route::get('/download/admintirtatawar', [DownloadController::class, 'downloadadm
 Route::get('/download', [DownloadController::class, 'downloadpelanggan']);
 Route::get('/playstore', [DownloadController::class, 'downloadpelanggan']);
 Route::get('/download/pelanggan', [DownloadController::class, 'downloadpelangganolehadmin']);
+
+
+
+
+Route::get('/beranda',Beranda::class)->name('beranda');
+Route::get('/layanan',HalamanLayanan::class)->name('layanan');
+Route::get('/detil-layanan/{id}',DetilLayanan::class)->name('detil-layanan');
+Route::get('/tim',HalamanAnggota::class)->name('tim');
+Route::get('/blog',Blog::class)->name('blog');
+Route::get('/blog/{id}',BlogDetil::class)->name('blog-detil');
+Route::get('/faq',Faq::class)->name('faq');
+Route::get('/hal/{slug}',Hal::class)->name('hal');
