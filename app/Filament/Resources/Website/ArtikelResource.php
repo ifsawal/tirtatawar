@@ -45,8 +45,13 @@ class ArtikelResource extends Resource
                 Forms\Components\Hidden::make('admin_id')
                     ->default(auth()->id()),
                 Forms\Components\FileUpload::make('image')
+                    ->imageEditor()
                     ->image(),
                 Forms\Components\RichEditor::make('konten')
+                    // ->disableToolbarButtons(['attachFiles'])
+                    ->fileAttachmentsDisk(0)
+                    ->fileAttachmentsDirectory('attachments')
+                    ->fileAttachmentsVisibility('private')
                     ->columnSpanFull(),
                 Select::make('status')->options(
                     [

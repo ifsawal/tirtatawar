@@ -71,10 +71,10 @@
 
                 <div class="icon-box-item text-center col-lg-4 col-md-6 mb-4">
                     <div class="rounded shadow py-5 px-4">
-                        <div class="icon"> <i class="fas fa-user"></i>
+                        <div class="icon"> <i class="{{$l->icon}}"></i>
                         </div>
                         <h3 class="mb-3">{{$l->judul}}</h3>
-                        <p class="mb-4">{{$l->des_pendek}}</p> <a class="btn btn-sm btn-outline-primary" wire:navigate href="{{route('detil-layanan',$l->id)}}">Tampilkan
+                        <p class="mb-4">{!!$l->des_pendek!!}</p> <a class="btn btn-sm btn-outline-primary" wire:navigate href="{{route('detil-layanan',$l->slug)}}">Tampilkan
                             Detil <i class="las la-arrow-right ms-1"></i></a>
                     </div>
                 </div>

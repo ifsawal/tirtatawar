@@ -42,7 +42,7 @@
                 
                 <div class="col-lg-12">
                     <div class="content">
-                        {{$layanan->deskripsi}}</div>
+                        {!!$layanan->deskripsi!!}</div>
                 </div>
             </div>
         </div>

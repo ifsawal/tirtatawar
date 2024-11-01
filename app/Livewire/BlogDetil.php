@@ -17,7 +17,7 @@ class BlogDetil extends Component
 
         $blog=Artikel::select('artikels.*','katagoris.nama','admins.name as nama_admin')->join('katagoris','katagoris.id','artikels.katagori_id')
         ->join('admins','admins.id','artikels.admin_id')
-        ->findOrFail($this->id);
+        ->where('artikels.slug',$this->id)->first();
         return view('livewire.blog-detil',
     [
         'artikel'=>$blog

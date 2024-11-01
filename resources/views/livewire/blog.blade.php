@@ -83,9 +83,9 @@
                                             <div class="pt-4">
                                                 <p class="mb-3">{{ date('d-m-Y', strtotime($a->created_at)) }}</p>
                                                 <h2 class="h4"><a class="text-black"
-                                                    wire:navigate href="{{route('blog-detil',$a->id)}}">{{ $a->judul }}</a></h2>
+                                                    wire:navigate href="{{route('blog-detil',$a->slug)}}">{{ $a->judul }}</a></h2>
                                                 <p>{!! \Illuminate\Support\Str::limit( $a->konten, 80 );  !!}
-                                                    </p> <a wire:navigate href="{{route('blog-detil',$a->id)}}"
+                                                    </p> <a wire:navigate href="{{route('blog-detil',$a->slug)}}"
                                                     class="text-primary fw-bold"
                                                     aria-label="Read the full article by clicking here">Baca</a>
                                             </div>
@@ -143,7 +143,7 @@
                         </ul>
                     </div>
                     <!-- tags -->
-                    <div class="widget widget-tags">
+                    {{-- <div class="widget widget-tags">
                         <h4 class="widget-title"><span>Tags</span></h4>
                         <ul class="list-inline widget-list widget-list-inline taxonomies-list">
                             <li class="list-inline-item"><a href="#!">Booth</a>
@@ -161,7 +161,7 @@
                             <li class="list-inline-item"><a href="#!">Video</a>
                             </li>
                         </ul>
-                    </div>
+                    </div> --}}
                     <!-- latest post -->
                     <div class="widget">
                         <h5 class="widget-title"><span>Artikel Terbaru</span></h5>
@@ -171,7 +171,7 @@
                             @foreach ($artikelterakhir as $t)
                                 <ul class="list-unstyled widget-list">
                                     <li class="d-flex widget-post align-items-center">
-                                        <a class="text-black" wire:navigate href="{{route('blog-detil',$t->id)}}">
+                                        <a class="text-black" wire:navigate href="{{route('blog-detil',$t->slug)}}">
                                             <div class="widget-post-image flex-shrink-0 me-3">
                                                 @if ($t->image != '')
                                                     <img class="rounded" loading="lazy" decoding="async"
@@ -182,7 +182,7 @@
                                         </a>
                                         <div class="flex-grow-1">
                                             <h5 class="h6 mb-0"><a class="text-black"
-                                                wire:navigate  href="{{route('blog-detil',$t->id)}}">{{ $t->judul }}.</a></h5>
+                                                wire:navigate  href="{{route('blog-detil',$t->slug)}}">{{ $t->judul }}.</a></h5>
                                             <small>{{ date('d-m-Y', strtotime($t->created_at)) }}</small>
                                         </div>
                                     </li>

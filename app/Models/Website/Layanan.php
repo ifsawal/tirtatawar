@@ -10,6 +10,7 @@ class Layanan extends Model
     use HasFactory;
     protected $fillable = [
         'judul',
+        'slug',
         'icon',
         'des_pendek',
         'deskripsi',

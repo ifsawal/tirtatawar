@@ -34,7 +34,7 @@
             </svg>
         </div>
     </section>
-    
+    @if($hal->judul!="")    
     <section class="section">
         <div class="container">
             @if($hal->image!="")
@@ -42,9 +42,9 @@
                 <div class="col-lg-7">
                     <div class="section-title">
                         <p class="text-primary text-uppercase fw-bold mb-3"></p>
-                        <h2 class="h1 mb-4">{{$hal->judul}}</h2>
+                        <h2 class="h1 mb-4">{!!$hal->judul!!}</h2>
                         <div class="content pe-0 pe-lg-5">
-                           <p>{{$hal->konten}}</p>
+                           <p>{!!$hal->konten!!}</p>
                            ; 
                         </div>
                     </div>
@@ -56,12 +56,13 @@
             @endif
         </div>
     </section>
+    @endif
     
     
     
     
     
-    <section class="section teams bg-tertiary">
+    {{-- <section class="section teams bg-tertiary">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12">
@@ -152,5 +153,5 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 </div>

@@ -12,7 +12,7 @@ class DetilLayanan extends Component
 
     public function mount($id)
     {
-        $this->layanan = Layanan::findOrFail($id);
+        $this->layanan = Layanan::where('slug',$id)->first();
     }
     public function render()
     {

@@ -20,6 +20,7 @@ use App\Livewire\Faq;
 use App\Livewire\Hal;
 use App\Livewire\HalamanAnggota;
 use App\Livewire\HalamanLayanan;
+use App\Livewire\Hubungi;
 
 /*
 |--------------------------------------------------------------------------
@@ -122,7 +123,7 @@ Route::get('/download/pelanggan', [DownloadController::class, 'downloadpelanggan
 
 
 
-
+//Blog
 Route::get('/beranda',Beranda::class)->name('beranda');
 Route::get('/layanan',HalamanLayanan::class)->name('layanan');
 Route::get('/detil-layanan/{id}',DetilLayanan::class)->name('detil-layanan');
@@ -131,3 +132,4 @@ Route::get('/blog',Blog::class)->name('blog');
 Route::get('/blog/{id}',BlogDetil::class)->name('blog-detil');
 Route::get('/faq',Faq::class)->name('faq');
 Route::get('/hal/{slug}',Hal::class)->name('hal');
+Route::get('/kontak',Hubungi::class)->name('kontak');

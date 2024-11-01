@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('layanans', function (Blueprint $table) {
             $table->id();
             $table->string('judul');
+            $table->string('slug');
             $table->string('icon')->nullable();
             $table->string('des_pendek');
             $table->text('deskripsi')->nullable();

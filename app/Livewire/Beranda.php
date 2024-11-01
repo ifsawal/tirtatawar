@@ -9,7 +9,7 @@ class Beranda extends Component
 {
     public function render()
     {
-        $layanan=Layanan::orderBy('judul','ASC')->get();
+        $layanan=Layanan::orderBy('judul','ASC')->take(5)->get();
         return view('livewire.beranda',['layanan'=>$layanan]);
     }
 }

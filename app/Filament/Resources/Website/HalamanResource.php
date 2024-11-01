@@ -39,6 +39,7 @@ class HalamanResource extends Resource
                 Forms\Components\FileUpload::make('image')
                     ->image(),
                 Forms\Components\RichEditor::make('konten')
+                    ->disableToolbarButtons(['attachFiles'])
                     ->columnSpanFull(),
                 Select::make('status')->options(
                     [
