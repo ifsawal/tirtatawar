@@ -9,7 +9,7 @@ class HalamanAnggota extends Component
 {
     public function render()
     {
-        $anggota=Anggota::orderBy('nama','ASC')->get();
+        $anggota=Anggota::orderBy('id','desc')->get();
 
         return view('livewire.halaman-anggota',['anggota'=>$anggota]);
     }

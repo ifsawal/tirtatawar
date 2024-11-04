@@ -38,6 +38,8 @@ class AdminPolicy
     {
         if ($user->id == $admin->id) {
             return true;
+        } else if ($user->hasRole('super_admin')) {
+            return true;
         } else {
             return false;
         }

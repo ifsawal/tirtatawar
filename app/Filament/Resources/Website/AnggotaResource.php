@@ -37,6 +37,7 @@ class AnggotaResource extends Resource
                 Forms\Components\TextInput::make('tiktok')
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
+                
                     ->image()->label("Photo"),
                 Select::make('status')
                     ->options(
