@@ -21,6 +21,7 @@ use App\Livewire\Hal;
 use App\Livewire\HalamanAnggota;
 use App\Livewire\HalamanLayanan;
 use App\Livewire\Hubungi;
+use App\Mail\KirimEmail;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +114,7 @@ Route::post('/proseshapusakun', [App\Http\Controllers\GeneralController::class, 
 
 //privasi
 Route::get('/privacy ', [SingelController::class, 'privacy']);
+Route::get('/test_email ', [KirimEmail::class, 'kirim']);
 
 
 //download
