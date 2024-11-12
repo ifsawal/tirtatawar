@@ -21,6 +21,11 @@ class Tagihan extends Model
         return $this->belongsTo(Pelanggan::class, 'pelanggan_id', 'id');
     }
 
+    public function penagih()
+    {
+        return $this->hasOne(Penagih::class, 'tagihan_id', 'id');
+    }
+
     public function transfer()
     {
         return $this->hasMany(Transfer::class, 'tagihan_id', 'id');

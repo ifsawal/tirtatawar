@@ -15,8 +15,8 @@ class AnggotaPolicy
      */
     public function viewAny(Admin $user): bool
     {
-        // return true;
-        return $user->hasPermissionTo('tambah_anggota','web');
+        return true;
+        // return $user->hasPermissionTo('tambah_anggota','web');
     }
 
     /**
@@ -24,7 +24,8 @@ class AnggotaPolicy
      */
     public function view(Admin $user, Anggota $anggota): bool
     {
-        return $user->hasAnyPermission('tambah_anggota','web');
+        return true;
+        // return $user->hasAnyPermission('tambah_anggota','web');
     }
 
     /**
@@ -32,7 +33,8 @@ class AnggotaPolicy
      */
     public function create(Admin $user): bool
     {
-        return $user->hasAnyPermission('tambah_anggota','web');
+        return true;
+        // return $user->hasAnyPermission('tambah_anggota','web');
     }
 
     /**
@@ -40,7 +42,8 @@ class AnggotaPolicy
      */
     public function update(Admin $user, Anggota $anggota): bool
     {
-        return $user->hasAnyPermission('tambah_anggota','web');
+        return true;
+        // return $user->hasAnyPermission('tambah_anggota','web');
     }
 
     /**
@@ -48,7 +51,8 @@ class AnggotaPolicy
      */
     public function delete(Admin $user, Anggota $anggota): bool
     {
-        return $user->hasAnyPermission('tambah_anggota','web');
+        return true;
+        // return $user->hasAnyPermission('tambah_anggota','web');
     }
 
     /**
@@ -56,7 +60,8 @@ class AnggotaPolicy
      */
     public function restore(Admin $user, Anggota $anggota): bool
     {
-        return $user->hasAnyPermission('tambah_anggota','web');
+        return true;
+        // return $user->hasAnyPermission('tambah_anggota','web');
     }
 
     /**
@@ -64,6 +69,7 @@ class AnggotaPolicy
      */
     public function forceDelete(Admin $user, Anggota $anggota): bool
     {
-        return $user->hasAnyPermission('tambah_anggota','web');
+        return true;
+        // return $user->hasAnyPermission('tambah_anggota','web');
     }
 }
