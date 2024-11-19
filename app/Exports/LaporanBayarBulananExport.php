@@ -43,6 +43,7 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
             "Status Bayar",
             "Sistem Bayar",
             "Tanggal Bayar",
+            "Penagih",
         ];
     }
 
@@ -63,6 +64,7 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
             'L' => 7,
             'M' => 15,
             'N' => 15,
+            'N' => 23,
         ];
     }
 }

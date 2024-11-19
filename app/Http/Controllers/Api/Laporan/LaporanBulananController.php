@@ -38,6 +38,7 @@ class LaporanBulananController extends Controller
                 'tagihans.status_bayar',
                 'tagihans.sistem_bayar',
                 'tagihans.tgl_bayar',
+                'users.nama as nama_user',
 
             );
         } else {
@@ -63,6 +64,8 @@ class LaporanBulananController extends Controller
         if ($cetak == "cetak") {
             $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id');
             $catat->join('wiljalans', 'pelanggans.wiljalan_id', '=', 'wiljalans.id');
+            $catat->leftjoin('penagihs', 'penagihs.tagihan_id', '=', 'tagihans.id');
+            $catat->leftjoin('users', 'penagihs.user_id', '=', 'users.id');
         }
 
         $catat->where('pencatatans.tahun', '=', $r->tahun);

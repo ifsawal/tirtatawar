@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Api\Laporan;
 
+use Mpdf\Mpdf;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\Master\Golongan;
 use App\Models\Master\Penagih;
 use App\Models\Master\Setoran;
-use App\Models\Viewdatabase\RincianRekapView;
+use App\Models\Master\Golongan;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Mpdf\Mpdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanBayarPerhariExport;
+use App\Models\Viewdatabase\RincianRekapView;
 
 class LaporanBayarController extends Controller
 {
@@ -119,6 +121,52 @@ class LaporanBayarController extends Controller
         $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
         $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
     }
+
+    public function proses_download_laporan_bayar_excel(Request $r){
+        $tanggal = now();
+        isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
+
+        $user = Auth::user();
+        isset($r->user) ? $user_id = $r->user : $user_id = $user->id;
+
+        $data['user'] = $user->nama;
+        $data['tanggal'] = date('d-m-Y', strtotime($tanggal));
+
+        $queri = $this->query($r, $user_id, $tanggal);
+        // return $queri['penagih'];
+        $has=[];
+        $a=0;
+        foreach ($queri['penagih'] as $p){
+            $a++;
+            $has[]=[
+                "no"=>$a,
+                "nopel"=>$p['tagihan']['pencatatan']['pelanggan']['id'],
+                "nama"=>$p['tagihan']['pencatatan']['pelanggan']['nama'],
+                "bulan"=>$p['tagihan']['pencatatan']['bulan'],
+                "bulan"=>$p['tagihan']['pencatatan']['tahun'],
+                "jumlah"=>$p['jumlah'],
+                "golongan"=>$p['tagihan']['pencatatan']['pelanggan']['golongan']['golongan'],
+                "jalan"=>$p['tagihan']['pencatatan']['pelanggan']['wiljalan']['jalan'],
+
+            ];
+        }
+        $has['user']=$queri['user'];
+        $has['tanggal']=$queri['tanggal'];
+
+        return $has;
+    }
+
+    public function download_laporan_bayar_excel(Request $r){
+
+
+        // $this->validate($r, [
+        //     'tanggal' => 'required',
+        //     'user' => 'required|integer',
+        // ]);
+        return Excel::download(new LaporanBayarPerhariExport($r), 'laporan_bayar_perhari.xlsx');
+
+    }
+
 
     public static function query2(Request $r, $user_id, $tanggal)
     {

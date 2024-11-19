@@ -13,6 +13,7 @@ class Pencatatan extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $guarded = [];
 
 
     public function pelanggan()

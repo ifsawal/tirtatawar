@@ -42,6 +42,10 @@ class Pelanggan extends Model //Authenticatable //Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+    public function user_penyetuju()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
 
     public function user_perubahan()

@@ -159,11 +159,12 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
 
     Route::get('/laporan-belum-bayar/{tahun}', [LaporanBelumBayarController::class, 'laporan_belum_bayar']);
 
-    Route::get('/laporan-belum-bayar-export', [LaporanBelumBayarController::class, 'laporan_belum_bayar_export']);
+    Route::get('/laporan-belum-bayar-export/{tahun}', [LaporanBelumBayarController::class, 'laporan_belum_bayar_export']);
     Route::get('/laporanpelangganexport', [LaporanPelangganController::class, 'laporanpelangganexport']);
     Route::get('/laporanbayarbulananexport', [LaporanBulananController::class, 'laporanbayarbulananexport']);
     Route::get('/laporanrekapbulananexport', [LaporanRekapBulananController::class, 'laporanrekapbulananexport']);
     Route::get('/laporanrekapdrdwiljalanexport', [LaporanRekapDrdWiljalanController::class, 'laporanrekapdrdwiljalanexport']);
+    // Route::get('/laporanrekapdrdwiljalanexport-excel', [LaporanRekapDrdWiljalanController::class, 'laporanrekapdrdwiljalanexport_excel']);
 
     Route::post('/laporanpelanggan', [LaporanPelangganController::class, 'laporan_pelanggan']);
     Route::post('/laporanbayarbank', [LaporanBayarBankController::class, 'laporanbayarbank']);
@@ -178,6 +179,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
     Route::post('/downloadlaporanbayar', [LaporanBayarController::class, 'download_laporan_bayar']);
+    Route::post('/downloadlaporanbayar-excel', [LaporanBayarController::class, 'download_laporan_bayar_excel']);
     Route::post('/laporan-bayar-pecah-perbulan', [LaporanBayarController::class, 'laporan_bayar_pecah_perbulan']);
     Route::post('/laporanbayarwilayah', [LaporanBayarController::class, 'laporan_bayar_where']);
     Route::post('/laporanpenerimaan', [LaporanBayarController::class, 'laporanpenerimaan']);
