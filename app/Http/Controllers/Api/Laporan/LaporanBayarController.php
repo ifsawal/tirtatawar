@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\Master\Penagih;
 use App\Models\Master\Setoran;
 use App\Models\Master\Golongan;
+use App\Models\Master\Pencatatan;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanBayarPerhariExport;
-use App\Models\Viewdatabase\RincianRekapView;
+use Ramsey\Uuid\Type\Integer;
 
 class LaporanBayarController extends Controller
 {
@@ -19,6 +20,62 @@ class LaporanBayarController extends Controller
      * Display a listing of the resource.
      */
     public function query($r, $user_id, $tanggal) //mengbil data pembayaran hari ini
+    {
+        $queri = [
+            'tagihan:id,jumlah,diskon,denda,total,status_bayar,sistem_bayar,pencatatan_id',
+            'tagihan.pencatatan:id,awal,akhir,pemakaian,bulan,tahun,pelanggan_id',
+            'tagihan.pencatatan.pelanggan:id,nama,golongan_id,wiljalan_id',
+            'tagihan.pencatatan.pelanggan.golongan:id,golongan',
+            'tagihan.pencatatan.pelanggan.wiljalan:id,jalan',
+        ];
+
+        if (isset($r->bulan) && isset($r->tahun)) {
+            $penagih = Penagih::with($queri)
+                ->whereRelation('tagihan.pencatatan', 'bulan', '=', $r->bulan)
+                ->whereRelation('tagihan.pencatatan', 'tahun', '=', $r->tahun)
+                ->where('user_id', $user_id)
+                ->whereDate('waktu', $tanggal)
+                ->orderBy('id', "DESC")
+                ->get();
+        } else {
+            $penagih = Penagih::with($queri)
+                ->where('user_id', $user_id)
+                ->whereDate('waktu', $tanggal)
+                ->orderBy('id', "DESC")
+                ->get();
+        }
+
+        $gol = Golongan::all('id', 'golongan');
+        $hitgol = [];
+        foreach ($gol as $go) {
+            $hitgol[$go->golongan] = 0;
+        }
+
+
+        $perbulan_tagih = 0;
+        foreach ($penagih as $p) {
+            if (isset($r->bulan)) {
+                $perbulan_tagih += $p->tagihan->total;
+            }
+            foreach ($gol as $g) {
+                if ($g->id == $p->tagihan->pencatatan->pelanggan->golongan->id) {
+                    $hitgol[$p->tagihan->pencatatan->pelanggan->golongan->golongan] += $p->jumlah;
+                }
+            }
+        }
+
+        $setoran = Setoran::where('user_id', $user_id)
+            ->whereDate('tanggal', $tanggal)
+            ->first();
+
+        $hasil['penagih'] = $penagih;
+        $hasil['setoran'] = $setoran;
+        $hasil['perbulan_tagih'] = $perbulan_tagih;
+        $hasil['pergolongan'] = $hitgol;
+        return $hasil;
+    }
+
+    public static function query_static($r, $user_id, $tanggal) //mengbil data pembayaran hari ini
     {
         $queri = [
             'tagihan:id,jumlah,diskon,denda,total,status_bayar,sistem_bayar,pencatatan_id',
@@ -122,7 +179,7 @@ class LaporanBayarController extends Controller
         $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
     }
 
-    public function proses_download_laporan_bayar_excel(Request $r){
+    public static function proses_download_laporan_bayar_excel(Request $r){
         $tanggal = now();
         isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
 
@@ -132,28 +189,65 @@ class LaporanBayarController extends Controller
         $data['user'] = $user->nama;
         $data['tanggal'] = date('d-m-Y', strtotime($tanggal));
 
-        $queri = $this->query($r, $user_id, $tanggal);
-        // return $queri['penagih'];
-        $has=[];
-        $a=0;
-        foreach ($queri['penagih'] as $p){
-            $a++;
-            $has[]=[
-                "no"=>$a,
-                "nopel"=>$p['tagihan']['pencatatan']['pelanggan']['id'],
-                "nama"=>$p['tagihan']['pencatatan']['pelanggan']['nama'],
-                "bulan"=>$p['tagihan']['pencatatan']['bulan'],
-                "bulan"=>$p['tagihan']['pencatatan']['tahun'],
-                "jumlah"=>$p['jumlah'],
-                "golongan"=>$p['tagihan']['pencatatan']['pelanggan']['golongan']['golongan'],
-                "jalan"=>$p['tagihan']['pencatatan']['pelanggan']['wiljalan']['jalan'],
+        // return $r->tanggal;
+        $tanggal_pecah=explode('-',$tanggal);
+        $tahun=$tanggal_pecah[0];
+        $bulan=ltrim($tanggal_pecah[1],'0');
 
-            ];
-        }
-        $has['user']=$queri['user'];
-        $has['tanggal']=$queri['tanggal'];
+        $catat = Pencatatan::query();
+        $catat->select(
+            'pelanggans.id',
+            'pelanggans.nama',
+            'golongans.golongan',
+            'wiljalans.jalan',
+            'pencatatans.bulan',
+            'pencatatans.tahun',
+            'pencatatans.pemakaian',
+            'tagihans.jumlah',
+            'tagihans.biaya',
+            'tagihans.pajak',
+            'tagihans.total',
+            'tagihans.status_bayar',
+            'tagihans.sistem_bayar',
+            'tagihans.tgl_bayar',
+            'users.nama as nama_user',
 
-        return $has;
+        );
+
+        $catat->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
+        $catat->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+        $catat->join('golongans', 'pelanggans.golongan_id', '=', 'golongans.id');
+        $catat->join('wiljalans', 'pelanggans.wiljalan_id', '=', 'wiljalans.id');
+        $catat->leftjoin('penagihs', 'penagihs.tagihan_id', '=', 'tagihans.id');
+        $catat->leftjoin('users', 'penagihs.user_id', '=', 'users.id');
+
+        $catat->whereYear('tagihans.tgl_bayar', '=', date('Y', strtotime($r->waktu_bayar)));
+        $catat->whereMonth('tagihans.tgl_bayar', '=', date('m', strtotime($r->waktu_bayar)));
+
+        $catat->limit(5);
+        return $catat->get();
+
+        // $a=0;
+        // foreach ($queri['penagih'] as $p){
+        //     $a++;
+        //     $has[]=[
+        //         "no"=>$a,
+        //         "nopel"=>$p['tagihan']['pencatatan']['pelanggan']['id'],
+        //         "nama"=>$p['tagihan']['pencatatan']['pelanggan']['nama'],
+        //         "bulan"=>$p['tagihan']['pencatatan']['bulan'],
+        //         "bulan"=>$p['tagihan']['pencatatan']['tahun'],
+        //         "jumlah"=>$p['jumlah'],
+        //         "golongan"=>$p['tagihan']['pencatatan']['pelanggan']['golongan']['golongan'],
+        //         "jalan"=>$p['tagihan']['pencatatan']['pelanggan']['wiljalan']['jalan'],
+        //         "penagih"=>$p['jumlah'],
+        //         "tgl_bayar"=>$p['jumlah'],
+
+        //     ];
+        // }
+        // $has['user']=$user->nama;
+        // $has['tanggal']=date('d-m-Y', strtotime($tanggal));
+
+        // return collect($has);
     }
 
     public function download_laporan_bayar_excel(Request $r){
