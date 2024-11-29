@@ -128,6 +128,8 @@ class P3Controller extends Controller
                 "denda"   =>  $catat->tagihan->denda,
                 "tagihan"   =>  $catat->tagihan->jumlah,
                 "no reff"   =>  decrypt($catat->id),
+                "pajak"   =>  $catat->tagihan->pajak,
+                "biaya"   =>  $catat->tagihan->biaya,
             ];
 
             $id[] = $catat->tagihan->id;
