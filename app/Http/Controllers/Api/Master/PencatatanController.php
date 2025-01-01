@@ -228,7 +228,7 @@ class PencatatanController extends Controller
         $tambahbulan = $sekarang->addMonth()->format('Y-m'); //tambah 1 bulan ke depan dari sekarang
 
 
-        if (date('Y-m') == $input && date('d') <= 16) {
+        if (date('Y-m') == $input && date('d') <= 20) {
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Pencatatan meteraan bulan " . $input . " belum dibuka...",
@@ -255,14 +255,15 @@ class PencatatanController extends Controller
             $input == "2024-09" or
             $input == "2024-10" or
             $input == "2024-11" or
+            $input == "2024-12" or
             $input == "2023-12" or
             $input == "2023-11") and ($user_id == 1 or $user_id == 26  or $user_id == 34)) {
         } else //HAPUS NANTIK 2 baris ini
 
-            // if ($input == "2024-10" && $edit==true) {
-            // } else //HAPUS NANTIK 2 baris ini
+            if ($input == "2024-12" && $edit==true) {  //buka input semua orang
+            } else //HAPUS NANTIK 2 baris ini
 
-            // if ($input == "2024-11" && $edit==true && $user_id==14) {
+            // if ($input == "2024-11" && $edit==true && $user_id==14) {   //buka input 1 orang
             // } else //HAPUS NANTIK 2 baris ini
 
             if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
