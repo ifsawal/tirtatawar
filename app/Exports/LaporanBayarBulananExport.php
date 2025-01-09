@@ -65,8 +65,8 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
             'L' => 7,
             'M' => 15,
             'N' => 15,
-            'N' => 23,
-            'N' => 30,
+            '0' => 23,
+            'P' => 30,
         ];
     }
 }
