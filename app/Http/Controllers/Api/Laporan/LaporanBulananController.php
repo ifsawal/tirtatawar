@@ -39,6 +39,7 @@ class LaporanBulananController extends Controller
                 'tagihans.sistem_bayar',
                 'tagihans.tgl_bayar',
                 'users.nama as nama_user',
+                'tagihans.total_nodenda',
 
             );
         } else {

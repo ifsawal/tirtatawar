@@ -44,6 +44,7 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
             "Sistem Bayar",
             "Tanggal Bayar",
             "Penagih",
+            "Total Bayar Tanpa Denda",
         ];
     }
 
@@ -65,6 +66,7 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
             'M' => 15,
             'N' => 15,
             'N' => 23,
+            'N' => 30,
         ];
     }
 }
