@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Laporan;
 
+use DB;
 use Illuminate\Http\Request;
 use App\Models\Master\Pencatatan;
 use App\Http\Controllers\Controller;
@@ -34,7 +35,10 @@ class LaporanBulananController extends Controller
                 'tagihans.jumlah',
                 'tagihans.biaya',
                 'tagihans.pajak',
-                \DB::raw('(CASE WHEN tagihans.status_bayar = "Y" THEN tagihans.total ELSE tagihans.total_nodenda END) AS status_lable'), 
+
+                // \DB::raw('(CASE WHEN tagihans.status_bayar = "Y" THEN tagihans.total ELSE tagihans.total_nodenda END) AS status_lable'), 
+                DB::raw('if(tagihans.status_bayar = "Y",tagihans.total,tagihans.total_nodenda) AS status_lable'), 
+
                 'tagihans.status_bayar',
                 'tagihans.sistem_bayar',
                 'tagihans.tgl_bayar',
