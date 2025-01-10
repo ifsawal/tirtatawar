@@ -34,7 +34,7 @@ class LaporanBulananController extends Controller
                 'tagihans.jumlah',
                 'tagihans.biaya',
                 'tagihans.pajak',
-                if('tagihans.status_bayar'='Y','tagihans.total','tagihans.total_nodenda') as 'total_tagihan',
+                if('tagihans.status_bayar'='Y','tagihans.total' as 'total_tagihan','tagihans.total_nodenda' as 'total_tagihan'),
                 'tagihans.status_bayar',
                 'tagihans.sistem_bayar',
                 'tagihans.tgl_bayar',
