@@ -39,8 +39,13 @@ class LaporanRekapBulananExport implements FromCollection, WithHeadings, WithCol
             "Total Tagihan",
             "Adm",
             "Pajak",
-            "Total Bayar",
+            "DRD",
             "Status Update",
+            "Terbayar",
+            "Sisa",
+            "Persentase",
+            "Denda",
+            "Denda + Terbayar",
         ];
     }
 
@@ -58,6 +63,11 @@ class LaporanRekapBulananExport implements FromCollection, WithHeadings, WithCol
             'I' => 8,
             'J' => 15,
             'K' => 8,
+            'L' => 12,
+            'M' => 12,
+            'N' => 12,
+            'O' => 12,
+            'P' => 12,
 
         ];
     }

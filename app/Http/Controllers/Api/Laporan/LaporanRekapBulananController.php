@@ -40,6 +40,11 @@ class LaporanRekapBulananController extends Controller
             'rekaps.pajak',
             'rekaps.total',
             'rekaps.status_update',
+            'rekaps.terbayar',
+            'rekaps.sisa',
+            'rekaps.persentase',
+            'rekaps.denda',
+            'rekaps.den_terbayar',
         );
         $rekap->join('wiljalans', 'wiljalans.id', '=', 'rekaps.wiljalan_id');
         $rekap->where('rekaps.tahun', '=', $r->tahun);
@@ -128,16 +133,36 @@ class LaporanRekapBulananController extends Controller
             $h_pajak = $catat->sum('tagihans.pajak');
             $h_total = $catat->sum('tagihans.total_nodenda');
 
+            $terbayar = 0;
+            $sisa = 0;
+            $pel_terbayar = 0;
+            $denda=0;
+            foreach ($catat->get() as $d) {
+                if ($d->status_bayar == "Y") {
+                    $terbayar += $d['total_nodenda'];
+                    $pel_terbayar += 1;
+                    $denda += $d['denda'];
+                }else{
+                    $sisa += $d['total_nodenda'];
+                }
+            }
+
 
 
             if ($rekap) {
                 $rekap->jumlah_pel = $pel;
                 $rekap->jumlah_pel_catat = $h_catat;
+                $rekap->pelanggan_terbayar = $pel_terbayar;
                 $rekap->pemakaian = $h_total_pemakaian;
                 $rekap->harga_air = $h_harga_dasar;
                 $rekap->adm = $h_adm;
                 $rekap->pajak = $h_pajak;
                 $rekap->total = $h_total;
+                $rekap->terbayar = $terbayar;
+                $rekap->sisa = $sisa;
+                $rekap->persentase = floor(($pel_terbayar*100)/$h_catat);
+                $rekap->denda = $denda;
+                $rekap->den_terbayar = $denda+$terbayar;
                 $rekap->save();
             } else {
                 $rekap = new Rekap();
@@ -146,12 +171,18 @@ class LaporanRekapBulananController extends Controller
                 $rekap->tahun = $r->tahun;
                 $rekap->jumlah_pel = $pel;
                 $rekap->jumlah_pel_catat = $h_catat;
+                $rekap->pelanggan_terbayar = $pel_terbayar;
                 $rekap->pemakaian = $h_total_pemakaian;
                 $rekap->harga_air = $h_harga_dasar;
                 $rekap->adm = $h_adm;
                 $rekap->pajak = $h_pajak;
                 $rekap->total = $h_total;
                 $rekap->pdam_id = $pdam_id;
+                $rekap->terbayar = $terbayar;
+                $rekap->sisa = $sisa;
+                $rekap->persentase = floor(($pel_terbayar*100)/$h_catat);
+                $rekap->denda = $denda ;
+                $rekap->den_terbayar = $denda+$terbayar;
                 $rekap->save();
             }
 
