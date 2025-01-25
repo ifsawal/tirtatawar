@@ -256,14 +256,14 @@ class LaporanPetugasController extends Controller
             ->get();
 
         $da = [];
-
         foreach ($user as $u) {
             $data = $this->ambil_data($r, $u['id'], $pdam_id, true);
+
             if ($data['sukses'] == false) continue;
 
             $tagih_lapangan = (int)$this->tagih_lapangan($u['id'], $r);
 
-
+            
             $lap = LapBayar::where('bulan', $r->bulan)
                 ->where('tahun', $r->tahun)
                 ->where('user_id', $u['id'])
@@ -290,6 +290,7 @@ class LaporanPetugasController extends Controller
             $lap->save();
 
             $da[] = $lap;
+
         }
 
         return response()->json([
