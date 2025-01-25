@@ -24,6 +24,11 @@ return new class extends Migration
             $table->integer('rp_terbayar');
             $table->integer('rp_no_bayar');
             $table->integer('tagih_sendiri');
+            $table->integer('drd');
+            $table->integer('terbayar_no_denda');
+            $table->integer('denda');
+            $table->integer('sisa');
+            $table->integer('persentase');
 
             $table->unique(['user_id', 'bulan', 'tahun']);
             $table->timestamps();

@@ -37,7 +37,8 @@ class LaporanBulananController extends Controller
                 'tagihans.pajak',
 
                 // \DB::raw('(CASE WHEN tagihans.status_bayar = "Y" THEN tagihans.total ELSE tagihans.total_nodenda END) AS status_lable'), 
-                DB::raw('if(tagihans.status_bayar = "Y",tagihans.total,tagihans.total_nodenda) AS status_lable'), 
+                // DB::raw('if(tagihans.status_bayar = "Y",tagihans.total,tagihans.total_nodenda) AS status_lable'), 
+                'if(tagihans.status_bayar = "Y", tagihans.total, tagihans.total_nodenda)', 
 
                 'tagihans.status_bayar',
                 'tagihans.sistem_bayar',

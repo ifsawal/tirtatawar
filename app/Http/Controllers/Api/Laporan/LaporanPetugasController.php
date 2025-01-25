@@ -33,6 +33,7 @@ class LaporanPetugasController extends Controller
             'tagihans.status_bayar',
             'tagihans.sistem_bayar',
             'tagihans.total',
+            'tagihans.denda',
         );
         $data->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
         $data->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
@@ -60,12 +61,16 @@ class LaporanPetugasController extends Controller
         $bayar = 0;
         $total_drd = 0;
         $jumlah_terbayar = 0;
+        $jumlah_terbayar_nodenda = 0;
+        $denda = 0;
         foreach ($data->get() as $d) {
             $total_drd += $d['total_nodenda'];
             if ($d['status_bayar'] == "Y") {
                 $bayar += 1;
                 $jumlah_terbayar += $d['total'];
                 $total += $d['total'];
+                $jumlah_terbayar_nodenda += $d['total_nodenda'];
+                $denda += $d['denda'];
             } elseif ($d['status_bayar'] == "N") {
                 $total += $d['total_nodenda'];
             }
@@ -80,6 +85,8 @@ class LaporanPetugasController extends Controller
                 "jumlah_rupiah" => $total,
                 "jumlah_terbayar" => $jumlah_terbayar,
                 "terbayar" => $bayar,
+                "terbayar_no_denda" => $jumlah_terbayar_nodenda,
+                "denda" => $denda,
                 "data" => $data->paginate(50),
             ];
         } else {
@@ -91,6 +98,8 @@ class LaporanPetugasController extends Controller
                 "jumlah_rupiah" => $total,
                 "jumlah_terbayar" => $jumlah_terbayar,
                 "terbayar" => $bayar,
+                "terbayar_no_denda" => $jumlah_terbayar_nodenda,
+                "denda" => $denda,
             ];
         }
     }
@@ -269,6 +278,11 @@ class LaporanPetugasController extends Controller
             $lap->jumlah_p =  $data['jumlah_data'];
             $lap->p_terbayar =  $data['terbayar'];
             $lap->p_no_bayar =  $data['jumlah_data'] - $data['terbayar'];
+            $lap->drd =  $data['drd'];
+            $lap->terbayar_no_denda =  $data['terbayar_no_denda'];//
+            $lap->denda =  $data['denda'];//
+            $lap->sisa =  $data['drd']-$data['terbayar_no_denda'];
+            $lap->persentase =  floor(($data['terbayar']*100)/$data['jumlah_data']);
             $lap->total_rp =  $data['jumlah_rupiah'];
             $lap->rp_terbayar =  $data['jumlah_terbayar'];
             $lap->rp_no_bayar =  $data['jumlah_rupiah'] - $data['jumlah_terbayar'];
@@ -297,10 +311,15 @@ class LaporanPetugasController extends Controller
             'lap_bayars.jumlah_p',
             'lap_bayars.p_terbayar',
             'lap_bayars.p_no_bayar',
-            'lap_bayars.total_rp',
+            'lap_bayars.drd',
+            'lap_bayars.terbayar_no_denda',
+            'lap_bayars.sisa',
+            'lap_bayars.persentase',
+            'lap_bayars.denda',
+            // 'lap_bayars.total_rp',
             'lap_bayars.rp_terbayar',
-            'lap_bayars.rp_no_bayar',
-            'lap_bayars.tagih_sendiri',
+            // 'lap_bayars.rp_no_bayar',
+            // 'lap_bayars.tagih_sendiri',
         );
         $data->join('users', 'users.id', '=', 'lap_bayars.user_id');
         $data->where('lap_bayars.bulan', '=', $r->bulan);
