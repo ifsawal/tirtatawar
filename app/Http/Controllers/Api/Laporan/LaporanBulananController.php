@@ -37,7 +37,7 @@ class LaporanBulananController extends Controller
                 'tagihans.pajak',
 
                 // \DB::raw('(CASE WHEN tagihans.status_bayar = "Y" THEN tagihans.total ELSE tagihans.total_nodenda END) AS status_lable'), 
-                DB::raw('if(tagihans.status_bayar = "Y",tagihans.total,tagihans.total_nodenda) AS status_lable'), 
+                // DB::raw('if(tagihans.status_bayar = "Y",tagihans.total,tagihans.total_nodenda) AS status_lable'), 
                 // 'if(tagihans.status_bayar = "Y", tagihans.total, tagihans.total_nodenda)', 
 
                 'tagihans.status_bayar',
@@ -45,6 +45,7 @@ class LaporanBulananController extends Controller
                 'tagihans.tgl_bayar',
                 'users.nama as nama_user',
                 'tagihans.total_nodenda',
+                'tagihans.denda',
 
             );
         } else {
@@ -85,7 +86,43 @@ class LaporanBulananController extends Controller
         isset($r->waktu_bayar) ? $catat->whereMonth('tagihans.tgl_bayar', '=', date('m', strtotime($r->waktu_bayar))) : '';
 
         if ($cetak == "cetak") {
-            return $catat->get();
+            // return $catat->get();
+            
+            $tampung=[];
+            foreach($catat->get() as $d){
+                
+                $denda=0;
+                $denda_pembayaran=0;
+                if($d->status_bayar=="Y"){
+                    $denda=$d['denda'];
+                    $denda_pembayaran=$denda+$d->total_nodenda;
+                }
+
+                $tampung[]=[
+                    "pelanggan_id"      => $d->id,
+                    "nama"              => $d->nama,
+                    "golongan"              => $d->golongan,
+                    "jalan"              => $d->jalan,
+                    "bulan"              => $d->bulan,
+                    "tahun"              => $d->tahun,
+                    "pemakaian"              => $d->pemakaian,
+                    "jumlah"              => $d->jumlah,
+                    "biaya"              => $d->biaya,
+                    "pajak"              => $d->pajak,
+                    "total_nodenda"              => $d->total_nodenda,
+                    "status_bayar"              => $d->status_bayar,
+                    "sistem_bayar"              => $d->sistem_bayar,
+                    "tgl_bayar"              => $d->tgl_bayar,
+                    "denda"              => $denda,
+                    "denda_pembayaran"              => $denda_pembayaran,
+                    "nama_user"              => $d->nama_user,
+
+                ];
+            }
+
+
+            return collect($tampung);
+
         }
         return $catat->paginate(50);
     }

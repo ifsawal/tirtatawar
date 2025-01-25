@@ -39,14 +39,17 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
             "Tagihan Pemakaian",
             "Adm",
             "Pajak",
-            "Total Bayar",
+            "DRD",
             "Status Bayar",
             "Sistem Bayar",
             "Tanggal Bayar",
+            "Denda",
+            "Denda + Pembayaran",
             "Penagih",
-            "Total Bayar Tanpa Denda",
         ];
     }
+
+
 
     public function columnWidths(): array
     {
@@ -57,16 +60,17 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
             'D' => 23,
             'E' => 8,
             'F' => 8,
-            'g' => 8,
+            'G' => 8,
             'H' => 14,
             'I' => 10,
             'J' => 10,
             'K' => 12,
-            'L' => 7,
-            'M' => 15,
+            'L' => 10,
+            'M' => 10,
             'N' => 15,
-            'N' => 23,
-            'N' => 30,
+            'O' => 10,
+            'P' => 22,
+            'Q' => 30,
         ];
     }
 }

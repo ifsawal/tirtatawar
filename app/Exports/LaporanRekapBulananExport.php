@@ -48,6 +48,7 @@ class LaporanRekapBulananExport implements FromCollection, WithHeadings, WithCol
             "Denda + Terbayar",
         ];
     }
+    
 
     public function columnWidths(): array
     {
