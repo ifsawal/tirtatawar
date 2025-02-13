@@ -53,6 +53,7 @@ class LaporanBayarController extends Controller
 
 
         $perbulan_tagih = 0;
+        $jumlah_pelanggan=[];//masukkan pelanggan tidak dobel untuk di hitung
         foreach ($penagih as $p) {
             if (isset($r->bulan)) {
                 $perbulan_tagih += $p->tagihan->total;
@@ -62,7 +63,11 @@ class LaporanBayarController extends Controller
                     $hitgol[$p->tagihan->pencatatan->pelanggan->golongan->golongan] += $p->jumlah;
                 }
             }
+
+            $jumlah_pelanggan[]=$p->tagihan->pencatatan->pelanggan->id;
         }
+
+        $hasil_jumlah_pelanggan=count(array_unique($jumlah_pelanggan));
 
         $setoran = Setoran::where('user_id', $user_id)
             ->whereDate('tanggal', $tanggal)
@@ -72,6 +77,7 @@ class LaporanBayarController extends Controller
         $hasil['setoran'] = $setoran;
         $hasil['perbulan_tagih'] = $perbulan_tagih;
         $hasil['pergolongan'] = $hitgol;
+        $hasil['jumlah_pelanggan_ditagih'] =  $hasil_jumlah_pelanggan;
         return $hasil;
     }
 
@@ -123,6 +129,7 @@ class LaporanBayarController extends Controller
         $setoran = Setoran::where('user_id', $user_id)
             ->whereDate('tanggal', $tanggal)
             ->first();
+            
 
         $hasil['penagih'] = $penagih;
         $hasil['setoran'] = $setoran;
@@ -150,6 +157,7 @@ class LaporanBayarController extends Controller
             'penagih' => $hasil['penagih'],
             'setoran' => $hasil['setoran'],
             'perbulan_tagih' => $hasil['perbulan_tagih'],
+            'jumlah_pelanggan_ditagih' => $hasil['jumlah_pelanggan_ditagih'],
         ], 202);
     }
 

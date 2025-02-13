@@ -45,6 +45,8 @@ class LaporanRekapBulananController extends Controller
             'rekaps.persentase',
             'rekaps.denda',
             'rekaps.den_terbayar',
+            'rekaps.pelanggan_belum_bayar',
+
         );
         $rekap->join('wiljalans', 'wiljalans.id', '=', 'rekaps.wiljalan_id');
         $rekap->where('rekaps.tahun', '=', $r->tahun);
@@ -132,6 +134,7 @@ class LaporanRekapBulananController extends Controller
             $h_adm = $catat->sum('tagihans.biaya');
             $h_pajak = $catat->sum('tagihans.pajak');
             $h_total = $catat->sum('tagihans.total_nodenda');
+            
 
             $terbayar = 0;
             $sisa = 0;
@@ -146,7 +149,7 @@ class LaporanRekapBulananController extends Controller
                     $sisa += $d['total_nodenda'];
                 }
             }
-
+            $pelanggan_belum_bayar = $h_catat-$pel_terbayar;  //ini di hitung berdasarkan pelanggan yang di catat
 
 
             if ($rekap) {
@@ -163,6 +166,7 @@ class LaporanRekapBulananController extends Controller
                 $rekap->persentase = $pel_terbayar===0?0:floor(($pel_terbayar*100)/$h_catat);
                 $rekap->denda = $denda;
                 $rekap->den_terbayar = $denda+$terbayar;
+                $rekap->pelanggan_belum_bayar = $pelanggan_belum_bayar;
                 $rekap->save();
             } else {
                 $rekap = new Rekap();
@@ -183,6 +187,7 @@ class LaporanRekapBulananController extends Controller
                 $rekap->persentase = $pel_terbayar===0?0:floor(($pel_terbayar*100)/$h_catat);
                 $rekap->denda = $denda ;
                 $rekap->den_terbayar = $denda+$terbayar;
+                $rekap->pelanggan_belum_bayar = $pelanggan_belum_bayar;
                 $rekap->save();
             }
 

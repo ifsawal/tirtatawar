@@ -32,6 +32,7 @@ return new class extends Migration
             $table->integer('persentase');
             $table->integer('denda');
             $table->integer('den_terbayar');
+            $table->integer('pelanggan_belum_bayar');
             $table->unsignedBigInteger('pdam_id');
             $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
             $table->unique(['wiljalan_id', 'bulan', 'tahun']);

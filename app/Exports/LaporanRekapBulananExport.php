@@ -46,6 +46,7 @@ class LaporanRekapBulananExport implements FromCollection, WithHeadings, WithCol
             "Persentase",
             "Denda",
             "Denda + Terbayar",
+            "Pelanggan belum bayar",
         ];
     }
     
@@ -69,6 +70,7 @@ class LaporanRekapBulananExport implements FromCollection, WithHeadings, WithCol
             'N' => 12,
             'O' => 12,
             'P' => 12,
+            'Q' => 18,
 
         ];
     }
