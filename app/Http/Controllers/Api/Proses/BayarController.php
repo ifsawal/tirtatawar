@@ -316,13 +316,13 @@ class BayarController extends Controller
                 ], 202);
             }
 
-            if (date('Y-m-d', strtotime($tanggal)) <> date('Y-m-d')) {
-                DB::rollback();
-                return response()->json([
-                    "sukses" => false,
-                    "pesan" => "Pembayaran gagal dibatalkan, pembatalan berlaku 1 hari...",
-                ], 404);
-            }
+            // if (date('Y-m-d', strtotime($tanggal)) <> date('Y-m-d')) {
+            //     DB::rollback();
+            //     return response()->json([
+            //         "sukses" => false,
+            //         "pesan" => "Pembayaran gagal dibatalkan, pembatalan berlaku 1 hari...",
+            //     ], 404);
+            // }
 
 
             if ($penagih->user_id_izinhapus === NULL) {
