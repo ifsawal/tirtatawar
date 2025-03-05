@@ -271,7 +271,7 @@ class PencatatanController extends Controller
             // if ($input == "2025-02" && $edit==true) {  //buka input semua orang
             // } else //HAPUS NANTIK 2 baris ini
 
-            if ($input == "2024-02" && $edit==true && $user_id==14) {   //buka input 1 orang
+            if ($input == "2025-02" && $edit==true && $user_id==14) {   //buka input 1 orang 20
             } else //HAPUS NANTIK 2 baris ini
 
             if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
