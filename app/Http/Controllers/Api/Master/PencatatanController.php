@@ -244,6 +244,12 @@ class PencatatanController extends Controller
             ], 404);
         }
 
+
+        //seting yang harus di buat
+        // 1. bulan dan tahun untuk super user //1 kolom, isi array tahun-bulan,  dan array akun
+        // 2. buka input sampai tanggal tertentu // tahun-bulan, tanggal di buka
+        // 3. input 1 bulan untuk 1 akun  //tahun-bulan, id
+
         if (($input == "2024-03" or
             $input == "2024-01" or
             $input == "2024-02" or
@@ -265,8 +271,8 @@ class PencatatanController extends Controller
             // if ($input == "2025-02" && $edit==true) {  //buka input semua orang
             // } else //HAPUS NANTIK 2 baris ini
 
-            // if ($input == "2024-12" && $edit==true && $user_id==14) {   //buka input 1 orang
-            // } else //HAPUS NANTIK 2 baris ini
+            if ($input == "2024-02" && $edit==true && $user_id==14) {   //buka input 1 orang
+            } else //HAPUS NANTIK 2 baris ini
 
             if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
                 return response()->json([
