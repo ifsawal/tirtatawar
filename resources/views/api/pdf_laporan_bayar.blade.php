@@ -5,7 +5,8 @@ Tanggal bayar   : {{ $data['tanggal'] }}
 
 Total Penerimaan hari ini   : @rp($data['setoran']['jumlah'])
 
-Jumlah Transaksi            : {{ $data['trx'] }} Pelanggan
+Jumlah Transaksi            : {{ $data['trx'] }} Trx
+Jumlah Pelanggan            : {{ $data['jumlah_pelanggan_ditagih'] }} Pelanggan
 Rincian :
 1. Total Harga Pemakaian    : @rp($data['setoran']['dasar'])
 

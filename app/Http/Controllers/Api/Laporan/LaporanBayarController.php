@@ -179,6 +179,7 @@ class LaporanBayarController extends Controller
         $data['trx'] = count($queri['penagih']);
         $data['data'] = $queri['penagih'];
         $data['pergolongan'] = $queri['pergolongan'];
+        $data['jumlah_pelanggan_ditagih'] = $queri['jumlah_pelanggan_ditagih'];
         $data['setoran'] = $queri['setoran'];
 
         // return view("api/pdf_laporan_bayar", compact('data'));
