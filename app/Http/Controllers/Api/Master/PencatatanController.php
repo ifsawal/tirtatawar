@@ -264,6 +264,7 @@ class PencatatanController extends Controller
             $input == "2024-12" or
             $input == "2025-01" or
             $input == "2025-02" or
+            $input == "2025-03" or
             $input == "2023-12" or
             $input == "2023-11") and ($user_id == 1 or $user_id == 26)) {
         } else //HAPUS NANTIK 2 baris ini
@@ -271,8 +272,8 @@ class PencatatanController extends Controller
             // if ($input == "2025-03" && $edit==true) {  //buka input semua orang
             //  } else //HAPUS NANTIK 2 baris ini
 
-            if ($input == "2025-03" && $edit==true && $user_id==23) {   //buka input 1 orang 20
-            } else //HAPUS NANTIK 2 baris ini
+            // if ($input == "2025-03" && $edit==true && $user_id==23) {   //buka input 1 orang 20
+            // } else //HAPUS NANTIK 2 baris ini
 
             if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
                 return response()->json([
