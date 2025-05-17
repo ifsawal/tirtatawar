@@ -209,6 +209,7 @@ class TagihanController extends Controller
             'id' => 'required|integer', //id pencatatan
         ]);
 
+        $user = Auth::user();
 
 
         $pelanggan = Pelanggan::with('golongan:id,denda')
@@ -250,6 +251,8 @@ class TagihanController extends Controller
             "pesan" => "Tagihan ditemukan...",
             "data"  => $tex,
             "jumlah"  => $jumlah,
+            "dicetak"  => $user->nama,
+            "tanggal"  => "Takengon, ".date('d-m-Y'),
         ], 202);
     }
 
