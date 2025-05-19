@@ -69,6 +69,7 @@ class TagihanController extends Controller
 
     public function cektagihandanupdate(Request $r)
     {
+        $user = Auth::user();
         $this->validate($r, [
             'id' => 'required', //pencatatan id
         ]);
@@ -132,6 +133,7 @@ class TagihanController extends Controller
                 // 'pencatatan' => $pencatatan,
                 'tagihan' => $tagihan,
                 'linkdownload' => BayarController::linkplaystore(),
+                'tgl' => "Takengon, ".date('d-m-Y')." \n".$user->nama,
             ], 202);
         } catch (\Exception $e) {
             DB::rollback();
