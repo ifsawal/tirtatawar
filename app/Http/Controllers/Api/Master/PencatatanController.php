@@ -265,7 +265,7 @@ class PencatatanController extends Controller
             $input == "2025-01" or
             $input == "2025-02" or
             $input == "2025-03" or
-            $input == "2025-03" or
+            $input == "2025-06" or
             $input == "2025-04" or
             $input == "2025-05" or
             $input == "2023-12" or
