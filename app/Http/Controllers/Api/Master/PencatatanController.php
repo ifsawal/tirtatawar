@@ -228,7 +228,7 @@ class PencatatanController extends Controller
         $tambahbulan = $sekarang->addMonth()->format('Y-m'); //tambah 1 bulan ke depan dari sekarang
 
 
-        if (date('Y-m') == $input && date('d') <= 18) {
+        if (date('Y-m') == $input && date('d') <= 2) {
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Pencatatan meteraan bulan " . $input . " belum dibuka...",
