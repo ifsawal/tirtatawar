@@ -14,6 +14,7 @@ use Spatie\Permission\Models\Role;
 use App\Models\Master\GolPenetapan;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Pengaturan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use DragonCode\Support\Facades\Helpers\Arr;
@@ -227,8 +228,20 @@ class PencatatanController extends Controller
         $sekarang = Carbon::now();
         $tambahbulan = $sekarang->addMonth()->format('Y-m'); //tambah 1 bulan ke depan dari sekarang
 
+        $syarat = ['tahun_buka', 'superadmin_buka', 'buka_semua', 'buka_satu', 'buka_satu_user','tgl_mulai_input'];
+        $atur = Pengaturan::whereIn('aturan', $syarat)->get();
+        $filter = collect($atur)
+            ->whereIn('aturan', $syarat)
+            ->pluck('value', 'aturan');
 
-        if (date('Y-m') == $input && date('d') <= 20) {
+        $tahunBukaValues = explode(',', $filter['tahun_buka']);
+        $superadmin_bukavalue = explode(',', $filter['superadmin_buka']);
+        $buka_semua = $filter['buka_semua'];
+        $buka_satu = $filter['buka_satu'];
+        $buka_satu_user = $filter['buka_satu_user'];
+        $tgl_mulai_input = $filter['tgl_mulai_input'];
+
+        if (date('Y-m') == $input && date('d') <= $tgl_mulai_input) { //batasan tgl mulai input
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Pencatatan meteraan bulan " . $input . " belum dibuka...",
@@ -244,48 +257,25 @@ class PencatatanController extends Controller
             ], 404);
         }
 
-
-        //seting yang harus di buat
-        // 1. bulan dan tahun untuk super user //1 kolom, isi array tahun-bulan,  dan array akun
-        // 2. buka input sampai tanggal tertentu // tahun-bulan, tanggal di buka
-        // 3. input 1 bulan untuk 1 akun  //tahun-bulan, id
-
-        if (($input == "2024-03" or
-            $input == "2024-01" or
-            $input == "2024-02" or
-            $input == "2024-04" or
-            $input == "2024-05" or
-            $input == "2024-06" or
-            $input == "2024-07" or
-            $input == "2024-08" or
-            $input == "2024-09" or
-            $input == "2024-10" or
-            $input == "2024-11" or
-            $input == "2024-12" or
-            $input == "2025-01" or
-            $input == "2025-02" or
-            $input == "2025-03" or
-            $input == "2025-04" or
-            $input == "2025-05" or
-            $input == "2025-06" or
-            $input == "2025-07" or
-            $input == "2023-12" or
-            $input == "2023-11") and ($user_id == 1 or $user_id == 26)) {
+        if (
+            in_array($input, $tahunBukaValues)
+            and in_array($user_id, $superadmin_bukavalue)
+        ) {
         } else //HAPUS NANTIK 2 baris ini
 
-            // if ($input == "2025-07" && $edit==true) {  //buka input semua orang
-            //  } else //HAPUS NANTIK 2 baris ini
-
-            if ($input == "2025-07" && $edit==true && $user_id==47) {   //buka input 1 orang 20
+            if ($buka_semua <> NULL && $input == $buka_semua && $edit == true) {  //buka input semua orang
             } else //HAPUS NANTIK 2 baris ini
 
-            if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
-                return response()->json([
-                    "sukses" => false,
-                    "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
-                    "kode" => 2,
-                ], 404);
-            }
+                if ($buka_satu <> NULL && $input == $buka_satu && $edit == true && $user_id == $buka_satu_user) {   //buka input 1 orang 20
+                } else //HAPUS NANTIK 2 baris ini
+
+                    if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
+                        return response()->json([
+                            "sukses" => false,
+                            "pesan" => "Meteran bulan lalu tidak dapat diisi lagi...",
+                            "kode" => 2,
+                        ], 404);
+                    }
         return "Ok";
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -408,6 +398,7 @@ class PencatatanController extends Controller
 
                 $this->simpanTagihan($cek->id, $r->pelanggan_id, $cek->pemakaian, 'ubah');
                 DB::commit();
+                // DB::rollback();
 
                 return response()->json([
                     "sukses" => true,
