@@ -238,7 +238,7 @@ class PencatatanController extends Controller
         $superadmin_bukavalue = explode(',', $filter['superadmin_buka']);
         $buka_semua = $filter['buka_semua'];
         $buka_satu = $filter['buka_satu'];
-        $buka_satu_user = $filter['buka_satu_user'];
+        $buka_satu_user = explode(',', $filter['buka_satu_user']);
         $tgl_mulai_input = $filter['tgl_mulai_input'];
 
         if (date('Y-m') == $input && date('d') <= $tgl_mulai_input) { //batasan tgl mulai input
@@ -266,7 +266,7 @@ class PencatatanController extends Controller
             if ($buka_semua <> NULL && $input == $buka_semua && $edit == true) {  //buka input semua orang
             } else //HAPUS NANTIK 2 baris ini
 
-                if ($buka_satu <> NULL && $input == $buka_satu && $edit == true && $user_id == $buka_satu_user) {   //buka input 1 orang 20
+                if ($buka_satu <> NULL && $input == $buka_satu && $edit == true && in_array($user_id, $buka_satu_user)) {  //buka input 1 orang 20)$user_id == $buka_satu_user) {   //buka input 1 orang 20
                 } else //HAPUS NANTIK 2 baris ini
 
                     if ($input < Carbon::now()->format('Y-m')) {  //FITUR METERAN SEBELUMNYA TIDAK BOLEH DIISI
