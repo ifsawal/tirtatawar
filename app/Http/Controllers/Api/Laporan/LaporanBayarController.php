@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanBayarPerhariExport;
 use App\Models\User;
+use Mpdf\MpdfException;
 use Ramsey\Uuid\Type\Integer;
 
 class LaporanBayarController extends Controller
@@ -194,7 +195,7 @@ class LaporanBayarController extends Controller
             $mpdf->debug = true;
             $mpdf->WriteHTML('<h1>Hello World!</h1><p>Ini PDF pertama saya menggunakan mPDF.</p>');
             $mpdf->Output();
-        } catch (\Mpdf\MpdfException $e) {
+        } catch (MpdfException $e) {
             echo $e->getMessage();
         }
     }
