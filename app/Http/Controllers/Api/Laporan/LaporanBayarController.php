@@ -186,9 +186,14 @@ class LaporanBayarController extends Controller
 
         
         // return view("api/pdf_laporan_bayar", compact('data'));
+        ob_start();
         $mpdf = new Mpdf();
         $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
+        ob_end_clean();
         $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
+
+
+        
     }
 
     public static function proses_download_laporan_bayar_excel(Request $r){
