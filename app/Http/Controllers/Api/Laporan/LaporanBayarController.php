@@ -189,12 +189,14 @@ class LaporanBayarController extends Controller
         // $mpdf = new Mpdf();
         // $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
         // $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
-        
-        $mpdf = new Mpdf();
-        $mpdf->debug = true;
-        $mpdf->WriteHTML('<h1>Hello World!</h1><p>Ini PDF pertama saya menggunakan mPDF.</p>');
-        $mpdf->Output(); 
-
+        try {
+            $mpdf = new Mpdf();
+            $mpdf->debug = true;
+            $mpdf->WriteHTML('<h1>Hello World!</h1><p>Ini PDF pertama saya menggunakan mPDF.</p>');
+            $mpdf->Output();
+        } catch (\Mpdf\MpdfException $e) {
+            echo $e->getMessage();
+        }
     }
 
     public static function proses_download_laporan_bayar_excel(Request $r)
