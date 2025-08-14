@@ -167,6 +167,7 @@ class LaporanBayarController extends Controller
 
     public function download_laporan_bayar(Request $r)
     {
+        ob_start();
         $tanggal = now();
         isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
 
@@ -188,14 +189,11 @@ class LaporanBayarController extends Controller
 
         // error_reporting(E_ALL & ~E_DEPRECATED & ~E_WARNING);
 
-        // $mpdf = new Mpdf();
-        // $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
-        // $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
+        $mpdf = new Mpdf();
+        $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
+        $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
 
-        $pdf = new \Mpdf\Mpdf();
-        $pdf->WriteHTML('<h1>Hello World</h1>');
-        $content = $pdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
-        return strlen($content);
+        ob_end_clean();
     }
 
     public static function proses_download_laporan_bayar_excel(Request $r)
