@@ -252,7 +252,7 @@ class TagihanController extends Controller
             "sukses" => true,
             "pesan" => "Tagihan ditemukan...",
             "data"  => $tex,
-            "jumlah"  => $jumlah,
+            "jumlah"  => $jumlah." \nSTRUK INI BUKAN BUKTI PEMBAYARAN",
             "dicetak"  => $user->nama,
             "tanggal"  => "Takengon, ".date('d-m-Y'),
         ], 202);
