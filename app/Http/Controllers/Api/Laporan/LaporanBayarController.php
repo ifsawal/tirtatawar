@@ -186,6 +186,7 @@ class LaporanBayarController extends Controller
         $data['setoran'] = $queri['setoran'];
 
 
+        error_reporting(E_ALL & ~E_DEPRECATED & ~E_WARNING);
 
         // $mpdf = new Mpdf();
         // $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
