@@ -196,7 +196,7 @@ class LaporanBayarController extends Controller
             $mpdf->WriteHTML('<h1>Hello World!</h1><p>Ini PDF pertama saya menggunakan mPDF.</p>');
             $mpdf->Output();
         } catch (MpdfException $e) {
-            echo $e->getMessage();
+            return  $e->getMessage();
         }
     }
 
