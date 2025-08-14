@@ -54,7 +54,7 @@ class LaporanBayarController extends Controller
 
 
         $perbulan_tagih = 0;
-        $jumlah_pelanggan=[];//masukkan pelanggan tidak dobel untuk di hitung
+        $jumlah_pelanggan = []; //masukkan pelanggan tidak dobel untuk di hitung
         foreach ($penagih as $p) {
             if (isset($r->bulan)) {
                 $perbulan_tagih += $p->tagihan->total;
@@ -65,10 +65,10 @@ class LaporanBayarController extends Controller
                 }
             }
 
-            $jumlah_pelanggan[]=$p->tagihan->pencatatan->pelanggan->id;
+            $jumlah_pelanggan[] = $p->tagihan->pencatatan->pelanggan->id;
         }
 
-        $hasil_jumlah_pelanggan=count(array_unique($jumlah_pelanggan));
+        $hasil_jumlah_pelanggan = count(array_unique($jumlah_pelanggan));
 
         $setoran = Setoran::where('user_id', $user_id)
             ->whereDate('tanggal', $tanggal)
@@ -130,7 +130,7 @@ class LaporanBayarController extends Controller
         $setoran = Setoran::where('user_id', $user_id)
             ->whereDate('tanggal', $tanggal)
             ->first();
-            
+
 
         $hasil['penagih'] = $penagih;
         $hasil['setoran'] = $setoran;
@@ -172,7 +172,7 @@ class LaporanBayarController extends Controller
         $user = Auth::user();
         isset($r->user) ? $user_id = $r->user : $user_id = $user->id;
 
-        $pilih_user=User::find($user_id);
+        $pilih_user = User::find($user_id);
 
         $data['user'] = $pilih_user->nama;
         $data['tanggal'] = date('d-m-Y', strtotime($tanggal));
@@ -184,19 +184,16 @@ class LaporanBayarController extends Controller
         $data['jumlah_pelanggan_ditagih'] = $queri['jumlah_pelanggan_ditagih'];
         $data['setoran'] = $queri['setoran'];
 
-        
+
         // return view("api/pdf_laporan_bayar", compact('data'));
-        ob_start();
         $mpdf = new Mpdf();
         $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
-        ob_end_clean();
+
         $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
-
-
-        
     }
 
-    public static function proses_download_laporan_bayar_excel(Request $r){
+    public static function proses_download_laporan_bayar_excel(Request $r)
+    {
         $tanggal = now();
         isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
 
@@ -207,9 +204,9 @@ class LaporanBayarController extends Controller
         $data['tanggal'] = date('d-m-Y', strtotime($tanggal));
 
         // return $r->tanggal;
-        $tanggal_pecah=explode('-',$tanggal);
-        $tahun=$tanggal_pecah[0];
-        $bulan=ltrim($tanggal_pecah[1],'0');
+        $tanggal_pecah = explode('-', $tanggal);
+        $tahun = $tanggal_pecah[0];
+        $bulan = ltrim($tanggal_pecah[1], '0');
 
         $catat = Pencatatan::query();
         $catat->select(
@@ -267,7 +264,8 @@ class LaporanBayarController extends Controller
         // return collect($has);
     }
 
-    public function download_laporan_bayar_excel(Request $r){
+    public function download_laporan_bayar_excel(Request $r)
+    {
 
 
         // $this->validate($r, [
@@ -275,7 +273,6 @@ class LaporanBayarController extends Controller
         //     'user' => 'required|integer',
         // ]);
         return Excel::download(new LaporanBayarPerhariExport($r), 'laporan_bayar_perhari.xlsx');
-
     }
 
 
@@ -293,7 +290,7 @@ class LaporanBayarController extends Controller
             ->get()
             ->sortByDesc('tagihan.pencatatan.bulan');
 
-            
+
         return $data[] = [
             "semua"     => $query,
 
