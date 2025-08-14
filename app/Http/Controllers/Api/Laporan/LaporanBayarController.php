@@ -188,17 +188,14 @@ class LaporanBayarController extends Controller
 
         // error_reporting(E_ALL & ~E_DEPRECATED & ~E_WARNING);
 
-        $mpdf = new Mpdf();
-        $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
-        $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
-        // try {
-        //     $mpdf = new Mpdf();
-        //     $mpdf->debug = true;
-        //     $mpdf->WriteHTML('<h1>Hello World!</h1><p>Ini PDF pertama saya menggunakan mPDF.</p>');
-        //     $mpdf->Output();
-        // } catch (MpdfException $e) {
-        //     return  $e->getMessage();
-        // }
+        // $mpdf = new Mpdf();
+        // $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
+        // $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
+
+        $pdf = new \Mpdf\Mpdf();
+        $pdf->WriteHTML('<h1>Hello World</h1>');
+        $content = $pdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+        return strlen($content);
     }
 
     public static function proses_download_laporan_bayar_excel(Request $r)
