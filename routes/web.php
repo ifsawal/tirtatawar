@@ -137,8 +137,8 @@ Route::get('/hal/{slug}',Hal::class)->name('hal');
 Route::get('/kontak',Hubungi::class)->name('kontak');
 
 
-Route::get('/phpinfo', function () {
-    ob_start();
-    phpinfo();
-    ob_end_flush();
-});
+// Route::get('/phpinfo', function () {
+//     ob_start();
+//     return phpinfo();
+//     ob_end_flush();
+// });
