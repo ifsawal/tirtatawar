@@ -135,3 +135,8 @@ Route::get('/blog/{id}',BlogDetil::class)->name('blog-detil');
 Route::get('/faq',Faq::class)->name('faq');
 Route::get('/hal/{slug}',Hal::class)->name('hal');
 Route::get('/kontak',Hubungi::class)->name('kontak');
+
+
+Route::get('/phpinfo', function () {
+    phpinfo();
+});
