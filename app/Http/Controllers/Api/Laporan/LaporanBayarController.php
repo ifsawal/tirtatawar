@@ -191,6 +191,7 @@ class LaporanBayarController extends Controller
         // $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
         
         $mpdf = new Mpdf();
+        $mpdf->debug = true;
         $mpdf->WriteHTML('<h1>Hello World!</h1><p>Ini PDF pertama saya menggunakan mPDF.</p>');
         $mpdf->Output(); 
 
