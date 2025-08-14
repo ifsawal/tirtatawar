@@ -221,6 +221,7 @@ class UserSeeder extends Seeder
         $pelanggan = Permission::create(['name' => 'hapus denda', 'guard_name' => 'web']);
         $pelanggan = Permission::create(['name' => 'download bayar bank', 'guard_name' => 'web']);
         $pelanggan = Permission::create(['name' => 'penagihan', 'guard_name' => 'web']);
+        $pelanggan = Permission::create(['name' => 'lihat pengampunan', 'guard_name' => 'web']);
 
 
 

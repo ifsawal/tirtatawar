@@ -13,6 +13,7 @@ use App\Models\Master\PenagihHapus;
 use App\Http\Controllers\Controller;
 use App\Models\Master\IzinPerubahan;
 use App\Models\Master\Pencatatan;
+use App\Models\Master\Persetujuan;
 use Illuminate\Support\Facades\Auth;
 
 class BayarController extends Controller
@@ -28,6 +29,43 @@ class BayarController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    public function pengampunan(Request $r)
+    {
+        $this->validate($r, [
+            'id' => 'required',  //id pencatatan
+            // 'pelanggan_id' => 'required',
+        ]);
+        $user_id = Auth::user()->id;
+
+        $catat = Pencatatan::where('id', '=', $r->id)
+            ->first();
+        $tagihan = Tagihan::where('pencatatan_id', '=', $catat->id)
+            ->where('status_bayar', '=', 'N')
+            ->first();
+
+        if (!$tagihan) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Tagihan tidak ditemukan atau sudah dibayar...",
+            ], 202);
+        }
+
+        if ($tagihan->pengampunan <> NULL) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Tagihan sudah diampuni...",
+            ], 202);
+        }
+
+        $tagihan->pengampunan = $user_id;
+        $tagihan->save();
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Sukses mengampuni pembayaran...",
+        ], 201);
+    }
+
     public function simpan_diskon(Request $r)
     {
         $this->validate($r, [
@@ -72,7 +110,7 @@ class BayarController extends Controller
             'pelanggan_id' => 'required',
         ]);
         $user_id = Auth::user()->id;
-        
+
         $u = Auth::user()->getAllPermissions();
         $c = collect($u);
         $hit = $c->where("name", 'penagihan');
@@ -108,6 +146,34 @@ class BayarController extends Controller
                         "pesan" => "Tagihan sedang di proses Bank, silahkan cek 1 jam lagi",
                     ], 202);
                 }
+            }
+
+            $pencatatan = Pencatatan::where('id', '=', $tagihan->pencatatan_id)
+                ->first();
+
+
+
+            $catat_tagih = Pencatatan::join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
+            $catat_tagih->select('pencatatans.bulan', 'pencatatans.tahun', 'pencatatans.id as id_catat', 'tagihans.id as id_tagihan', 'tagihans.status_bayar');
+            $catat_tagih->where('pencatatans.pelanggan_id', $r->pelanggan_id);
+            $catat_tagih->where('tagihans.status_bayar', 'N');
+            $catat_tagih->where('tagihans.pengampunan',  NULL);
+            $catat_tagih->where(function ($query) use ($pencatatan) {
+                $query->where('pencatatans.tahun', '<', $pencatatan->tahun)
+                    ->orWhere(function ($q) use ($pencatatan) {
+                        $q->where('pencatatans.tahun', $pencatatan->tahun)
+                            ->where('pencatatans.bulan', '<', $pencatatan->bulan);
+                    });
+            });
+
+
+            // return $catat_tagih->get();
+            $belum_bayar_bln_sebelumnya = $catat_tagih->get()->count();
+            if ($belum_bayar_bln_sebelumnya > 0) {
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Ada tagihan bulan sebelumnya yang belum dibayar...",
+                ], 202);
             }
 
             $tagihan->status_bayar = "Y";

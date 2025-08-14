@@ -35,6 +35,7 @@ return new class extends Migration
             $table->integer("total_nodenda");
             $table->integer("off_denda")->nullable();
             $table->dateTime("bayar_bank")->nullable();
+            $table->integer("pengampunan")->nullable();
             $table->timestamps();
         });
     }

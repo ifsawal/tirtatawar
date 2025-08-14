@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanBayarPerhariExport;
+use App\Models\User;
 use Ramsey\Uuid\Type\Integer;
 
 class LaporanBayarController extends Controller
@@ -171,8 +172,9 @@ class LaporanBayarController extends Controller
         $user = Auth::user();
         isset($r->user) ? $user_id = $r->user : $user_id = $user->id;
 
+        $pilih_user=User::find($user_id);
 
-        $data['user'] = $user->nama;
+        $data['user'] = $pilih_user->nama;
         $data['tanggal'] = date('d-m-Y', strtotime($tanggal));
 
         $queri = $this->query($r, $user_id, $tanggal);
