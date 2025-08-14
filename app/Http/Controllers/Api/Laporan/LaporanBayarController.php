@@ -184,6 +184,7 @@ class LaporanBayarController extends Controller
         $data['jumlah_pelanggan_ditagih'] = $queri['jumlah_pelanggan_ditagih'];
         $data['setoran'] = $queri['setoran'];
 
+        // return $data;
         // return view("api/pdf_laporan_bayar", compact('data'));
         $mpdf = new Mpdf();
         $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
