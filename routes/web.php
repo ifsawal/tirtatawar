@@ -138,5 +138,7 @@ Route::get('/kontak',Hubungi::class)->name('kontak');
 
 
 Route::get('/phpinfo', function () {
+    ob_start();
     phpinfo();
+    ob_end_flush();
 });
