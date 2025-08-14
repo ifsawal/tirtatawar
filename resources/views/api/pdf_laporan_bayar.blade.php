@@ -1,4 +1,4 @@
-{{-- <pre> --}}
+<pre>
 <b>LAPORAN BAYAR</b>
 An.             : {{ $data['user'] }}
 Tanggal bayar   : {{ $data['tanggal'] }}
@@ -26,7 +26,7 @@ Rincian Tagihan Pergolongan
 
 <b>Data Tagihan</b> 
 _____________________________________________________________
-{{-- </pre> --}}
+</pre>
 <table>
     <tr>
         <td>
