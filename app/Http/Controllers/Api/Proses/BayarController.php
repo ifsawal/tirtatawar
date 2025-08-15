@@ -8,12 +8,13 @@ use App\Models\Master\Penagih;
 use App\Models\Master\Setoran;
 use App\Models\Master\Tagihan;
 use App\Models\Master\Pelanggan;
-use Illuminate\Support\Facades\DB;
-use App\Models\Master\PenagihHapus;
-use App\Http\Controllers\Controller;
-use App\Models\Master\IzinPerubahan;
 use App\Models\Master\Pencatatan;
 use App\Models\Master\Persetujuan;
+use Illuminate\Support\Facades\DB;
+use App\Models\Master\PenagihHapus;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Models\Master\IzinPerubahan;
 use Illuminate\Support\Facades\Auth;
 
 class BayarController extends Controller
@@ -230,6 +231,15 @@ class BayarController extends Controller
 
             DB::commit();
             // DB::rollback();
+            Log::channel('sukses')->info("reques:" . $r . ",respon:" . response()->json([
+                "sukses" => true,
+                "pesan" => "Pembayaran sukses...",
+                "pelanggan" => $pelangan,
+                "datatagihan" => $tagihan,
+                "penagih" =>  $userpenagih,
+                "setoran" =>  $tambahsetoran,
+                "tanggal" =>  date('d-m-Y'),
+            ], 201));
 
             return response()->json([
                 "sukses" => true,

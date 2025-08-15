@@ -64,6 +64,12 @@ return [
             'level' => 'debug',
         ],
 
+        'sukses' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/sukses.log'),
+            'level' => 'debug',
+        ],
+
         'custom-flip' => [
             'driver' => 'single',
             'path' => storage_path('logs/custom-flip.log'),

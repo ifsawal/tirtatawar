@@ -261,8 +261,8 @@ Route::get('/versi', [InfoController::class, 'versipelanggan']);
 Route::get('/versiadmin', [InfoController::class, 'versiadmin']);
 
 Route::get('/cek/{nopel}', [PelangganMobController::class, 'cek']);
-Route::post('/cektagihan', [MobTagihanController::class, 'cektagihan']);
-Route::post('/cektagihan10', [MobTagihan10Controller::class, 'cektagihan10']);
+// Route::post('/cektagihan', [MobTagihanController::class, 'cektagihan']);
+// Route::post('/cektagihan10', [MobTagihan10Controller::class, 'cektagihan10']);
 Route::get('/bank', [MobBankController::class, 'pilihbank']);
 Route::get('/cekbank/{bank}', [MobBankController::class, 'cekbank']);
 
