@@ -111,6 +111,7 @@ class BayarController extends Controller
             'pelanggan_id' => 'required',
         ]);
         $user_id = Auth::user()->id;
+        Log::channel('sukses')->info("reques : ".$user_id."-->".$r);
 
         $u = Auth::user()->getAllPermissions();
         $c = collect($u);
@@ -170,7 +171,7 @@ class BayarController extends Controller
 
             // return $catat_tagih->get();
             $belum_bayar_bln_sebelumnya = $catat_tagih->get()->count();
-            if ($belum_bayar_bln_sebelumnya > 0) {
+            if ($belum_bayar_bln_sebelumnya <> 0) {
                 return response()->json([
                     "sukses" => false,
                     "pesan" => "Ada tagihan bulan sebelumnya yang belum dibayar...",
