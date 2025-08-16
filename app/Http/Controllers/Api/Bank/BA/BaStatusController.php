@@ -136,10 +136,12 @@ class BaStatusController extends Controller
             ], 200);
 
             DB::commit();
-            // Log::info($ret);
+            Log::channel('sukses')->info("status BA:" . $ret);
+
             return $ret;
         } catch (\Exception $e) {
             DB::rollback();
+            Log::channel('sukses')->info("Gagal BA:" . $data);
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Gagal...",

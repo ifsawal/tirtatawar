@@ -73,7 +73,7 @@ class WebhookController extends Controller
 
 
             DB::commit();
-
+            Log::channel('sukses')->info("webhook Flip:" . $data);
             // $cekP3 = Client2::where('email', $data->sender_email)->first();
             // if ($cekP3 && $status_bayar=="Y") {
             //     dispatch(new KirimCallback($cekP3->client_id,$data->bill_link_id));
@@ -86,6 +86,7 @@ class WebhookController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollback();
+            Log::channel('custom-flip')->info("Gagal program webhook Flip:" . $data);
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Gagal...",
