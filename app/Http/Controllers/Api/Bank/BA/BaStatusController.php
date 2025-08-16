@@ -141,7 +141,7 @@ class BaStatusController extends Controller
             return $ret;
         } catch (\Exception $e) {
             DB::rollback();
-            Log::channel('sukses')->info("Gagal BA:" . $data);
+            Log::channel('sukses')->info("Gagal BA:");
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Gagal...",

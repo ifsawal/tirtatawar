@@ -86,7 +86,7 @@ class WebhookController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollback();
-            Log::channel('custom-flip')->info("Gagal program webhook Flip:" . $data);
+            Log::channel('custom-flip')->info("Gagal program webhook Flip:" . $data->bill_link_id);
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Gagal...",
