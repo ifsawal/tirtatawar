@@ -64,6 +64,12 @@ return [
             'level' => 'debug',
         ],
 
+        'sukses' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/sukses.log'),
+            'level' => 'debug',
+        ],
+
         'custom-flip' => [
             'driver' => 'single',
             'path' => storage_path('logs/custom-flip.log'),
@@ -101,7 +107,7 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
             'processors' => [PsrLogMessageProcessor::class],
         ],

@@ -8,11 +8,12 @@ use App\Models\Master\Penagih;
 use App\Models\Master\Setoran;
 use App\Models\Master\Tagihan;
 use App\Models\Master\Pelanggan;
+use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
 use App\Models\Master\PenagihHapus;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\Master\IzinPerubahan;
-use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\Auth;
 
 class BayarController extends Controller
@@ -72,7 +73,7 @@ class BayarController extends Controller
             'pelanggan_id' => 'required',
         ]);
         $user_id = Auth::user()->id;
-        
+
         $u = Auth::user()->getAllPermissions();
         $c = collect($u);
         $hit = $c->where("name", 'penagihan');
@@ -164,6 +165,16 @@ class BayarController extends Controller
 
             DB::commit();
             // DB::rollback();
+
+            Log::channel('sukses')->info("reques:" . $r . ",respon:" . response()->json([
+                "sukses" => true,
+                "pesan" => "Pembayaran sukses...",
+                "pelanggan" => $pelangan,
+                "datatagihan" => $tagihan,
+                "penagih" =>  $userpenagih,
+                "setoran" =>  $tambahsetoran,
+                "tanggal" =>  date('d-m-Y'),
+            ], 201));
 
             return response()->json([
                 "sukses" => true,
