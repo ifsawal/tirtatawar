@@ -265,8 +265,8 @@ Route::get('/versiadmin', [InfoController::class, 'versiadmin']);
 // Route::get('/bank', [MobBankController::class, 'pilihbank']);
 // Route::get('/cekbank/{bank}', [MobBankController::class, 'cekbank']);
 
-Route::post('/buattagihan', [MobTagihanController::class, 'buattagihan']);
-Route::post('/buattagihan10', [MobTagihan10Controller::class, 'buattagihan10']);
+// Route::post('/buattagihan', [MobTagihanController::class, 'buattagihan']);
+// Route::post('/buattagihan10', [MobTagihan10Controller::class, 'buattagihan10']);
 
 //untuk flip
 Route::post('/callbacktirtatawar', [WebhookController::class, 'callback']);
