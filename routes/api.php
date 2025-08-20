@@ -259,14 +259,14 @@ Route::get('/info', [InfoController::class, 'info']);
 Route::get('/versi', [InfoController::class, 'versipelanggan']);
 Route::get('/versiadmin', [InfoController::class, 'versiadmin']);
 
-// Route::get('/cek/{nopel}', [PelangganMobController::class, 'cek']);
-// Route::post('/cektagihan', [MobTagihanController::class, 'cektagihan']);
-// Route::post('/cektagihan10', [MobTagihan10Controller::class, 'cektagihan10']);
-// Route::get('/bank', [MobBankController::class, 'pilihbank']);
-// Route::get('/cekbank/{bank}', [MobBankController::class, 'cekbank']);
+Route::get('/cek/{nopel}', [PelangganMobController::class, 'cek']);
+Route::post('/cektagihan', [MobTagihanController::class, 'cektagihan']);
+Route::post('/cektagihan10', [MobTagihan10Controller::class, 'cektagihan10']);
+Route::get('/bank', [MobBankController::class, 'pilihbank']);
+Route::get('/cekbank/{bank}', [MobBankController::class, 'cekbank']);
 
-// Route::post('/buattagihan', [MobTagihanController::class, 'buattagihan']);
-// Route::post('/buattagihan10', [MobTagihan10Controller::class, 'buattagihan10']);
+Route::post('/buattagihan', [MobTagihanController::class, 'buattagihan']);
+Route::post('/buattagihan10', [MobTagihan10Controller::class, 'buattagihan10']);
 
 //untuk flip
 Route::post('/callbacktirtatawar', [WebhookController::class, 'callback']);
