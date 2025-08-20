@@ -30,17 +30,17 @@ class BaStatusController extends Controller
     {
 
 
-        
+
         $user = Auth::user();
         $this->payload = request()->header();
-        
-        
+
+
         $data = $r->getContent();
         $data = json_decode($data, true);
-        
-        
 
-        
+
+
+
         $validator = Validator::make($data, [
             'id_transaksi' => 'required|max:255',
             'no_trx' => 'required',
@@ -54,8 +54,8 @@ class BaStatusController extends Controller
                 "kode" => "02"
             ], 404);
         }
-        
-        Log::info("Update status " .  $r->getClientIp()." ".$data['id_transaksi']);
+
+        Log::info("Update status " .  $r->getClientIp() . " " . $data['id_transaksi']);
 
         $ip = Re::ip();
         $urldasar = URL::to('/');
@@ -63,12 +63,12 @@ class BaStatusController extends Controller
 
         if ($user->ip <> $ip and $urldasar == "https://www.tirtatawar.com") { //for production
             // if ($user->ip <> $ip and $urldasar == "http://127.0.0.1/tirtatawar/public") {  //for localh
-                return response()->json([
-                    "status"    => false,
-                    "pesan" => "Akses server tidak di izinkan",
-                    "kode" => "02"
-                ], 401);
-            }
+            return response()->json([
+                "status"    => false,
+                "pesan" => "Akses server tidak di izinkan",
+                "kode" => "02"
+            ], 401);
+        }
 
 
 
@@ -136,6 +136,7 @@ class BaStatusController extends Controller
             ], 200);
 
             DB::commit();
+            Log::channel('sukses')->info("status BA:" . $ret);
             // Log::info($ret);
             return $ret;
         } catch (\Exception $e) {
