@@ -39,7 +39,7 @@ class BaStatusController extends Controller
         $data = json_decode($data, true);
 
 
-
+        Log::channel('ba')->info("Status data masuk ", ["ip" => $r->ip(), "data" => $data]);
 
         $validator = Validator::make($data, [
             'id_transaksi' => 'required|max:255',
@@ -105,6 +105,7 @@ class BaStatusController extends Controller
         try {
             foreach ($transfer as $tran) {
                 if ($tran->status_bayar == "Y") {
+                    DB::rollback();
                     return response()->json([
                         "sukses" => false,
                         "pesan" => "Status sukses sudah diterima dan dikirim sebelumnya",
@@ -136,7 +137,8 @@ class BaStatusController extends Controller
             ], 200);
 
             DB::commit();
-            Log::channel('sukses')->info("status BA:" . $ret);
+            Log::channel('ba')->info("Status data keluar ", ["data" => $data]);
+            // Log::channel('sukses')->info("status BA:" . $ret);
             // Log::info($ret);
             return $ret;
         } catch (\Exception $e) {

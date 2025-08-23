@@ -3,18 +3,19 @@
 namespace App\Http\Controllers\Api\Pelanggan;
 
 use App\Fungsi\Flip;
+use App\Models\Master\Bank;
 use Illuminate\Http\Request;
 use App\Models\Master\Transfer;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\Pelanggan\Tagihan\PelangganResource;
-use App\Http\Resources\Api\Pelanggan\Tagihan\PencatatanResource;
-use App\Models\Master\Bank;
+use function PHPUnit\Framework\returnSelf;
 use Illuminate\Contracts\Encryption\DecryptException;
 
-use function PHPUnit\Framework\returnSelf;
+use App\Http\Resources\Api\Pelanggan\Tagihan\PelangganResource;
+use App\Http\Resources\Api\Pelanggan\Tagihan\PencatatanResource;
 
 class MobTagihanController extends Controller
 {
@@ -83,6 +84,8 @@ class MobTagihanController extends Controller
         if ($potong === "id") {
             $id = decrypt(substr($r->nopel, 2));
         }
+
+        Log::channel('flip')->info("Data masuk buat tagihan",["ip"=>$r->ip(),"data"=>$r->all()]);
 
         $bankdata = Bank::where('kode', $r->kode_bank)->first();
         if ($bankdata->aktif == "N") {
@@ -175,6 +178,7 @@ class MobTagihanController extends Controller
 
 
             DB::commit();
+            Log::channel('flip')->info("buat tagihan",["data"=>$hasil]);
             // DB::rollback();
             return response()->json([
                 "sukses" => true,

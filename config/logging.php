@@ -70,6 +70,18 @@ return [
             'level' => 'debug',
         ],
 
+        'ba' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/ba.log'),
+            'level' => 'debug',
+        ],
+
+        'flip' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/flip.log'),
+            'level' => 'debug',
+        ],
+
         'custom-flip' => [
             'driver' => 'single',
             'path' => storage_path('logs/custom-flip.log'),

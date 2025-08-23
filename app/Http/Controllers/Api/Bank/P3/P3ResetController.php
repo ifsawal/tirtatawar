@@ -90,8 +90,8 @@ class P3ResetController extends Controller
                 // "data"  => $tam
             ], 200);
         } catch (\Exception $e) {
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             DB::rollback();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Reset Gagal...$e",

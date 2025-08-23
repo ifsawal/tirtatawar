@@ -104,6 +104,7 @@ class BayarController extends Controller
                 $entry_date = Carbon::parse($tagihan->bayar_bank);
                 $jam    = Carbon::now()->diffInMinutes($entry_date);
                 if ($jam < 60) {
+                    DB::rollback();
                     return response()->json([
                         "sukses" => false,
                         "pesan" => "Tagihan sedang di proses Bank, silahkan cek 1 jam lagi",
@@ -130,6 +131,7 @@ class BayarController extends Controller
             // // return $catat_tagih->get();
             // $belum_bayar_bln_sebelumnya = $catat_tagih->get()->count();
             // if ($belum_bayar_bln_sebelumnya > 0) {
+            //     DB::rollback();
             //     return response()->json([
             //         "sukses" => false,
             //         "pesan" => "Ada tagihan bulan sebelumnya yang belum dibayar...",

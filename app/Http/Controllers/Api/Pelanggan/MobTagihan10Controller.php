@@ -9,6 +9,7 @@ use App\Models\Master\Transfer;
 use App\Models\Master\Pelanggan;
 use App\Models\Master\Pencatatan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Pelanggan\Tagihan\PelangganResource;
 use App\Http\Resources\Api\Pelanggan\Tagihan\PencatatanResource;
@@ -102,6 +103,7 @@ class MobTagihan10Controller extends Controller
             'kode_bank' => 'required',
         ]);
 
+        Log::channel('flip')->info("Data masuk buat tagihan10",["ip"=>$r->ip(),"data"=>$r->all()]);
 
         $bankdata = Bank::where('kode', $r->kode_bank)->first();
         if ($bankdata->aktif == "N") {
@@ -221,6 +223,7 @@ class MobTagihan10Controller extends Controller
 
 
             DB::commit();
+            Log::channel('flip')->info("Data keluar buat tagihan10",["data"=>$hasil]);
             // DB::rollback();
             return response()->json([
                 "sukses" => true,

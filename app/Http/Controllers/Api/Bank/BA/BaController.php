@@ -29,13 +29,11 @@ class BaController extends Controller
     protected $payload;
 
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function tagihan($nopel)
     {
-        
+
         // $val = "/^\\d+$/";
         // $validasi = preg_match($val, $nopel); //cek hny angka
         // if ($validasi == 0) {
@@ -52,8 +50,9 @@ class BaController extends Controller
             'nopel' => 'required|integer',
         ]);
 
-        Log::info("Cek Tagihan " .  Request::ip()." ".$nopel);
+        Log::info("Cek Tagihan " .  Request::ip() . " " . $nopel);
         $ip = Request::ip();
+        Log::channel('ba')->info("Cek data masuk ", ["ip" => $ip, "data" => $nopel]);
 
 
         if ($validator->fails()) {
@@ -73,7 +72,7 @@ class BaController extends Controller
 
 
         if ($user->ip <> $ip and $urldasar == "https://www.tirtatawar.com") { //for production
-        // if ($user->ip <> $ip and $urldasar == "http://127.0.0.1/tirtatawar/public") {  //for localh
+            // if ($user->ip <> $ip and $urldasar == "http://127.0.0.1/tirtatawar/public") {  //for localh
             return response()->json([
                 "status"    => false,
                 "pesan" => "Akses server tidak di izinkan",
@@ -122,8 +121,8 @@ class BaController extends Controller
 
 
         // $pencatatan = PencatatanResource::customCollection($pencatatan, $pelanggan->golongan->denda);
-        $pencatatan = CekDanUpdateTagihan::ambilTagihan($pencatatan,$pelanggan->golongan->denda);
-        $pencatatan=json_decode(collect($pencatatan));
+        $pencatatan = CekDanUpdateTagihan::ambilTagihan($pencatatan, $pelanggan->golongan->denda);
+        $pencatatan = json_decode(collect($pencatatan));
 
         if (count($pencatatan) == 0) {
             return response()->json([
@@ -215,6 +214,7 @@ class BaController extends Controller
             $data['id_transaksi'] = encrypt($bill_id);
             $data['detil'] = $detil;
             // $data['decr'] = decrypt($data['id']);
+            Log::channel('ba')->info("Cek data keluar ", ["data" => $data]);
 
             DB::commit();
             // DB::rollback();

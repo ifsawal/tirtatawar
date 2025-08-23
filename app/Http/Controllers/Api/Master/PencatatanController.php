@@ -541,6 +541,7 @@ class PencatatanController extends Controller
 
                     $status = "Sukses";
                 } catch (\Exception $e) {
+                    DB::rollback();
                     $status = "Gagal, error data";
                 }
             }

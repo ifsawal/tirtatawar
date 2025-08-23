@@ -73,7 +73,7 @@ class WebhookController extends Controller
 
 
             DB::commit();
-            Log::channel('sukses')->info("webhook Flip: sukses" . $data->bill_link_id);
+            Log::channel('flip')->info("webhook Flip: sukses",["data"=>$data]);
             // $cekP3 = Client2::where('email', $data->sender_email)->first();
             // if ($cekP3 && $status_bayar=="Y") {
             //     dispatch(new KirimCallback($cekP3->client_id,$data->bill_link_id));
