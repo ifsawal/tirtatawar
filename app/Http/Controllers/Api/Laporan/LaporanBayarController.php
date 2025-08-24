@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanBayarPerhariExport;
 use Ramsey\Uuid\Type\Integer;
+use Illuminate\Foundation\Auth\User;
 
 class LaporanBayarController extends Controller
 {
@@ -165,14 +166,16 @@ class LaporanBayarController extends Controller
 
     public function download_laporan_bayar(Request $r)
     {
+        ob_start();
         $tanggal = now();
         isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
 
         $user = Auth::user();
         isset($r->user) ? $user_id = $r->user : $user_id = $user->id;
 
+        $pilih_user = User::find($user_id);
 
-        $data['user'] = $user->nama;
+        $data['user'] = $pilih_user->nama;
         $data['tanggal'] = date('d-m-Y', strtotime($tanggal));
 
         $queri = $this->query($r, $user_id, $tanggal);
@@ -182,10 +185,19 @@ class LaporanBayarController extends Controller
         $data['jumlah_pelanggan_ditagih'] = $queri['jumlah_pelanggan_ditagih'];
         $data['setoran'] = $queri['setoran'];
 
-        // return view("api/pdf_laporan_bayar", compact('data'));
+
+        // error_reporting(E_ALL & ~E_DEPRECATED & ~E_WARNING);
+
         $mpdf = new Mpdf();
         $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
-        $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
+        // $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
+
+        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+        ob_end_clean();
+
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="test.pdf"');
     }
 
     public static function proses_download_laporan_bayar_excel(Request $r){
