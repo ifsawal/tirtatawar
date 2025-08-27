@@ -112,31 +112,31 @@ class BayarController extends Controller
                 }
             }
 
-            // $pencatatan = Pencatatan::where('id', '=', $tagihan->pencatatan_id)
-            //     ->first();
+            $pencatatan = Pencatatan::where('id', '=', $tagihan->pencatatan_id)
+                ->first();
 
-            // $catat_tagih = Pencatatan::join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
-            // $catat_tagih->select('pencatatans.bulan', 'pencatatans.tahun', 'pencatatans.id as id_catat', 'tagihans.id as id_tagihan', 'tagihans.status_bayar');
-            // $catat_tagih->where('pencatatans.pelanggan_id', $r->pelanggan_id);
-            // $catat_tagih->where('tagihans.status_bayar', 'N');
-            // $catat_tagih->where(function ($query) use ($pencatatan) {
-            //     $query->where('pencatatans.tahun', '<', $pencatatan->tahun)
-            //         ->orWhere(function ($q) use ($pencatatan) {
-            //             $q->where('pencatatans.tahun', $pencatatan->tahun)
-            //                 ->where('pencatatans.bulan', '<', $pencatatan->bulan);
-            //         });
-            // });
+            $catat_tagih = Pencatatan::join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
+            $catat_tagih->select('pencatatans.bulan', 'pencatatans.tahun', 'pencatatans.id as id_catat', 'tagihans.id as id_tagihan', 'tagihans.status_bayar');
+            $catat_tagih->where('pencatatans.pelanggan_id', $r->pelanggan_id);
+            $catat_tagih->where('tagihans.status_bayar', 'N');
+            $catat_tagih->where(function ($query) use ($pencatatan) {
+                $query->where('pencatatans.tahun', '<', $pencatatan->tahun)
+                    ->orWhere(function ($q) use ($pencatatan) {
+                        $q->where('pencatatans.tahun', $pencatatan->tahun)
+                            ->where('pencatatans.bulan', '<', $pencatatan->bulan);
+                    });
+            });
 
 
-            // // return $catat_tagih->get();
-            // $belum_bayar_bln_sebelumnya = $catat_tagih->get()->count();
-            // if ($belum_bayar_bln_sebelumnya > 0) {
-            //     DB::rollback();
-            //     return response()->json([
-            //         "sukses" => false,
-            //         "pesan" => "Ada tagihan bulan sebelumnya yang belum dibayar...",
-            //     ], 202);
-            // }
+            // return $catat_tagih->get();
+            $belum_bayar_bln_sebelumnya = $catat_tagih->get()->count();
+            if ($belum_bayar_bln_sebelumnya > 0) {
+                DB::rollback();
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Ada tagihan bulan sebelumnya yang belum dibayar...",
+                ], 202);
+            }
 
             $tagihan->status_bayar = "Y";
             $tagihan->sistem_bayar = "Cash";
