@@ -4,16 +4,18 @@ namespace App\Http\Controllers\Api\Laporan;
 
 use Mpdf\Mpdf;
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Type\Integer;
 use App\Models\Master\Penagih;
 use App\Models\Master\Setoran;
 use App\Models\Master\Golongan;
 use App\Models\Master\Pencatatan;
+use App\Exports\LaporanBayarExport;
 use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanBayarExcelExport;
 use App\Exports\LaporanBayarPerhariExport;
-use Ramsey\Uuid\Type\Integer;
-use Illuminate\Foundation\Auth\User;
 
 class LaporanBayarController extends Controller
 {
@@ -54,7 +56,7 @@ class LaporanBayarController extends Controller
 
 
         $perbulan_tagih = 0;
-        $jumlah_pelanggan=[];//masukkan pelanggan tidak dobel untuk di hitung
+        $jumlah_pelanggan = []; //masukkan pelanggan tidak dobel untuk di hitung
         foreach ($penagih as $p) {
             if (isset($r->bulan)) {
                 $perbulan_tagih += $p->tagihan->total;
@@ -65,10 +67,10 @@ class LaporanBayarController extends Controller
                 }
             }
 
-            $jumlah_pelanggan[]=$p->tagihan->pencatatan->pelanggan->id;
+            $jumlah_pelanggan[] = $p->tagihan->pencatatan->pelanggan->id;
         }
 
-        $hasil_jumlah_pelanggan=count(array_unique($jumlah_pelanggan));
+        $hasil_jumlah_pelanggan = count(array_unique($jumlah_pelanggan));
 
         $setoran = Setoran::where('user_id', $user_id)
             ->whereDate('tanggal', $tanggal)
@@ -130,7 +132,7 @@ class LaporanBayarController extends Controller
         $setoran = Setoran::where('user_id', $user_id)
             ->whereDate('tanggal', $tanggal)
             ->first();
-            
+
 
         $hasil['penagih'] = $penagih;
         $hasil['setoran'] = $setoran;
@@ -184,13 +186,45 @@ class LaporanBayarController extends Controller
         $data['pergolongan'] = $queri['pergolongan'];
         $data['jumlah_pelanggan_ditagih'] = $queri['jumlah_pelanggan_ditagih'];
         $data['setoran'] = $queri['setoran'];
+        // return $data;
+        if (isset($r->jenis) && $r->jenis == "excel") {
+            $d = [
+                ["LAPORAN BAYAR"],
+                ["NAMA", "", $pilih_user->nama],
+                ["TANGGAL BAYAR", "", $data['tanggal']],
+                ["TOTAL PENERIMAAN", "", $data['setoran']['jumlah']],
+                ["JUMLAH TRX", "", $data['trx']],
+                ["JUMLAH PEL", "", $data['jumlah_pelanggan_ditagih']],
+                ["RINCIAN :", "", "",],
+                ["TOTAL HARGA PEMAKAIAN", "", "", $data['setoran']['dasar']],
+                ["TOTAL ADM", "", "", $data['setoran']['adm']],
+                ["TOTAL DENDA", "", "", $data['setoran']['denda']],
+                ["TOTAL PAJAK", "", "", $data['setoran']['pajak']],
+                [""],
+                [""],
+                ["NO", "NOPEL", "NAMA PEL", "BULAN", "TAHUN", "JUMLAH", "GOLONGAN", "WILAYAH/JALAN"]
+            ];
+            $no = 0;
+            foreach ($data['data'] as $dta) {
+                $no++;
+                $d[] = [
+                    $no,
+                    $dta->tagihan->pencatatan->pelanggan->id,
+                    $dta->tagihan->pencatatan->pelanggan->nama,
+                    $dta->tagihan->pencatatan->bulan,
+                    $dta->tagihan->pencatatan->tahun,
+                    $dta->jumlah,
+                    $dta->tagihan->pencatatan->pelanggan->golongan->golongan,
+                    $dta->tagihan->pencatatan->pelanggan->wiljalan->jalan,
+                ];
+            }
+            ob_end_clean();
+            return Excel::download(new LaporanBayarExcelExport($d), 'laporan_bayar_excel_petugas.xlsx');
+        }
 
-
-        // error_reporting(E_ALL & ~E_DEPRECATED & ~E_WARNING);
 
         $mpdf = new Mpdf();
         $mpdf->WriteHTML(view("api/pdf_laporan_bayar", compact('data')));
-        // $mpdf->Output('Laporan_bayar_' . $tanggal . '.pdf', 'D');
 
         $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
         ob_end_clean();
@@ -200,7 +234,8 @@ class LaporanBayarController extends Controller
             ->header('Content-Disposition', 'inline; filename="test.pdf"');
     }
 
-    public static function proses_download_laporan_bayar_excel(Request $r){
+    public static function proses_download_laporan_bayar_excel(Request $r)
+    {
         $tanggal = now();
         isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
 
@@ -211,9 +246,9 @@ class LaporanBayarController extends Controller
         $data['tanggal'] = date('d-m-Y', strtotime($tanggal));
 
         // return $r->tanggal;
-        $tanggal_pecah=explode('-',$tanggal);
-        $tahun=$tanggal_pecah[0];
-        $bulan=ltrim($tanggal_pecah[1],'0');
+        $tanggal_pecah = explode('-', $tanggal);
+        $tahun = $tanggal_pecah[0];
+        $bulan = ltrim($tanggal_pecah[1], '0');
 
         $catat = Pencatatan::query();
         $catat->select(
@@ -271,7 +306,8 @@ class LaporanBayarController extends Controller
         // return collect($has);
     }
 
-    public function download_laporan_bayar_excel(Request $r){
+    public function download_laporan_bayar_excel(Request $r)
+    {
 
 
         // $this->validate($r, [
@@ -279,7 +315,6 @@ class LaporanBayarController extends Controller
         //     'user' => 'required|integer',
         // ]);
         return Excel::download(new LaporanBayarPerhariExport($r), 'laporan_bayar_perhari.xlsx');
-
     }
 
 
@@ -297,7 +332,7 @@ class LaporanBayarController extends Controller
             ->get()
             ->sortByDesc('tagihan.pencatatan.bulan');
 
-            
+
         return $data[] = [
             "semua"     => $query,
 
@@ -398,10 +433,17 @@ class LaporanBayarController extends Controller
         isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : "";
 
         $user_id = Auth::user()->id;
-        $setoran = Setoran::with('user:id,nama', 'user_diserahkan:id,nama')
-            ->where('user_id_diserahkan', $user_id)
-            ->whereDate('tanggal', $tanggal)
-            ->limit(100)->orderBy('id', "DESC")->get();
+        $setoran = Setoran::with('user:id,nama', 'user_diserahkan:id,nama');
+        $setoran->where('user_id_diserahkan', $user_id);
+        if (isset($r->pertanggal) && $r->pertanggal == "ok") {
+            $setoran->whereDate('tanggal', $tanggal);
+        } else {
+            $setoran->where('diterima', 0);
+        }
+
+
+        $setoran->limit(100)->orderBy('updated_at', "DESC");
+        $setoran = $setoran->get();
 
         if (count($setoran) == 0) {
             return response()->json([

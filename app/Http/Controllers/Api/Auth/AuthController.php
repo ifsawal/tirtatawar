@@ -22,6 +22,14 @@ class AuthController extends Controller
     public function login(Request $request)
     {
 
+        if (isset($request->versi) && $request->versi >= 2) {
+        } else {
+            return response()
+                ->json([
+                    'sukses' => false,
+                    'pesan' => "Aplikasi kadaluarsa, silahkan update...",
+                ], 401);
+        }
         // return $request['email'];
         // return Auth::guard('web')->attempt($request->only('email', 'password'));
 
@@ -29,6 +37,7 @@ class AuthController extends Controller
             return response()
                 ->json(['sukses' => false, 'pesan' => 'Login gagal...'], 401);
         }
+
 
         $user = User::with('pdam:id,pdam,nama,kabupaten_id')->where('email', $request['email'])->firstOrFail();
         if ($user->email_verified_at === NULL) {

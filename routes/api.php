@@ -188,6 +188,8 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/rekapsetoran', [LaporanBayarController::class, 'rekap_setoran']);
     Route::post('/simpanpenyerahan', [SetoranController::class, 'rubah']);
     Route::post('/setujuiditerima', [SetoranController::class, 'setujuiditerima']);
+    Route::post('/tandaterimasetoran', [SetoranController::class, 'tandaterimasetoran']);
+
 
     Route::post('/proseslappencatatan', [LaporanPetugasController::class, 'data_pencatatan_banyak']); //PETUGAS
     Route::post('/laporanbayarexport', [LaporanPetugasController::class, 'laporanbayarexport']); //PETUGAS

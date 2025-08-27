@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Master\Setoran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Riskihajar\Terbilang\Facades\Terbilang;
 
 class SetoranController extends Controller
 {
@@ -42,13 +43,20 @@ class SetoranController extends Controller
 
 
         $setoran = Setoran::findOrFail($r->id);
-        if ($setoran->diterima == "1") {
+        if ($setoran->diterima == 1) {
             return response()->json([
                 "sukses" => false,
                 "pesan" => "Gagal karena Uang sudah diserahkan sebelumnya...",
             ], 404);
         }
 
+
+        if (date("Y-m-d", strtotime($setoran->created_at)) == date("Y-m-d", strtotime(now()))) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Gagal.. transaksi hari ini belum selesai",
+            ], 404);
+        }
 
         $setoran->user_id_diserahkan = $r->user;
         $setoran->save();
@@ -92,9 +100,18 @@ class SetoranController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function tandaterimasetoran(Request $r)
     {
-        //
+        $this->validate($r, [
+            'id' => 'required',  //id setoran
+        ]);
+        $user = Auth::user()->nama;
+        $setoran = Setoran::with('user:id,nama', 'user_diserahkan:id,nama')->findOrFail($r->id);
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "\n\nPDAM TIRTA TAWAR\n*TANDA TERIMA SETORAN* \nNomor : ".$setoran->id." \n\nTelah diterima dari :\n".$setoran->user->nama." \nuang sejumlah : \nRp. " . number_format($setoran->jumlah, 0, ",", ".") ."\n(". Terbilang::make($setoran->jumlah," rupiah)")."\n\nUntuk Setoran tagihan pelanggan PDAM Tirtatawar\nTanggal :" . date("d-m-Y", strtotime($setoran->tanggal)) . "\n\nTakengon, ".date("d-m-Y", strtotime($setoran->updated_at))."\n\n(".$user.")\nPenerima\n\n\n\n",
+        ], 202);
     }
 
     /**
