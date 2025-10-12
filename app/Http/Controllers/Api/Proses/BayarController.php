@@ -452,6 +452,8 @@ class BayarController extends Controller
 
 
             DB::commit();
+
+            Log::channel('sukses')->info("batal",["data"=>$pindah]);
             // DB::rollback();
 
             return response()->json([

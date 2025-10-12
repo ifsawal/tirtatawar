@@ -163,7 +163,7 @@ class LaporanRekapBulananController extends Controller
                 $rekap->total = $h_total;
                 $rekap->terbayar = $terbayar;
                 $rekap->sisa = $sisa;
-                $rekap->persentase = $pel_terbayar===0?0:floor(($pel_terbayar*100)/$h_catat);
+                $rekap->persentase = $pel_terbayar===0?0:floor(($terbayar/$h_total)*100);
                 $rekap->denda = $denda;
                 $rekap->den_terbayar = $denda+$terbayar;
                 $rekap->pelanggan_belum_bayar = $pelanggan_belum_bayar;
