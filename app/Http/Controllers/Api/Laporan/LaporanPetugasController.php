@@ -288,7 +288,7 @@ class LaporanPetugasController extends Controller
             $lap->terbayar_no_denda =  $data['terbayar_no_denda'];//
             $lap->denda =  $data['denda'];//
             $lap->sisa =  $data['drd']-$data['terbayar_no_denda'];
-            $lap->persentase =  floor(($data['terbayar']/$data['drd'])*100);
+            $lap->persentase =  floor(($data['jumlah_terbayar']/$data['drd'])*100);
             $lap->total_rp =  $data['jumlah_rupiah'];
             $lap->rp_terbayar =  $data['jumlah_terbayar'];
             $lap->rp_no_bayar =  $data['jumlah_rupiah'] - $data['jumlah_terbayar'];
@@ -311,7 +311,7 @@ class LaporanPetugasController extends Controller
             "drd" => $drd,
             "terbayar" => $terbayar,
             "sisa" => $sisa,
-            "persentase" => floor(($terbayar/$drd)*100),
+            "total_persentase" => floor(($terbayar/$drd)*100),
 
         ], 201);
     }
