@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Exports\LaporanRekapBulananExport;
+use App\Http\Controllers\Api\Absen\AbsenAdminController;
+use App\Http\Controllers\Api\Absen\AbsenController;
 use App\Http\Controllers\Api\Bank\BA\BaLaporan;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Bank\BA\BaController;
@@ -226,6 +228,15 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
 
 
     Route::post('/kirimnotifikasi', [NotifikasiFcmController::class, 'notif']);
+
+
+    //Absen
+    Route::post('/absen', [AbsenController::class, 'absen']);
+    Route::post('/absen-pulang', [AbsenController::class, 'absen_pulang']);
+    Route::get('/data-absen-peruser', [AbsenController::class, 'data_absen_per_user']);
+    Route::get('/photo-absen/{id}', [AbsenController::class, 'photo_absen']);
+    Route::get('/absen-admin/{tanggal}', [AbsenAdminController::class, 'absen_admin']);
+    
 
     //versi server
     Route::post('/perubahan_petugas_pelanggan', [PerubahanController::class, 'rubah_petugas']);
