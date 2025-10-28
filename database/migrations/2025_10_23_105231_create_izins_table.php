@@ -23,6 +23,9 @@ return new class extends Migration
             $table->text('alasan');
             $table->enum('status_approval', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu');
             $table->string('lampiran', 255)->nullable();
+            $table->string('ttd', 255)->nullable();
+            $table->unsignedBigInteger('user_id_penyetuju')->nullable();
+            $table->foreign('user_id_penyetuju')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
 
             $table->timestamps();
         });
