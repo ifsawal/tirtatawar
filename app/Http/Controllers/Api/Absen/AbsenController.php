@@ -27,19 +27,40 @@ class AbsenController extends Controller
         ]);
 
         $user_id = Auth::user()->id;
-        $cabang = Usercab::where('user_id', $user_id)->first();
-        $cabang ? $cabang_id = $cabang->cabang_id : $cabang_id = 1;
 
-        $cabangData = Cabang::find($cabang_id);
+        // $cabang = Usercab::where('user_id', $user_id)->first();
+        // $cabang ? $cabang_id = $cabang->cabang_id : $cabang_id = 1;
+        // $cabangData = Cabang::find($cabang_id);
+        // $jarak = Helpers::jarak($r->lat, $r->long, $cabangData->lat, $cabangData->long);
+        // $dalamRadius = Helpers::dalamRadius($r->lat, $r->long, $cabangData->lat, $cabangData->long, $cabangData->radius);
+        // if (!$dalamRadius) {
+        //     return response()->json([
+        //         'sukses' => false,
+        //         'pesan' => 'Anda berada di luar radius absen. Jarak Anda dari Kantor: ' . number_format($jarak, 2) . ' meter.'
+        //     ], 400);
+        // }
 
-        $jarak = Helpers::jarak($r->lat, $r->long, $cabangData->lat, $cabangData->long);
-        $dalamRadius = Helpers::dalamRadius($r->lat, $r->long, $cabangData->lat, $cabangData->long, $cabangData->radius);
-        if (!$dalamRadius) {
+
+
+        $cabangData = null;
+        $cabangTerdekat = Cabang::all();
+        foreach ($cabangTerdekat as $c) {
+            $dalamRadius = Helpers::dalamRadius($r->lat, $r->long, $c->lat, $c->long, $c->radius);
+            if ($dalamRadius) {
+                $cabangData = $c;
+                break;
+            }
+        }
+        if ($cabangData == null) {
             return response()->json([
                 'sukses' => false,
-                'pesan' => 'Anda berada di luar radius absen. Jarak Anda dari Kantor: ' . number_format($jarak, 2) . ' meter.'
+                'pesan' => 'Anda berada di luar radius absen.'
             ], 400);
         }
+        $cabang_id = $cabangData->id;
+
+
+
 
         $tanggal = date('Y-m-d');
         $jam_masuk = date('H:i:s');
@@ -118,19 +139,37 @@ class AbsenController extends Controller
 
 
         $user_id = Auth::user()->id;
-        $cabang = Usercab::where('user_id', $user_id)->first();
-        $cabang ? $cabang_id = $cabang->cabang_id : $cabang_id = 1;
 
-        $cabangData = Cabang::find($cabang_id);
+        // $cabang = Usercab::where('user_id', $user_id)->first();
+        // $cabang ? $cabang_id = $cabang->cabang_id : $cabang_id = 1;
+        // $cabangData = Cabang::find($cabang_id);
+        // $jarak = Helpers::jarak($r->lat, $r->long, $cabangData->lat, $cabangData->long);
+        // $dalamRadius = Helpers::dalamRadius($r->lat, $r->long, $cabangData->lat, $cabangData->long, $cabangData->radius);
+        // if (!$dalamRadius) {
+        //     return response()->json([
+        //         'sukses' => false,
+        //         'pesan' => 'Anda berada di luar radius absen. Jarak Anda dari Kantor: ' . number_format($jarak, 2) . ' meter.'
+        //     ], 400);
+        // }
 
-        $jarak = Helpers::jarak($r->lat, $r->long, $cabangData->lat, $cabangData->long);
-        $dalamRadius = Helpers::dalamRadius($r->lat, $r->long, $cabangData->lat, $cabangData->long, $cabangData->radius);
-        if (!$dalamRadius) {
+
+        $cabangData = null;
+        $cabangTerdekat = Cabang::all();
+        foreach ($cabangTerdekat as $c) {
+            $dalamRadius = Helpers::dalamRadius($r->lat, $r->long, $c->lat, $c->long, $c->radius);
+            if ($dalamRadius) {
+                $cabangData = $c;
+                break;
+            }
+        }
+        if ($cabangData == null) {
             return response()->json([
                 'sukses' => false,
-                'pesan' => 'Anda berada di luar radius absen. Jarak Anda dari Kantor: ' . number_format($jarak, 2) . ' meter.'
+                'pesan' => 'Anda berada di luar radius absen'
             ], 400);
         }
+        $cabang_id = $cabangData->id;
+
 
         $tanggal = date('Y-m-d');
         $jam_masuk = date('H:i:s');
@@ -153,16 +192,8 @@ class AbsenController extends Controller
         $cekAbsen = Absen::where('user_id', '=', $user_id)
             ->where('tanggal', '=', $tanggal)
             ->first();
-        if (!$cekAbsen) {
-            return response()->json([
-                'sukses' => false,
-                'pesan' => 'Anda tidak melakukan absen pagi...'
-            ], 400);
-        }
 
-
-
-        if ($cekAbsen->jam_keluar != null) {
+        if ($cekAbsen and $cekAbsen->jam_keluar != null) {
             return response()->json([
                 'sukses' => false,
                 'pesan' => 'Anda sudah melakukan Absen pulang...'
@@ -182,6 +213,13 @@ class AbsenController extends Controller
         DB::beginTransaction();
         try {
 
+            if (!$cekAbsen) {
+                $cekAbsen = new Absen();
+                $cekAbsen->user_id = $user_id;
+                $cekAbsen->cabang_id = $cabang_id;
+                $cekAbsen->tanggal = $tanggal;
+                $cekAbsen->status = 'hadir';
+            }
             $cekAbsen->jam_keluar = $jam_masuk;
             $cekAbsen->lokasi_keluar = $r->lat . ',' . $r->long;
             $cekAbsen->foto_keluar = $file;
@@ -225,7 +263,19 @@ class AbsenController extends Controller
             ->whereMonth('tanggal', date('m'))
             ->whereYear('tanggal', date('Y'))
             ->where('jam_keluar', '!=', null)
+            ->where('jam_masuk', '!=', null)
             ->where('status', 'hadir')
+            ->count();
+
+        $setengah_hari = Absen::where('user_id', $user_id)
+            ->whereMonth('tanggal', date('m'))
+            ->whereYear('tanggal', date('Y'))
+            ->where('status', 'hadir')
+            ->whereRaw('
+        (jam_keluar IS NULL AND jam_masuk IS NOT NULL)
+        OR
+        (jam_masuk IS NULL AND jam_keluar IS NOT NULL)
+    ')
             ->count();
 
         $a = AbsenResource::collection($absen);
@@ -241,6 +291,7 @@ class AbsenController extends Controller
             'sukses' => true,
             'data' => $a,
             'jumlah_hadir' => $jumlah,
+            'setengah_hari' => $setengah_hari,
             'izin' => $cekIzin,
         ], 202);
     }
@@ -367,6 +418,8 @@ class AbsenController extends Controller
                 fwrite($ifp,  $plainText);
                 fclose($ifp);
             }
+
+
 
             DB::commit();
             return response()->json([

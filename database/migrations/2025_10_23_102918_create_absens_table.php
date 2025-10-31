@@ -26,6 +26,9 @@ return new class extends Migration
             $table->string("lokasi_keluar")->nullable();
             $table->string("foto_masuk")->nullable();
             $table->string("foto_keluar")->nullable();
+            $table->unsignedBigInteger('kegiatan_id');
+            $table->foreign('kegiatan_id')->references('id')->on('cabang_kegiatans')->onDelete('restrict')->onUpdate('cascade');
+            $table->string("jenis_absen")->default('kantor'); // normal / kegiatan
             $table->timestamps();
         });
     }

@@ -21,6 +21,7 @@ class AbsenAdminResource extends JsonResource
         $baseDatePath = $tanggal ? 'files2/absen/' . $tanggal->format('Y') . '/' . $tanggal->format('m') . '/' . $tanggal->format('d') . '/' : null;
 
         $komplit=($this->jam_keluar!=NULL)?"ok":"x";
+        $this->jam_masuk == NULL || $this->jam_keluar == null?$status = "SETENGAH HARI":$status = strtoupper($this->status);
         return [
             'id' => $this->id,
 
@@ -28,7 +29,7 @@ class AbsenAdminResource extends JsonResource
             'hari' => $tanggal ? $tanggal->locale('id')->isoFormat('dddd') : null,
             'jam_masuk' => date('H:i',strtotime($this->jam_masuk)),
             'jam_keluar' => date('H:i',strtotime($this->jam_keluar)),
-            'status' => strtoupper($this->status),
+            'status' => $status,
             'keterangan' => $this->keterangan,
             'lokasi_masuk' => $this->lokasi_masuk,
             'lokasi_keluar' => $this->lokasi_keluar,

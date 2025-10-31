@@ -17,19 +17,20 @@ class AbsenResource extends JsonResource
     {
 
         $hari = Carbon::parse($this->tanggal)->locale('id')->isoFormat('dddd'); // "Kamis"
-        $this->jam_keluar==NULL ? $lengkap="x" : $lengkap="ok";
+        $this->jam_masuk != NULL && $this->jam_keluar != null ? $lengkap = "ok" : $lengkap = "x";
 
         $tanggal = $this->tanggal ? Carbon::parse($this->tanggal) : null;
         $baseDatePath = $tanggal ? 'files2/absen/' . $tanggal->format('Y') . '/' . $tanggal->format('m') . '/' . $tanggal->format('d') . '/' : null;
 
-
+        $this->jam_masuk == NULL || $this->jam_keluar == null?$status = "SETENGAH HARI":$status = strtoupper($this->status);
+        
         return [
             'id' => $this->id,
             'tanggal' => date('d-m-Y', strtotime($this->tanggal)),
             'hari' => $hari,
             'jam_masuk' => $this->jam_masuk,
             'jam_keluar' => $this->jam_keluar,
-            'status' => strtoupper($this->status),
+            'status' => $status,
             'keterangan' => $this->keterangan,
             'lokasi_masuk' => $this->lokasi_masuk,
             'foto_masuk_url' => $this->foto_masuk && $baseDatePath ? url($baseDatePath . $this->foto_masuk) : null,
