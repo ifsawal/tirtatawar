@@ -237,6 +237,11 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::get('/photo-absen/{id}', [AbsenController::class, 'photo_absen']);
     Route::get('/absen-admin/{tanggal}', [AbsenAdminController::class, 'absen_admin']);
     Route::post('/izin', [AbsenController::class, 'izin']);
+    Route::get('/data-izin/{tanggal}', [AbsenController::class, 'daftar_izin']);
+    Route::post('/beri-izin', [AbsenController::class, 'beri_izin']);
+    Route::post('/tolak-izin', [AbsenController::class, 'tolak_izin']);
+    Route::post('/simpan-kegiatan', [AbsenAdminController::class, 'set_kegiatan']);
+    Route::get('/daftar-kegiatan/{tanggal}', [AbsenAdminController::class, 'daftar_kegiatan']);
     
 
     //versi server

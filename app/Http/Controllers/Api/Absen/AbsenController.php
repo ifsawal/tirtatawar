@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use App\Http\Resources\Api\Absen\AbsenResource;
+use App\Http\Resources\Api\Absen\DaftarIzinResource;
 use App\Models\Master\Izin;
 
 class AbsenController extends Controller
@@ -80,6 +81,7 @@ class AbsenController extends Controller
         }
 
         $cekAbsen = Absen::where('user_id', '=', $user_id)
+            ->where('jenis_absen', '=', 'kantor')
             ->where('tanggal', '=', $tanggal)
             ->exists();
         if ($cekAbsen) {
@@ -181,15 +183,16 @@ class AbsenController extends Controller
             ], 400);
         }
 
-        if (strtotime($jam_masuk) > strtotime($jam_kedepan)) {  //============================================
-            return response()->json([ //========================================================================
-                'sukses' => false,
-                'pesan' => 'Waktu absen keluar sudah lewat pukul ' . date('H:i', strtotime($cabangData->sore)) . '.',
-            ], 400);
-        }
+        // if (strtotime($jam_masuk) > strtotime($jam_kedepan)) {  //============================================
+        //     return response()->json([ //========================================================================
+        //         'sukses' => false,
+        //         'pesan' => 'Waktu absen keluar sudah lewat pukul ' . date('H:i', strtotime($cabangData->sore)) . '.',
+        //     ], 400);
+        // }
 
 
         $cekAbsen = Absen::where('user_id', '=', $user_id)
+            ->where('jenis_absen', '=', 'kantor')
             ->where('tanggal', '=', $tanggal)
             ->first();
 
@@ -200,6 +203,12 @@ class AbsenController extends Controller
             ], 400);
         }
 
+        if($cekAbsen and $cekAbsen->status != "hadir"){
+            return response()->json([
+                'sukses' => false,
+                'pesan' => 'Anda tidak dapat melakukan absen pulang karena status absen masuk anda adalah '.$cekAbsen->status,
+            ], 400);
+        }
 
         $nama_gambar = config('external.nama_gambar');
         $file = md5($nama_gambar . $tanggal . $user_id) . "keluar.jpg";
@@ -254,12 +263,14 @@ class AbsenController extends Controller
         $user_id = Auth::user()->id;
 
         $absen = Absen::where('user_id', $user_id)
+            ->where('jenis_absen', '=', 'kantor')
             ->whereMonth('tanggal', date('m'))
             ->whereYear('tanggal', date('Y'))
             ->orderBy('tanggal', 'desc')
             ->get();
 
         $jumlah = Absen::where('user_id', $user_id)
+            ->where('jenis_absen', '=', 'kantor')
             ->whereMonth('tanggal', date('m'))
             ->whereYear('tanggal', date('Y'))
             ->where('jam_keluar', '!=', null)
@@ -268,6 +279,7 @@ class AbsenController extends Controller
             ->count();
 
         $setengah_hari = Absen::where('user_id', $user_id)
+            ->where('jenis_absen', '=', 'kantor')
             ->whereMonth('tanggal', date('m'))
             ->whereYear('tanggal', date('Y'))
             ->where('status', 'hadir')
@@ -352,6 +364,15 @@ class AbsenController extends Controller
             ], 422);
         }
 
+
+        // tanggal akhir harus lebih besar atau sama dengan tanggal awal
+        if (Carbon::createFromFormat('Y-m-d', $r->tgl_akhir)->lt(Carbon::createFromFormat('Y-m-d', $r->tgl_awal))) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => 'Tanggal akhir harus lebih besar atau sama dengan tanggal awal.',
+            ], 422);
+        }
+
         $start = Carbon::createFromFormat('Y-m-d', $r->tgl_awal)->startOfDay();
         $end = Carbon::createFromFormat('Y-m-d', $r->tgl_akhir)->startOfDay();
         $diffInclusive = $start->diffInDays($end) + 1; // +1 untuk inklusif
@@ -363,7 +384,8 @@ class AbsenController extends Controller
         }
 
         $cekAbsen = Absen::where('user_id', '=', $user_id)
-            ->where('tanggal', '=', date('Y-m-d'))
+            ->where('jenis_absen', '=', 'kantor')
+            ->where('tanggal', '=',  $r->tgl_awal)
             ->exists();
         if ($cekAbsen) {
             return response()->json([
@@ -391,6 +413,7 @@ class AbsenController extends Controller
         }
 
         isset($r->lampiran) ? $lampiran = $file_lampiran : $lampiran = null;
+
 
 
         DB::beginTransaction();
@@ -421,6 +444,10 @@ class AbsenController extends Controller
 
 
 
+
+
+
+
             DB::commit();
             return response()->json([
                 'sukses' => true,
@@ -431,6 +458,119 @@ class AbsenController extends Controller
             return response()->json([
                 'sukses' => false,
                 'pesan' => 'Gagal melakukan pengajuan izin  ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function daftar_izin(Request $r, $tanggal)
+    {
+        $user_id = Auth::user()->id;
+
+        $bulan = date('m', strtotime($tanggal));
+        $tahun = date('Y', strtotime($tanggal));
+        $izin = Izin::with('user', 'user_penyetuju')
+            ->where('user_id', $user_id)
+            ->whereMonth('created_at', $bulan)
+            ->whereYear('created_at', $tahun)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $data = DaftarIzinResource::collection($izin);
+
+        return response()->json([
+            'sukses' => true,
+            'data' => $data,
+        ], 202);
+    }
+
+
+
+
+    public function beri_izin(Request $r)
+    {
+
+        $user_id = Auth::user()->id;
+
+
+        $izin = Izin::findOrFail($r->id);
+        if ($izin->status_approval == "disetujui" or $izin->status_approval == "ditolak") {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => 'Izin sudah pernah disetujui atau ditolak.',
+            ], 422);
+        }
+
+        $tanggal1 = Carbon::parse($izin->tanggal_mulai);
+        $tanggal2 = Carbon::parse($izin->tanggal_selesai);
+        $selisih = $tanggal1->diffInDays($tanggal2) + 1;
+
+        DB::beginTransaction();
+        
+        try {
+            for ($i = 0; $i < $selisih; $i++) {
+                $tanggal_skip = Carbon::parse($izin->tgl_mulai)->addDays($i);
+               
+                // Lewati jika hari Sabtu (6) atau Minggu (0)
+                if ($tanggal_skip->isSaturday() || $tanggal_skip->isSunday()) {
+                    continue;
+                }
+
+                $absen = new Absen();
+                $absen->user_id = $izin->user_id;
+                $absen->cabang_id = $izin->cabang_id;
+                $absen->tanggal = Carbon::parse($r->tgl_mulai)->addDays($i)->format('Y-m-d');
+                $absen->status = 'izin';
+                $absen->jenis_absen = 'kantor';
+                $absen->save();
+            }
+
+            $izin->status_approval = "disetujui";
+            $izin->user_id_penyetuju = $user_id;
+            $izin->save();
+
+            DB::commit();
+            // DB::rollBack();
+            return response()->json([
+                'sukses' => true,
+                'pesan' => 'Izin berhasil disetujui.',
+                
+            ], 202);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'sukses' => false,
+                'pesan' => 'Gagal menyetujui izin. ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function tolak_izin(Request $r)
+    {
+
+        $user_id = Auth::user()->id;
+        $izin = Izin::findOrFail($r->id);
+        if ($izin->status_approval == "disetujui" or $izin->status_approval == "ditolak") {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => 'Izin sudah pernah disetujui atau ditolak.',
+            ], 422);    
+
+        }
+        DB::beginTransaction();
+        try {
+            $izin->status_approval = "ditolak";
+            $izin->user_id_penyetuju = $user_id;
+            $izin->save();  
+            DB::commit();
+            return response()->json([
+                'sukses' => true,
+                'pesan' => 'Izin berhasil ditolak.',
+            ], 202);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'sukses' => false,
+                'pesan' => 'Gagal menolak izin. ' . $e->getMessage(),
             ], 500);
         }
     }

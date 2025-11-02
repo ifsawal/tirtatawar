@@ -22,13 +22,16 @@ class AbsenAdminResource extends JsonResource
 
         $komplit=($this->jam_keluar!=NULL)?"ok":"x";
         $this->jam_masuk == NULL || $this->jam_keluar == null?$status = "SETENGAH HARI":$status = strtoupper($this->status);
+        $this->jam_masuk == NULL && $this->jam_keluar == NULL ? $status = $status = strtoupper($this->status) : null;
+
+        
         return [
             'id' => $this->id,
 
             'tanggal' => $tanggal ? $tanggal->toDateString() : null,
             'hari' => $tanggal ? $tanggal->locale('id')->isoFormat('dddd') : null,
-            'jam_masuk' => date('H:i',strtotime($this->jam_masuk)),
-            'jam_keluar' => date('H:i',strtotime($this->jam_keluar)),
+            'jam_masuk' => $this->jam_masuk ? Carbon::parse($this->jam_masuk)->format('H:i') : null,
+            'jam_keluar' => $this->jam_keluar ? Carbon::parse($this->jam_keluar)->format('H:i') : null,
             'status' => $status,
             'keterangan' => $this->keterangan,
             'lokasi_masuk' => $this->lokasi_masuk,

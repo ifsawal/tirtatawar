@@ -23,6 +23,7 @@ class AbsenResource extends JsonResource
         $baseDatePath = $tanggal ? 'files2/absen/' . $tanggal->format('Y') . '/' . $tanggal->format('m') . '/' . $tanggal->format('d') . '/' : null;
 
         $this->jam_masuk == NULL || $this->jam_keluar == null?$status = "SETENGAH HARI":$status = strtoupper($this->status);
+        $this->jam_masuk == NULL && $this->jam_keluar == NULL ? $status = $status = strtoupper($this->status) : null;
         
         return [
             'id' => $this->id,
