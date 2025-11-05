@@ -241,21 +241,21 @@ class PencatatanController extends Controller
         $buka_satu_user = explode(',', $filter['buka_satu_user']);
         $tgl_mulai_input = $filter['tgl_mulai_input'];
 
-        // if (date('Y-m') == $input && date('d') <= $tgl_mulai_input) { //batasan tgl mulai input
-        //     return response()->json([
-        //         "sukses" => false,
-        //         "pesan" => "Pencatatan meteraan bulan " . $input . " belum dibuka...",
-        //         "kode" => 2,
-        //     ], 404);
-        // }
+        if (date('Y-m') == $input && date('d') <= $tgl_mulai_input) { //batasan tgl mulai input
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pencatatan meteraan bulan " . $input . " belum dibuka...",
+                "kode" => 2,
+            ], 404);
+        }
 
-        // if ($input >= $tambahbulan) {
-        //     return response()->json([
-        //         "sukses" => false,
-        //         "pesan" => "Meteran bulan depan tidak dapat di isi....",
-        //         "kode" => 2,
-        //     ], 404);
-        // }
+        if ($input >= $tambahbulan) {
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Meteran bulan depan tidak dapat di isi....",
+                "kode" => 2,
+            ], 404);
+        }
 
         if (
             in_array($input, $tahunBukaValues)
