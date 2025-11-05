@@ -20,11 +20,11 @@ class AbsenAdminResource extends JsonResource
         $tanggal = $this->tanggal ? Carbon::parse($this->tanggal) : null;
         $baseDatePath = $tanggal ? 'files2/absen/' . $tanggal->format('Y') . '/' . $tanggal->format('m') . '/' . $tanggal->format('d') . '/' : null;
 
-        $komplit=($this->jam_keluar!=NULL)?"ok":"x";
-        $this->jam_masuk == NULL || $this->jam_keluar == null?$status = "SETENGAH HARI":$status = strtoupper($this->status);
+        $komplit = ($this->jam_keluar != NULL) ? "ok" : "x";
+        $this->jam_masuk == NULL || $this->jam_keluar == null ? $status = "SETENGAH HARI" : $status = strtoupper($this->status);
         $this->jam_masuk == NULL && $this->jam_keluar == NULL ? $status = $status = strtoupper($this->status) : null;
+        $this->jenis_absen == "lapangan" ? $status = "<font color='#1b5a04'>HADIR (KEGIATAN)</font>" : null;
 
-        
         return [
             'id' => $this->id,
 

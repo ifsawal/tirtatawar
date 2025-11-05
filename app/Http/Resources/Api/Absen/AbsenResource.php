@@ -24,6 +24,7 @@ class AbsenResource extends JsonResource
 
         $this->jam_masuk == NULL || $this->jam_keluar == null?$status = "SETENGAH HARI":$status = strtoupper($this->status);
         $this->jam_masuk == NULL && $this->jam_keluar == NULL ? $status = $status = strtoupper($this->status) : null;
+        $this->jenis_absen == "lapangan"?$status = "<font color='#1b5a04'>HADIR (KEGIATAN)</font>":null;
         
         return [
             'id' => $this->id,

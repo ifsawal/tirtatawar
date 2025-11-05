@@ -18,6 +18,14 @@ class AuthMobileController extends Controller
     public function loginmobile(Request $request)
     {
 
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
         if (!Auth::guard('pelanggan')->attempt($request->only('email', 'password'))) {
             return response()
                 ->json(['sukses' => false, 'pesan' => 'Login gagal...'], 401);

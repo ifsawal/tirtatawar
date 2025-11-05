@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Exports\LaporanRekapBulananExport;
 use App\Http\Controllers\Api\Absen\AbsenAdminController;
 use App\Http\Controllers\Api\Absen\AbsenController;
+use App\Http\Controllers\Api\Absen\KegiatanController;
 use App\Http\Controllers\Api\Bank\BA\BaLaporan;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Bank\BA\BaController;
@@ -152,7 +153,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/infotransfer', [TagihanController::class, 'infotransfer']);
     Route::post('/detilinfotransfer', [TagihanController::class, 'detilinfotransfer']);
     Route::post('/hapusdenda', [TagihanController::class, 'hapus_denda']);
-    Route::post('/invoice_all', [TagihanController::class, 'invoice_all']);
+    Route::post('/invoice_all', [TagihanController::class, 'invoice_all'])->middleware('auth.permission:cetak_invoice');
 
     Route::post('/bayar', [BayarController::class, 'store']);
     Route::post('/batalbayar', [BayarController::class, 'destroy']);
@@ -236,12 +237,15 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::get('/data-absen-peruser', [AbsenController::class, 'data_absen_per_user']);
     Route::get('/photo-absen/{id}', [AbsenController::class, 'photo_absen']);
     Route::get('/absen-admin/{tanggal}', [AbsenAdminController::class, 'absen_admin']);
+    Route::get('/absen-admin/{tanggal}/{lapangan}', [AbsenAdminController::class, 'absen_admin']);
     Route::post('/izin', [AbsenController::class, 'izin']);
     Route::get('/data-izin/{tanggal}', [AbsenController::class, 'daftar_izin']);
     Route::post('/beri-izin', [AbsenController::class, 'beri_izin']);
     Route::post('/tolak-izin', [AbsenController::class, 'tolak_izin']);
     Route::post('/simpan-kegiatan', [AbsenAdminController::class, 'set_kegiatan']);
     Route::get('/daftar-kegiatan/{tanggal}', [AbsenAdminController::class, 'daftar_kegiatan']);
+    Route::get('/tampil-kegiatan', [KegiatanController::class, 'tampil_kegiatan']);
+    Route::post('/absen-kegiatan', [KegiatanController::class, 'absen_kegiatan']);
     
 
     //versi server

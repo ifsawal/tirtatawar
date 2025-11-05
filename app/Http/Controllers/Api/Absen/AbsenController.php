@@ -73,23 +73,37 @@ class AbsenController extends Controller
             ], 400);
         }
 
-        if (strtotime($jam_masuk) > strtotime($cabangData->pagi)) { //==========================================
-            return response()->json([ //========================================================================
-                'sukses' => false,
-                'pesan' => 'Waktu absen masuk sudah lewat pukul ' . date('H:i', strtotime($cabangData->pagi)) . '.',
-            ], 400);
-        }
+        // if (strtotime($jam_masuk) > strtotime($cabangData->pagi)) { //==========================================
+        //     return response()->json([ //========================================================================
+        //         'sukses' => false,
+        //         'pesan' => 'Waktu absen masuk sudah lewat pukul ' . date('H:i', strtotime($cabangData->pagi)) . '.',
+        //     ], 400);
+        // }
 
+
+
+        
         $cekAbsen = Absen::where('user_id', '=', $user_id)
             ->where('jenis_absen', '=', 'kantor')
             ->where('tanggal', '=', $tanggal)
-            ->exists();
+            ->first();
+
+        if ($cekAbsen and $cekAbsen->status != "hadir") {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => 'Anda tidak dapat melakukan absen pulang karena status absen masuk anda adalah ' . $cekAbsen->status,
+            ], 400);
+        }
+
         if ($cekAbsen) {
             return response()->json([
                 'sukses' => false,
                 'pesan' => 'Anda sudah melakukan Absen...'
             ], 400);
         }
+
+
+
 
 
         $nama_gambar = config('external.nama_gambar');
@@ -183,12 +197,12 @@ class AbsenController extends Controller
             ], 400);
         }
 
-        if (strtotime($jam_masuk) > strtotime($jam_kedepan)) {  //============================================
-            return response()->json([ //========================================================================
-                'sukses' => false,
-                'pesan' => 'Waktu absen keluar sudah lewat pukul ' . date('H:i', strtotime($cabangData->sore)) . '.',
-            ], 400);
-        }
+        // if (strtotime($jam_masuk) > strtotime($jam_kedepan)) {  //============================================
+        //     return response()->json([ //========================================================================
+        //         'sukses' => false,
+        //         'pesan' => 'Waktu absen keluar sudah lewat pukul ' . date('H:i', strtotime($cabangData->sore)) . '.',
+        //     ], 400);
+        // }
 
 
         $cekAbsen = Absen::where('user_id', '=', $user_id)
@@ -203,10 +217,10 @@ class AbsenController extends Controller
             ], 400);
         }
 
-        if($cekAbsen and $cekAbsen->status != "hadir"){
+        if ($cekAbsen and $cekAbsen->status != "hadir") {
             return response()->json([
                 'sukses' => false,
-                'pesan' => 'Anda tidak dapat melakukan absen pulang karena status absen masuk anda adalah '.$cekAbsen->status,
+                'pesan' => 'Anda tidak dapat melakukan absen pulang karena status absen masuk anda adalah ' . $cekAbsen->status,
             ], 400);
         }
 
@@ -263,9 +277,10 @@ class AbsenController extends Controller
         $user_id = Auth::user()->id;
 
         $absen = Absen::where('user_id', $user_id)
-            ->where('jenis_absen', '=', 'kantor')
+
             ->whereMonth('tanggal', date('m'))
             ->whereYear('tanggal', date('Y'))
+            ->whereDate('tanggal', '<=', Carbon::today()->toDateString())
             ->orderBy('tanggal', 'desc')
             ->get();
 
@@ -283,11 +298,11 @@ class AbsenController extends Controller
             ->whereMonth('tanggal', date('m'))
             ->whereYear('tanggal', date('Y'))
             ->where('status', 'hadir')
-            ->whereRaw('
+            ->whereRaw('(
         (jam_keluar IS NULL AND jam_masuk IS NOT NULL)
         OR
         (jam_masuk IS NULL AND jam_keluar IS NOT NULL)
-    ')
+    )')
             ->count();
 
         $a = AbsenResource::collection($absen);
@@ -505,11 +520,11 @@ class AbsenController extends Controller
         $selisih = $tanggal1->diffInDays($tanggal2) + 1;
 
         DB::beginTransaction();
-        
+
         try {
             for ($i = 0; $i < $selisih; $i++) {
                 $tanggal_skip = Carbon::parse($izin->tgl_mulai)->addDays($i);
-               
+
                 // Lewati jika hari Sabtu (6) atau Minggu (0)
                 if ($tanggal_skip->isSaturday() || $tanggal_skip->isSunday()) {
                     continue;
@@ -533,7 +548,7 @@ class AbsenController extends Controller
             return response()->json([
                 'sukses' => true,
                 'pesan' => 'Izin berhasil disetujui.',
-                
+
             ], 202);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -553,14 +568,13 @@ class AbsenController extends Controller
             return response()->json([
                 'sukses' => false,
                 'pesan' => 'Izin sudah pernah disetujui atau ditolak.',
-            ], 422);    
-
+            ], 422);
         }
         DB::beginTransaction();
         try {
             $izin->status_approval = "ditolak";
             $izin->user_id_penyetuju = $user_id;
-            $izin->save();  
+            $izin->save();
             DB::commit();
             return response()->json([
                 'sukses' => true,

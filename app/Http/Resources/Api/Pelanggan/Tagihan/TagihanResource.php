@@ -29,7 +29,7 @@ class TagihanResource extends JsonResource
         $waktukurang1bulan = date('Y-m', strtotime(Carbon::now()->subMonthsNoOverflow(1)));
 
         $denda = 0;
-        if ($waktucatat == $sekarang) {
+        if ($waktucatat >= $sekarang) {
             return $denda = 0;
         } else if ($waktucatat == $waktukurang1bulan) { // ini belum berlaku
             return $denda = 0;

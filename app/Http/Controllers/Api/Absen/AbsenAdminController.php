@@ -14,12 +14,14 @@ use App\Http\Resources\Api\Absen\AbsenAdminResource;
 
 class AbsenAdminController extends Controller
 {
-    public function absen_admin(Request $r, $tanggal)
+    public function absen_admin(Request $r, $tanggal, $lapangan = null)
     {
         $tanggal = date('Y-m-d', strtotime($tanggal));
         $validator = Validator::make(['id' => $tanggal], [
             'id' => ['required', 'date_format:Y-m-d'],
         ]);
+
+        $lapangan != null?$jenis_absen = "lapangan":$jenis_absen = "kantor";
 
         if ($validator->fails()) {
             return response()->json([
@@ -30,7 +32,7 @@ class AbsenAdminController extends Controller
         }
 
         $absen = Absen::with('user')
-            ->where('jenis_absen', '=', 'kantor')
+            ->where('jenis_absen', '=', $jenis_absen)
             ->where('tanggal', $tanggal)
             ->get();
 
