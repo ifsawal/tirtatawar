@@ -33,6 +33,7 @@ class AbsenAdminResource extends JsonResource
             'jam_masuk' => $this->jam_masuk ? Carbon::parse($this->jam_masuk)->format('H:i') : null,
             'jam_keluar' => $this->jam_keluar ? Carbon::parse($this->jam_keluar)->format('H:i') : null,
             'status' => $status,
+            'status_asli' => $this->status,
             'keterangan' => $this->keterangan,
             'lokasi_masuk' => $this->lokasi_masuk,
             'lokasi_keluar' => $this->lokasi_keluar,
