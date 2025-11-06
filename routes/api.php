@@ -12,6 +12,7 @@ use App\Exports\LaporanRekapBulananExport;
 use App\Http\Controllers\Api\Absen\AbsenAdminController;
 use App\Http\Controllers\Api\Absen\AbsenController;
 use App\Http\Controllers\Api\Absen\KegiatanController;
+use App\Http\Controllers\Api\Absen\LaporanAbsenController;
 use App\Http\Controllers\Api\Bank\BA\BaLaporan;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Bank\BA\BaController;
@@ -246,6 +247,8 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::get('/daftar-kegiatan/{tanggal}', [AbsenAdminController::class, 'daftar_kegiatan']);
     Route::get('/tampil-kegiatan', [KegiatanController::class, 'tampil_kegiatan']);
     Route::post('/absen-kegiatan', [KegiatanController::class, 'absen_kegiatan']);
+    Route::get('/absen-rekap/{bulan}/{tahun}', [LaporanAbsenController::class, 'rekap']);
+    Route::get('/absen-rekap-kegiatan/{bulan}/{tahun}', [LaporanAbsenController::class, 'rekap_kegiatan']);
     
 
     //versi server

@@ -73,12 +73,12 @@ class AbsenController extends Controller
             ], 400);
         }
 
-        // if (strtotime($jam_masuk) > strtotime($cabangData->pagi)) { //==========================================
-        //     return response()->json([ //========================================================================
-        //         'sukses' => false,
-        //         'pesan' => 'Waktu absen masuk sudah lewat pukul ' . date('H:i', strtotime($cabangData->pagi)) . '.',
-        //     ], 400);
-        // }
+        if (strtotime($jam_masuk) > strtotime($cabangData->pagi)) { //==========================================
+            return response()->json([ //========================================================================
+                'sukses' => false,
+                'pesan' => 'Waktu absen masuk sudah lewat pukul ' . date('H:i', strtotime($cabangData->pagi)) . '.',
+            ], 400);
+        }
 
 
 
@@ -197,12 +197,12 @@ class AbsenController extends Controller
             ], 400);
         }
 
-        // if (strtotime($jam_masuk) > strtotime($jam_kedepan)) {  //============================================
-        //     return response()->json([ //========================================================================
-        //         'sukses' => false,
-        //         'pesan' => 'Waktu absen keluar sudah lewat pukul ' . date('H:i', strtotime($cabangData->sore)) . '.',
-        //     ], 400);
-        // }
+        if (strtotime($jam_masuk) > strtotime($jam_kedepan)) {  //============================================
+            return response()->json([ //========================================================================
+                'sukses' => false,
+                'pesan' => 'Waktu absen keluar sudah lewat pukul ' . date('H:i', strtotime($cabangData->sore)) . '.',
+            ], 400);
+        }
 
 
         $cekAbsen = Absen::where('user_id', '=', $user_id)
