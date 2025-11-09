@@ -30,7 +30,7 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        if (isset($request->versi) && $request->versi >= 2) {
+        if (isset($request->versi) && $request->versi >= 3) {
         } else {
             return response()
                 ->json([
