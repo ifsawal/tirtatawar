@@ -82,7 +82,7 @@ class AbsenController extends Controller
 
 
 
-        
+
         $cekAbsen = Absen::where('user_id', '=', $user_id)
             ->where('jenis_absen', '=', 'kantor')
             ->where('tanggal', '=', $tanggal)
@@ -357,6 +357,15 @@ class AbsenController extends Controller
             'ttd' => 'required|string',
         ]);
 
+        $hariAwal = date('w', strtotime($r->tgl_awal));
+        $hariAkhir = date('w', strtotime($r->tgl_akhir));
+        // 0 = Minggu, 6 = Sabtu
+        if ($hariAwal == 0 || $hariAwal == 6 || $hariAkhir == 0 || $hariAkhir == 6) {
+            return response()->json([
+                'status' => false,
+                'pesan' => 'Tanggal tidak boleh jatuh pada hari Sabtu atau Minggu.'
+            ], 422);
+        }
 
         $user_id = Auth::user()->id;
         $cabang = Usercab::where('user_id', $user_id)->first();
@@ -484,7 +493,7 @@ class AbsenController extends Controller
         $bulan = date('m', strtotime($tanggal));
         $tahun = date('Y', strtotime($tanggal));
         $izin = Izin::with('user', 'user_penyetuju')
-            ->where('user_id', $user_id)
+
             ->whereMonth('created_at', $bulan)
             ->whereYear('created_at', $tahun)
             ->orderBy('created_at', 'desc')
