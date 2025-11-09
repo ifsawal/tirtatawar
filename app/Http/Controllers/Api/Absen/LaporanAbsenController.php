@@ -14,8 +14,8 @@ class LaporanAbsenController extends Controller
     public function rekap(Request $request, $bulan, $tahun)
     {
 
-        $bulan = $r->bulan ?? date('m');
-        $tahun = $r->tahun ?? date('Y');
+        $bulan = date('m', strtotime($bulan));
+        $tahun = date('Y', strtotime($tahun));
 
         // return User::with(['absen' => function ($q) use ($bulan, $tahun) {
         //     $q->whereMonth('tanggal', $bulan)
@@ -28,8 +28,8 @@ class LaporanAbsenController extends Controller
     public function rekap_kegiatan(Request $request, $bulan, $tahun)
     {
 
-        $bulan = $r->bulan ?? date('m');
-        $tahun = $r->tahun ?? date('Y');
+        $bulan = date('m', strtotime($bulan));
+        $tahun = date('Y', strtotime($tahun));
 
         // return User::with(['absen' => function ($q) use ($bulan, $tahun) {
         //     $q->whereMonth('tanggal', $bulan)

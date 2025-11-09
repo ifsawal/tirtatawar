@@ -9,14 +9,12 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Exports\LaporanRekapBulananExport;
-use App\Http\Controllers\Api\Absen\AbsenAdminController;
-use App\Http\Controllers\Api\Absen\AbsenController;
-use App\Http\Controllers\Api\Absen\KegiatanController;
-use App\Http\Controllers\Api\Absen\LaporanAbsenController;
 use App\Http\Controllers\Api\Bank\BA\BaLaporan;
+use App\Http\Controllers\Api\Akun\DataController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Bank\BA\BaController;
 use App\Http\Controllers\Api\Bank\P3\P3Controller;
+use App\Http\Controllers\Api\Absen\AbsenController;
 use App\Http\Controllers\Api\Master\DesaController;
 use App\Http\Controllers\Api\Master\IzinController;
 use App\Http\Controllers\Api\Master\UserController;
@@ -24,16 +22,19 @@ use App\Http\Controllers\Api\Singel\InfoController;
 use App\Http\Controllers\Api\Bank\BSI\BsiController;
 use App\Http\Controllers\Api\Proses\BayarController;
 use App\Http\Controllers\Api\Server\AtestController;
+use App\Http\Controllers\Api\Absen\KegiatanController;
 use App\Http\Controllers\Api\Master\SetoranController;
 use App\Http\Controllers\Api\Master\TagihanController;
 use App\Http\Controllers\Api\Proses\KeluhanController;
 use App\Http\Controllers\Api\Proses\WebhookController;
+use App\Http\Controllers\Api\Akun\ProsesAkunController;
 use App\Http\Controllers\Api\Auth\AuthClientController;
 use App\Http\Controllers\Api\Auth\AuthMobileController;
 use App\Http\Controllers\Api\Bank\BA\BaResetController;
 use App\Http\Controllers\Api\Bank\P3\P3ResetController;
 use App\Http\Controllers\Api\Master\DownloadController;
 use App\Http\Controllers\Api\Server\CekAngkaController;
+use App\Http\Controllers\Api\Absen\AbsenAdminController;
 use App\Http\Controllers\Api\Auth\AuthClient2Controller;
 use App\Http\Controllers\Api\Bank\BA\BaStatusController;
 use App\Http\Controllers\Api\Master\PelangganController;
@@ -46,6 +47,7 @@ use App\Http\Controllers\Api\Master\PhotoRumahController;
 use App\Http\Controllers\Api\Pelanggan\MobBankController;
 use App\Http\Controllers\Api\Pengguna\PenggunaController;
 use App\Http\Controllers\Api\Server\IsiMeteranController;
+use App\Http\Controllers\Api\Absen\LaporanAbsenController;
 use App\Http\Controllers\Api\Data\DataPelangganController;
 use App\Http\Controllers\Api\Master\HpPelangganController;
 use App\Http\Controllers\Api\Master\GolPenetapanController;
@@ -58,8 +60,8 @@ use App\Http\Controllers\Api\Laporan\LaporanPetugasController;
 use App\Http\Controllers\Api\Pelanggan\MobTagihan10Controller;
 use App\Http\Controllers\Api\Pelanggan\PelangganMobController;
 use App\Http\Controllers\Api\Laporan\LaporanBayarBankController;
-use App\Http\Controllers\Api\Laporan\LaporanBelumBayarController;
 use App\Http\Controllers\Api\Laporan\LaporanPelangganController;
+use App\Http\Controllers\Api\Laporan\LaporanBelumBayarController;
 use App\Http\Controllers\Api\Laporan\LaporanPencatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanInputCatatanController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
@@ -180,7 +182,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/prosesdrdgolongan', [LaporanRekapDrdGolonganController::class, 'drd_golongan']);
 
     Route::post('/download-input-catatan', [LaporanInputCatatanController::class, 'download_input_catatan']);
-    
+
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
     Route::post('/downloadlaporanbayar', [LaporanBayarController::class, 'download_laporan_bayar']);
     Route::post('/downloadlaporanbayar-excel', [LaporanBayarController::class, 'download_laporan_bayar_excel']);
@@ -249,7 +251,14 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/absen-kegiatan', [KegiatanController::class, 'absen_kegiatan']);
     Route::get('/absen-rekap/{bulan}/{tahun}', [LaporanAbsenController::class, 'rekap']);
     Route::get('/absen-rekap-kegiatan/{bulan}/{tahun}', [LaporanAbsenController::class, 'rekap_kegiatan']);
-    
+
+    //akun
+    Route::get('/akun', [DataController::class, 'akun']);
+    Route::get('/role', [DataController::class, 'role']);
+    Route::get('/permisi', [DataController::class, 'permisi']);
+    Route::get('/data_user_aktif', [DataController::class, 'data_user_aktif']);
+    Route::post('/keluarkan-akun', [ProsesAkunController::class, 'keluarkan_akun'])->middleware('auth.permission:keluarkan_akun');
+
 
     //versi server
     Route::post('/perubahan_petugas_pelanggan', [PerubahanController::class, 'rubah_petugas']);
@@ -316,18 +325,17 @@ Route::prefix('v1')->group(function () {
         Route::get('/ba/laporan/{tanggal}', [BaLaporan::class, 'laporan']);
         Route::post('/ba/reset', [BaResetController::class, 'reset']);
     });
-    
+
     Route::group(['middleware' => ['auth:sanctum', 'abilities:client2']], function () {
         Route::get('/p3/cek-tagihan/{id}/{bank?}', [P3Controller::class, 'cek_tagihan']);
         Route::post('/p3/buat-tagihan', [P3TagihanController::class, 'buat_tagihan']);
         Route::get('/p3/laporan/{tanggal}', [P3LaporanController::class, 'laporan']);
         Route::post('/p3/reset', [P3ResetController::class, 'reset']);
     });
-    
+
     Route::get('/bsi/inquiry', [BsiController::class, 'inquiry']);
     Route::get('/bsi/payment', [BsiController::class, 'payment']);
     Route::get('/bsi/reversal', [BsiController::class, 'reversal']);
-
 });
 
 Route::post('/test', function (Request $request) {
