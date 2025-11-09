@@ -76,6 +76,12 @@ return [
             'level' => 'debug',
         ],
 
+        'absen' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/absen.log'),
+            'level' => 'debug',
+        ],
+
         'flip' => [
             'driver' => 'single',
             'path' => storage_path('logs/flip.log'),

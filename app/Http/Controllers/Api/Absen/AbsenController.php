@@ -4,17 +4,18 @@ namespace App\Http\Controllers\Api\Absen;
 
 use Carbon\Carbon;
 use App\Helper\Helpers;
+use App\Models\Master\Izin;
 use App\Models\Master\Absen;
 use Illuminate\Http\Request;
 use App\Models\Master\Cabang;
 use App\Models\Master\Usercab;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use App\Http\Resources\Api\Absen\AbsenResource;
 use App\Http\Resources\Api\Absen\DaftarIzinResource;
-use App\Models\Master\Izin;
 
 class AbsenController extends Controller
 {
@@ -130,6 +131,7 @@ class AbsenController extends Controller
             fwrite($ifp,  $plainText);
             fclose($ifp);
 
+            Log::channel('absen')->info("Proses ", ["data" => $absen]);
             DB::commit();
             return response()->json([
                 'sukses' => true,
@@ -252,7 +254,7 @@ class AbsenController extends Controller
             $ifp = fopen(public_path() . '/files2/absen/' . date('Y') . '/' . date('m') . '/' . date('d') . '/' . $file, "wb");
             fwrite($ifp,  $plainText);
             fclose($ifp);
-
+            Log::channel('absen')->info("Proses ", ["data" => $cekAbsen]);
             DB::commit();
             return response()->json([
                 'sukses' => true,

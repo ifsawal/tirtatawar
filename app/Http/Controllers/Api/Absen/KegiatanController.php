@@ -7,6 +7,7 @@ use App\Models\Master\Absen;
 use Illuminate\Http\Request;
 use App\Models\Master\Usercab;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -129,6 +130,7 @@ class KegiatanController extends Controller
             fwrite($ifp,  $plainText);
             fclose($ifp);
 
+            Log::channel('absen')->info("Proses ", ["data" => $absen]);
             DB::commit();
             return response()->json([
                 'sukses' => true,
