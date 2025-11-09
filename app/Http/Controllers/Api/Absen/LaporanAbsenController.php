@@ -14,8 +14,14 @@ class LaporanAbsenController extends Controller
     public function rekap(Request $request, $bulan, $tahun)
     {
 
-        $bulan = date('m', strtotime($bulan));
-        $tahun = date('Y', strtotime($tahun));
+        if ($bulan >= 1 && $bulan <= 12 && $tahun >= 1900 && $tahun <= date('Y')) {
+            // valid
+        } else {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => 'Format bulan atau tahun salah...',
+            ], 400);
+        }
 
         // return User::with(['absen' => function ($q) use ($bulan, $tahun) {
         //     $q->whereMonth('tanggal', $bulan)
@@ -28,8 +34,14 @@ class LaporanAbsenController extends Controller
     public function rekap_kegiatan(Request $request, $bulan, $tahun)
     {
 
-        $bulan = date('m', strtotime($bulan));
-        $tahun = date('Y', strtotime($tahun));
+        if ($bulan >= 1 && $bulan <= 12 && $tahun >= 1900 && $tahun <= date('Y')) {
+            // valid
+        } else {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => 'Format bulan atau tahun salah...',
+            ], 400);
+        }
 
         // return User::with(['absen' => function ($q) use ($bulan, $tahun) {
         //     $q->whereMonth('tanggal', $bulan)
