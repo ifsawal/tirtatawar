@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
+use App\Models\Role as ModelsRole;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -120,6 +121,14 @@ class PenggunaController extends Controller
             'role' => 'required',
         ]);
 
+        $cekRole=ModelsRole::where('name', $r->role)->first();
+        if(!$cekRole){
+            return response()->json([
+                'sukses' => false,
+                'pesan' => "Role tidak ditemukan...",
+            ], 404);
+        }
+
         $user = User::findOrFail($r->user_id);
         $role = $user->getRoleNames();
         if (isset($role[0])) {
@@ -134,7 +143,7 @@ class PenggunaController extends Controller
             ], 202);
         } else {
 
-            $user->assignRole('petugas'); //tambah role baru
+            $user->assignRole($r->role); //tambah role baru
             return response()->json([
                 'sukses' => true,
                 'pesan' => "Terdaftar Baru...",
