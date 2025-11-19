@@ -3,12 +3,14 @@
 namespace App\Exports;
 
 use App\Models\User;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
 
-class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize
+class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithEvents
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -20,6 +22,41 @@ class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping,
     {
         $this->bulan = $bulan;
         $this->tahun = $tahun;
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+        AfterSheet::class => function (AfterSheet $event) {
+
+            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $this->bulan, $this->tahun);
+
+            // Kolom Excel mulai dari B (karena A = nama)
+            $columnIndex = 2;
+
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+                $tanggal = sprintf('%04d-%02d-%02d', $this->tahun, $this->bulan, $day);
+                $carbon = \Carbon\Carbon::parse($tanggal);
+
+                // Jika Sabtu / Minggu → beri warna
+                if ($carbon->isWeekend()) {
+                    
+                    // convert number to Excel column name (B, C, D, ...)
+                    $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex);
+
+                    // Style warna
+                    $event->sheet->getStyle("{$columnLetter}:{$columnLetter}")
+                        ->getFill()
+                        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                        ->getStartColor()
+                        ->setARGB('FFE9E9');  // warna pink lembut
+
+                }
+
+                $columnIndex++;
+            }
+        },
+    ];
     }
 
     public function collection()

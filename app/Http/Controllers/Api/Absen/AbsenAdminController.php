@@ -21,7 +21,7 @@ class AbsenAdminController extends Controller
             'id' => ['required', 'date_format:Y-m-d'],
         ]);
 
-        $lapangan != null?$jenis_absen = "lapangan":$jenis_absen = "kantor";
+        $lapangan != null ? $jenis_absen = "lapangan" : $jenis_absen = "kantor";
 
         if ($validator->fails()) {
             return response()->json([
@@ -31,10 +31,32 @@ class AbsenAdminController extends Controller
             ], 422);
         }
 
-        $absen = Absen::with('user')
+        $query = Absen::with('user')
             ->where('jenis_absen', '=', $jenis_absen)
-            ->where('tanggal', $tanggal)
-            ->get();
+            ->where('tanggal', $tanggal);
+        $absen = $query->get();
+
+        $jumlahHadir = (clone $query)
+            ->where('status', 'hadir')
+            ->count();
+
+        $pagi = (clone $query)
+            ->where('status', 'hadir')
+            ->where('jam_masuk', '!=', NULL)
+            ->where('jam_keluar', NULL)
+            ->count();
+
+        $sore = (clone $query)
+            ->where('status', 'hadir')
+            ->where('jam_keluar', '!=', NULL)
+            ->where('jam_masuk', NULL)
+            ->count();
+
+        $full = (clone $query)
+            ->where('status', 'hadir')
+            ->where('jam_keluar', '!=', NULL)
+            ->where('jam_masuk', '!=', NULL)
+            ->count();
 
         $tanggalterpilih = $tanggal ? Carbon::parse($tanggal) : null;
 
@@ -42,10 +64,35 @@ class AbsenAdminController extends Controller
             'sukses' => true,
             'data' => AbsenAdminResource::collection($absen),
             'hari' => $tanggalterpilih ? $tanggalterpilih->locale('id')->isoFormat('dddd') : null,
-            'tanggal' => date('d-m-Y', strtotime($tanggal))
+            'tanggal' => date('d-m-Y', strtotime($tanggal)),
+            'detil' => [
+                'hadir' => $jumlahHadir,
+                'pagi' => $pagi,
+                'sore' => $sore,
+                'full' => $full
+            ]
         ], 202);
     }
 
+
+    public function absen_detail($id, $bulan, $tahun)
+    {
+        $absen = Absen::with('user')
+        ->bulan($bulan)
+        ->bulan($tahun)
+        ->find($id);
+        if (!$absen) {
+            return response()->json([
+                'sukses' => false,
+                'pesan' => 'Data absen tidak ditemukan.',
+            ], 404);
+        }
+
+        return response()->json([
+            'sukses' => true,
+            'data' => AbsenAdminResource::make($absen),
+        ], 202);
+    }
 
     public function set_kegiatan(Request $r)
     {
@@ -118,5 +165,6 @@ class AbsenAdminController extends Controller
             'tanggal' => date('d-m-Y', strtotime($tanggal))
         ], 202);
     }
+
 
 }
