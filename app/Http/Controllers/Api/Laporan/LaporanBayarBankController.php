@@ -7,6 +7,7 @@ use App\Models\Master\Tagihan;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\LaporanBayarBankExport;
+use App\Models\Master\Transfer;
 
 class LaporanBayarBankController extends Controller
 {
@@ -17,7 +18,14 @@ class LaporanBayarBankController extends Controller
     {
         isset($r->tanggal) ? $tanggal = date('Y-m-d', strtotime($r->tanggal)) : $tanggal = date('Y-m-d');
 
-        $tagihan = Tagihan::with('pencatatan:id,bulan,tahun,pelanggan_id', 'pencatatan.pelanggan:id,nama')
+        $tagihan = Tagihan::with([
+            'pencatatan:id,bulan,tahun,pelanggan_id',
+            'pencatatan.pelanggan:id,nama',
+            'transfer' => function ($query) {
+                $query->where('status_bayar', 'Y')
+                    ->select('tagihan_id', 'vendor', 'nama', 'jumlah', 'bill_id', 'status_bayar');
+            },
+        ])
             ->whereDate('tgl_bayar', $tanggal)
             ->where('status_bayar', 'Y')
             ->where('sistem_bayar', 'Transfer')
@@ -32,11 +40,19 @@ class LaporanBayarBankController extends Controller
             ], 404);
         }
 
+        // $flip=Transfer::where('status_bayar', 'Y')
+        // ->whereDate('tgl_bayar', $tanggal)
+        // ->where('vendor','flip')
+        // ->get();
+
+
+  
 
         return response()->json([
             "sukses" => true,
             "pesan" => "Data ditemukan...",
-            "data" => $tagihan
+            "data" => $tagihan,
+
         ], 202);
     }
 
@@ -97,9 +113,7 @@ class LaporanBayarBankController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.
