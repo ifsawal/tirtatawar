@@ -249,13 +249,13 @@ class PencatatanController extends Controller
             ], 404);
         }
 
-        if ($input >= $tambahbulan) {
-            return response()->json([
-                "sukses" => false,
-                "pesan" => "Meteran bulan depan tidak dapat di isi....",
-                "kode" => 2,
-            ], 404);
-        }
+        // if ($input >= $tambahbulan) {
+        //     return response()->json([
+        //         "sukses" => false,
+        //         "pesan" => "Meteran bulan depan tidak dapat di isi....",
+        //         "kode" => 2,
+        //     ], 404);
+        // }
 
         if (
             in_array($input, $tahunBukaValues)
