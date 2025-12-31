@@ -137,7 +137,7 @@ class BayarController extends Controller
                 DB::rollback();
                 return response()->json([
                     "sukses" => false,
-                    "pesan" => "Saat ini belum bisa di tagih...",
+                    "pesan" => "Bulan berjalan belum bisa di tagih...",
                 ], 202);
             }
             // return $catat_tagih->get();
