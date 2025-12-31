@@ -69,7 +69,7 @@ class BayarController extends Controller
     public function store(Request $r)
     {
         $this->validate($r, [
-            'id' => 'required',
+            'id' => 'required', //no tagihan
             'pelanggan_id' => 'required',
         ]);
         $user_id = Auth::user()->id;
@@ -83,6 +83,8 @@ class BayarController extends Controller
                 "pesan" => "Akses tidak diberikan...",
             ], 404);
         }
+
+        $sekarang = Carbon::now();
 
 
         DB::beginTransaction();
@@ -127,7 +129,17 @@ class BayarController extends Controller
                     });
             });
 
-
+            //jika waktu pencatatan sama dengan sekarang maka tidak bisa di tagih
+            if (
+                $pencatatan->bulan === $sekarang->month &&
+                $pencatatan->tahun === $sekarang->year
+            ) {
+                DB::rollback();
+                return response()->json([
+                    "sukses" => false,
+                    "pesan" => "Saat ini belum bisa di tagih...",
+                ], 202);
+            }
             // return $catat_tagih->get();
             $belum_bayar_bln_sebelumnya = $catat_tagih->get()->count();
             if ($belum_bayar_bln_sebelumnya > 0) {
@@ -453,7 +465,7 @@ class BayarController extends Controller
 
             DB::commit();
 
-            Log::channel('sukses')->info("batal",["data"=>$pindah]);
+            Log::channel('sukses')->info("batal", ["data" => $pindah]);
             // DB::rollback();
 
             return response()->json([
