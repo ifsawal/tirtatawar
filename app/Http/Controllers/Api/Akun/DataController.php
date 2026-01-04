@@ -10,7 +10,7 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Laravel\Sanctum\PersonalAccessToken;
-
+use Spatie\Permission\PermissionRegistrar;
 
 class DataController extends Controller
 {
@@ -23,7 +23,29 @@ class DataController extends Controller
         return response()->json([
             'sukses' => true,
             'data' => $user,
-        ],200);
+            'data2' => Role::all(['id', 'name', 'guard_name']),
+        ], 200);
+    }
+
+    public function akun_daftar_ganti_role(Request $r)
+    {
+        $this->validate($r, [
+            'user_id' => 'required|exists:users,id',
+            'role_id' => 'required|exists:roles,id',
+        ]);
+
+        $user = User::findOrFail($r->user_id);
+        $role = Role::findById($r->role_id, 'web');
+
+        // assign role
+        $user->syncRoles([$role->name]);
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Berhasil di daftarkan...",
+        ],201);
     }
 
     public function role(Request $request)
@@ -35,15 +57,54 @@ class DataController extends Controller
         return response()->json([
             'sukses' => true,
             'data' => $roles,
+            'data2' => Permission::all('id', 'name', 'guard_name'),
         ]);
     }
+
+
+    public function role_tambah_permisi(Request $r)
+    {
+        $this->validate($r, [
+            'role_id' => 'required|exists:roles,id', // tagihan id
+            'permisi_id' => 'required|exists:permissions,id',
+        ]);
+
+        $role = Role::findById($r->role_id, 'web');
+        $permission = Permission::findById($r->permisi_id, 'web');
+
+        $role->givePermissionTo($permission);
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Sukses menambahkan permisi...",
+        ],201);
+    }
+
+    public function role_hapus_permisi(Request $r)
+    {
+        $this->validate($r, [
+            'role_id' => 'required|exists:roles,id', // tagihan id
+            'permisi_id' => 'required|exists:permissions,id',
+        ]);
+
+        $role = Role::findById($r->role_id, 'web');
+        $permission = Permission::findById($r->permisi_id, 'web');
+
+        $role->revokePermissionTo($permission);
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Sukses menghapus permisi...",
+        ],201);
+    }
+
 
     public function permisi(Request $request)
     {
         $permissions = Permission::with([
             'roles:id,name,guard_name',
             'user:id,nama,email',
-        ])->orderBy('id', 'desc') ->get(['id', 'name', 'guard_name']);
+        ])->orderBy('id', 'desc')->get(['id', 'name', 'guard_name']);
         return response()->json([
             'sukses' => true,
             'data' => $permissions,
@@ -53,11 +114,11 @@ class DataController extends Controller
     public function data_user_aktif(Request $request)
     {
         // Ambil semua token aktif beserta user-nya
-    $tokens = PersonalAccessToken::with('tokenable')
-        ->where('tokenable_type', '=', 'App\\Models\\User') // hanya untuk model User
-        ->whereNotNull('token')
-        ->where('tokenable_id', '!=', 1) // kecuali user dengan ID 1
-        ->get(['id', 'tokenable_id', 'tokenable_type', 'name', 'last_used_at', 'created_at']);
+        $tokens = PersonalAccessToken::with('tokenable')
+            ->where('tokenable_type', '=', 'App\\Models\\User') // hanya untuk model User
+            ->whereNotNull('token')
+            ->where('tokenable_id', '!=', 1) // kecuali user dengan ID 1
+            ->get(['id', 'tokenable_id', 'tokenable_type', 'name', 'last_used_at', 'created_at']);
 
         // Ambil hanya data user unik
         $users = $tokens->pluck('tokenable')->unique('id')->values();

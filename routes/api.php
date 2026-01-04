@@ -254,7 +254,12 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
 
     //akun
     Route::get('/akun', [DataController::class, 'akun']);
+    Route::post('/akun-daftar-ganti-role', [DataController::class, 'akun_daftar_ganti_role']);
+
     Route::get('/role', [DataController::class, 'role']);
+    Route::post('/role-tambah-permisi', [DataController::class, 'role_tambah_permisi']);
+    Route::post('/role-hapus-permisi', [DataController::class, 'role_hapus_permisi']);
+
     Route::get('/permisi', [DataController::class, 'permisi']);
     Route::get('/data_user_aktif', [DataController::class, 'data_user_aktif']);
     Route::post('/keluarkan-akun', [ProsesAkunController::class, 'keluarkan_akun'])->middleware('auth.permission:keluarkan_akun');
