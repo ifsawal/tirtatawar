@@ -253,7 +253,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::get('/absen-rekap-kegiatan/{bulan}/{tahun}', [LaporanAbsenController::class, 'rekap_kegiatan']);
 
     //akun
-    Route::get('/akun', [DataController::class, 'akun']);
+    Route::get('/akun/{cari?}', [DataController::class, 'akun']);
     Route::post('/akun-daftar-ganti-role', [DataController::class, 'akun_daftar_ganti_role']);
 
     Route::get('/role', [DataController::class, 'role']);

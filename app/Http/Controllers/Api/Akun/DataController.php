@@ -14,12 +14,15 @@ use Spatie\Permission\PermissionRegistrar;
 
 class DataController extends Controller
 {
-    public function akun(Request $request)
+    public function akun(Request $request, $cari=null)
     {
-        $user = User::with('roles:id,name,guard_name', 'permissions:id,name,guard_name')
-            ->where('email_verified_at', '!=', null)
-            ->where('id', '!=', 1)
-            ->get();
+        $user = User::with('roles:id,name,guard_name', 'permissions:id,name,guard_name');
+        $user->where('email_verified_at', '!=', null);
+        $user->where('id', '!=', 1);
+        if($cari != null){
+            $user->where('nama', 'like', '%'.$cari.'%');
+        }
+        $user = $user->get();
         return response()->json([
             'sukses' => true,
             'data' => $user,
