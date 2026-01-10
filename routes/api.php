@@ -68,6 +68,7 @@ use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapDrdGolonganController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapDrdWiljalanController;
+use App\Http\Controllers\api\Laporan\LaporanStokOpNameController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
 
@@ -182,6 +183,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/prosesdrdgolongan', [LaporanRekapDrdGolonganController::class, 'drd_golongan']);
 
     Route::post('/download-input-catatan', [LaporanInputCatatanController::class, 'download_input_catatan']);
+    Route::get('/download-stok-op-name', [LaporanStokOpNameController::class, 'download_stok_op_name'])->middleware('auth.permission:download_stok_op_name');
 
     Route::post('/laporanbayar', [LaporanBayarController::class, 'index']);
     Route::post('/downloadlaporanbayar', [LaporanBayarController::class, 'download_laporan_bayar']);

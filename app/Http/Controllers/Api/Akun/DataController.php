@@ -14,19 +14,25 @@ use Spatie\Permission\PermissionRegistrar;
 
 class DataController extends Controller
 {
-    public function akun(Request $request, $cari=null)
+    public function akun(Request $r, $cari = null)
     {
         $user = User::with('roles:id,name,guard_name', 'permissions:id,name,guard_name');
         $user->where('email_verified_at', '!=', null);
         $user->where('id', '!=', 1);
-        if($cari != null){
-            $user->where('nama', 'like', '%'.$cari.'%');
+        if ($cari != null) {
+            $user->where('nama', 'like', '%' . $cari . '%');
+        }
+        if ($r->role) {
+            $user->whereHas('roles', function ($q) use ($r) {
+                $q->where('name', $r->role);
+            });
         }
         $user = $user->get();
         return response()->json([
             'sukses' => true,
             'data' => $user,
             'data2' => Role::all(['id', 'name', 'guard_name']),
+            'data3' => Permission::all('id', 'name', 'guard_name'),
         ], 200);
     }
 
@@ -48,7 +54,44 @@ class DataController extends Controller
         return response()->json([
             'sukses' => true,
             'pesan' => "Berhasil di daftarkan...",
-        ],201);
+        ], 201);
+    }
+
+
+    public function akun_daftar_permmisi(Request $r)
+    {
+        $this->validate($r, [
+            'user_id' => 'required|exists:users,id',
+            'permisi_id' => 'required|exists:permissions,id',
+        ]);
+
+        $user = User::find($r->user_id);
+
+        $user->givePermissionTo('edit artikel');
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Berhasil di daftarkan...",
+        ], 201);
+    }
+
+    public function akun_hapus_permisi(Request $r)
+    {
+        $this->validate($r, [
+            'user_id' => 'required|exists:users,id',
+            'permisi_id' => 'required|exists:permissions,id',
+        ]);
+
+        $user = User::find($r->user_id);
+
+        $permission = Permission::where('id', $r->permisi_id)->first();
+
+        $user->revokePermissionTo($permission);
+
+        return response()->json([
+            'sukses' => true,
+            'pesan' => "Berhasil di daftarkan...",
+        ], 201);
     }
 
     public function role(Request $request)
@@ -80,7 +123,7 @@ class DataController extends Controller
         return response()->json([
             'sukses' => true,
             'pesan' => "Sukses menambahkan permisi...",
-        ],201);
+        ], 201);
     }
 
     public function role_hapus_permisi(Request $r)
@@ -98,7 +141,7 @@ class DataController extends Controller
         return response()->json([
             'sukses' => true,
             'pesan' => "Sukses menghapus permisi...",
-        ],201);
+        ], 201);
     }
 
 
@@ -121,6 +164,11 @@ class DataController extends Controller
             ->where('tokenable_type', '=', 'App\\Models\\User') // hanya untuk model User
             ->whereNotNull('token')
             ->where('tokenable_id', '!=', 1) // kecuali user dengan ID 1
+            ->when($request->cari, function ($q) use ($request) {
+                $q->whereHas('tokenable', function ($u) use ($request) {
+                    $u->where('nama', 'like', '%' . $request->cari . '%');
+                });
+            })
             ->get(['id', 'tokenable_id', 'tokenable_type', 'name', 'last_used_at', 'created_at']);
 
         // Ambil hanya data user unik
