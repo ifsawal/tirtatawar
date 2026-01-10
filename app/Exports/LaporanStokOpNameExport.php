@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 
 
-class LaporanStokOpNameExport implements FromCollection,WithHeadings,WithMapping,ShouldAutoSize
+class LaporanStokOpNameExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -20,7 +20,7 @@ class LaporanStokOpNameExport implements FromCollection,WithHeadings,WithMapping
 
 
     protected int $tahun;
-    protected$akhirTahun;
+    protected $akhirTahun;
 
     public function __construct(int $tahun)
     {
@@ -31,11 +31,13 @@ class LaporanStokOpNameExport implements FromCollection,WithHeadings,WithMapping
 
     public function collection()
     {
-        $akhir=$this->akhirTahun;
+        $akhir = $this->akhirTahun;
         return DB::table('wiljalans as w')
             ->leftJoin('pelanggans as p', 'p.wiljalan_id', '=', 'w.id')
-            ->leftJoin('pencatatans as c', 'c.pelanggan_id', '=', 'p.id')
-            ->where('c.tahun', $this->tahun)
+            ->leftJoin('pencatatans as c', function ($join) {
+                $join->on('c.pelanggan_id', '=', 'p.id')
+                    ->where('c.tahun', $this->tahun);
+            })
             ->leftJoin('tagihans as t', function ($join) use ($akhir) {
                 $join->on('t.pencatatan_id', '=', 'c.id')
                     ->where(function ($q) use ($akhir) {
@@ -49,13 +51,38 @@ class LaporanStokOpNameExport implements FromCollection,WithHeadings,WithMapping
             ->select(
                 'w.id',
                 'w.jalan',
-                DB::raw('COUNT(DISTINCT p.id) as jumlah_pelanggan_belum_bayar'),
-                DB::raw('COUNT(t.id) as jumlah_bulan_belum_bayar'),
+                DB::raw('COUNT(DISTINCT CASE WHEN t.id IS NOT NULL THEN p.id END) as jumlah_pelanggan_belum_bayar'),
+                DB::raw('COUNT(DISTINCT t.id) as jumlah_bulan_belum_bayar'),
                 DB::raw('COALESCE(SUM(t.total_nodenda), 0) as total_belum_dibayar')
             )
             ->groupBy('w.id', 'w.jalan')
             ->orderBy('w.jalan')
             ->get();
+
+        // return DB::table('wiljalans as w')
+        //     ->leftJoin('pelanggans as p', 'p.wiljalan_id', '=', 'w.id')
+        //     ->leftJoin('pencatatans as c', 'c.pelanggan_id', '=', 'p.id')
+        //     ->where('c.tahun', $this->tahun)
+        //     ->leftJoin('tagihans as t', function ($join) use ($akhir) {
+        //         $join->on('t.pencatatan_id', '=', 'c.id')
+        //             ->where(function ($q) use ($akhir) {
+        //                 $q->where('t.status_bayar', 'N')
+        //                     ->orWhere(function ($q2) use ($akhir) {
+        //                         $q2->where('t.status_bayar', 'Y')
+        //                             ->whereDate('t.tgl_bayar', '>', $akhir);
+        //                     });
+        //             });
+        //     })
+        //     ->select(
+        //         'w.id',
+        //         'w.jalan',
+        //         DB::raw('COUNT(DISTINCT p.id) as jumlah_pelanggan_belum_bayar'),
+        //         DB::raw('COUNT(t.id) as jumlah_bulan_belum_bayar'),
+        //         DB::raw('COALESCE(SUM(t.total_nodenda), 0) as total_belum_dibayar')
+        //     )
+        //     ->groupBy('w.id', 'w.jalan')
+        //     ->orderBy('w.jalan')
+        //     ->get();
     }
 
     public function headings(): array
