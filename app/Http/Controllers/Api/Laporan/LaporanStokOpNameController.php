@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api\Laporan;
+namespace App\Http\Controllers\Api\Laporan;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

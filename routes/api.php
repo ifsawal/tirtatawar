@@ -68,7 +68,7 @@ use App\Http\Controllers\Api\Laporan\LaporanRekapBulananController;
 use App\Http\Controllers\Api\Pelanggan\MobDetilPelangganController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapDrdGolonganController;
 use App\Http\Controllers\Api\Laporan\LaporanRekapDrdWiljalanController;
-use App\Http\Controllers\api\Laporan\LaporanStokOpNameController;
+use App\Http\Controllers\Api\Laporan\LaporanStokOpNameController;
 use App\Http\Controllers\Api\Pelanggan\Login\Keluhan\KeluhansimController;
 use App\Http\Controllers\Api\Pelanggan\Login\MobPelangganTagihanController;
 
