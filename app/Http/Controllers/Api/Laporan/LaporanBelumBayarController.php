@@ -29,25 +29,7 @@ class LaporanBelumBayarController extends Controller
 
     public static function laporan_belum_bayar($tahun, $batas_data_diambil)
     {
-        // return Pelanggan::all()->count();
-        // $pel = Pelanggan::with([
-        //     'pencatatan' => function ($query) use ($tahun) {
-        //         $query->where('tahun', '=', $tahun);
-        //     },
-        //     'golongan:id,golongan',
-        //     'wiljalan:id,jalan',
-        //     'pencatatan.tagihan',
-        //     // 'pencatatan.tagihan' => function ($query) {
-        //     //     $query->where('status_bayar', '=', 'N');
-        //     // },
-        //     'pencatatan.tagihan.penagih:id,user_id,tagihan_id,jumlah',
-        //     'pencatatan.tagihan.penagih.user:id,nama'
-        // ],)
-        //     // ->where('id', 506)
-        //     // ->whereRelation('pencatatan', 'tahun', '=', $tahun)
-        //     // ->whereRelation('pencatatan.tagihan', 'status_bayar', '=', 'N')
-        //     // ->limit(10)
-        //     ->get();
+
         $batas_akhir = date("Y-m-t", strtotime($batas_data_diambil));
 
         $pel = Pelanggan::with([
@@ -65,9 +47,6 @@ class LaporanBelumBayarController extends Controller
         $no = 0;
         foreach ($pel as $p) {
             $no++;
-
-
-
 
             $q = Pencatatan::query();
             $q->select(
@@ -94,7 +73,7 @@ class LaporanBelumBayarController extends Controller
                     if ($a == $h->bulan) {
                         if ($h->status_bayar == "N") {
                             $b[] = $h->total_nodenda;
-                        } else if ($h->status_bayar == "Y" && $h->tgl_bayar > $batas_akhir) {
+                        } else if ($h->status_bayar == "Y" && $h->tgl_bayar && $h->tgl_bayar > $batas_akhir) {
                             $b[] = $h->total_nodenda;
                         }
                          else 
