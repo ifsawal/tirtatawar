@@ -164,7 +164,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/cetak_penagihan', [BayarController::class, 'cetak_ulang']);
     Route::post('/diskon', [BayarController::class, 'simpan_diskon']);
 
-    Route::get('/laporan-belum-bayar/{tahun}', [LaporanBelumBayarController::class, 'laporan_belum_bayar']);
+    Route::get('/laporan-belum-bayar/{tahun}/{batas_data_diambil}', [LaporanBelumBayarController::class, 'laporan_belum_bayar']);
 
     Route::get('/laporan-belum-bayar-export/{tahun}', [LaporanBelumBayarController::class, 'laporan_belum_bayar_export']);
     Route::get('/laporanpelangganexport', [LaporanPelangganController::class, 'laporanpelangganexport']);

@@ -54,7 +54,7 @@ class LaporanBelumBayarController extends Controller
             'golongan:id,golongan',
             'wiljalan:id,jalan',
         ])
-
+            // ->limit(10)
 
             ->get();
 
@@ -78,10 +78,10 @@ class LaporanBelumBayarController extends Controller
                 'tagihans.tgl_bayar',
             );
             $q->join('tagihans', 'pencatatans.id', '=', 'tagihans.pencatatan_id');
-            $q->where(function ($query) use ($batas_akhir) {
-                $query->whereDate('tagihans.tgl_bayar', '<=', $batas_akhir)
-                    ->orWhereNull('tagihans.tgl_bayar');
-            });
+            // $q->where(function ($query) use ($batas_akhir) {
+            //     $query->whereDate('tagihans.tgl_bayar', '<=', $batas_akhir)
+            //         ->orWhereNull('tagihans.tgl_bayar');
+            // });
             $q->where('pencatatans.tahun', '=', $tahun);
             $q->where('pencatatans.pelanggan_id', '=', $p->id);
             $hasil = $q->get();
@@ -94,7 +94,11 @@ class LaporanBelumBayarController extends Controller
                     if ($a == $h->bulan) {
                         if ($h->status_bayar == "N") {
                             $b[] = $h->total_nodenda;
-                        } else {
+                        } else if ($h->status_bayar == "Y" && $h->tgl_bayar >= $batas_akhir) {
+                            $b[] = $h->total_nodenda;
+                        }
+                         else 
+                        {
                             $b[] = null;
                         }
                         $ditemukan = 1;
@@ -106,6 +110,8 @@ class LaporanBelumBayarController extends Controller
                     $b[] = null;
                 }
             }
+
+
             $a = [
                 'no' => $no,
                 'nama' => $p->nama,
