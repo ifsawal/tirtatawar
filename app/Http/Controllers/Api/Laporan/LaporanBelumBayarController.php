@@ -73,7 +73,7 @@ class LaporanBelumBayarController extends Controller
                     if ($a == $h->bulan) {
                         if ($h->status_bayar == "N") {
                             $b[] = $h->total_nodenda;
-                        } else if ($h->status_bayar == "Y" && $h->tgl_bayar &&  $batas_akhir > $h->tgl_bayar) {
+                        } else if ($h->status_bayar == "Y" && $h->tgl_bayar &&  date('Y-m-d', strtotime($h->tgl_bayar)) > $batas_akhir) {
                             $b[] = $h->total_nodenda;
                         }
                          else 
