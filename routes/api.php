@@ -160,7 +160,7 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/invoice_all', [TagihanController::class, 'invoice_all'])->middleware('auth.permission:cetak_invoice');
 
     Route::post('/bayar', [BayarController::class, 'store']);
-    Route::post('/batalbayar', [BayarController::class, 'destroy']);
+    Route::post('/batalbayar', [BayarController::class, 'destroy'])->middleware('auth.permission:batal_bayar');;
     Route::post('/cetak_penagihan', [BayarController::class, 'cetak_ulang']);
     Route::post('/diskon', [BayarController::class, 'simpan_diskon']);
 
