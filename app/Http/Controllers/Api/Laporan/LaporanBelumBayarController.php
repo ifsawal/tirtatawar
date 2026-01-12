@@ -18,12 +18,16 @@ class LaporanBelumBayarController extends Controller
 
 
 
-    public function laporan_belum_bayar_export($tahun)
+    public function laporan_belum_bayar_export(Request $r, $tahun)
     {
-        return Excel::download(new LaporanBelumBayarExport($tahun), 'laporan_belum_bayar.xlsx');
+        if (empty($r['batas_data_diambil'])) {
+            $r['batas_data_diambil'] = date('Y-m-d');
+        }
+
+        return Excel::download(new LaporanBelumBayarExport($tahun, $r->batas_data_diambil), 'laporan_belum_bayar.xlsx');
     }
 
-    public static function laporan_belum_bayar($tahun)
+    public static function laporan_belum_bayar($tahun, $batas_data_diambil)
     {
         // return Pelanggan::all()->count();
         // $pel = Pelanggan::with([
@@ -44,11 +48,13 @@ class LaporanBelumBayarController extends Controller
         //     // ->whereRelation('pencatatan.tagihan', 'status_bayar', '=', 'N')
         //     // ->limit(10)
         //     ->get();
+        $batas_akhir = date("Y-m-t", strtotime($batas_data_diambil));
 
         $pel = Pelanggan::with([
             'golongan:id,golongan',
             'wiljalan:id,jalan',
         ])
+
 
             ->get();
 
@@ -69,8 +75,13 @@ class LaporanBelumBayarController extends Controller
                 'pencatatans.tahun',
                 'tagihans.total_nodenda',
                 'tagihans.status_bayar',
+                'tagihans.tgl_bayar',
             );
             $q->join('tagihans', 'pencatatans.id', '=', 'tagihans.pencatatan_id');
+            $q->where(function ($query) use ($batas_akhir) {
+                $query->whereDate('tagihans.tgl_bayar', '<=', $batas_akhir)
+                    ->orWhereNull('tagihans.tgl_bayar');
+            });
             $q->where('pencatatans.tahun', '=', $tahun);
             $q->where('pencatatans.pelanggan_id', '=', $p->id);
             $hasil = $q->get();

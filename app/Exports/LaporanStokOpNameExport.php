@@ -22,10 +22,11 @@ class LaporanStokOpNameExport implements FromCollection, WithHeadings, WithMappi
     protected int $tahun;
     protected $akhirTahun;
 
-    public function __construct(int $tahun)
+    public function __construct(int $tahun,$batas_data_diambil)
     {
         $this->tahun = $tahun;
-        $this->akhirTahun =  date('Y-m-t', strtotime($tahun . '-12-31'));
+
+        $this->akhirTahun =  date('Y-m-t', strtotime($batas_data_diambil));
     }
 
 
