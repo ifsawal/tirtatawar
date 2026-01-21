@@ -35,7 +35,7 @@ class LaporanBelumBayarExport implements FromCollection, WithHeadings, WithColum
             ['Laporan Pelanggan Belum Bayar Tahun '.$this->tahun],
             [''],
             [
-            "Nomor",
+            "Nomor Pel",
             "Nama Pelanggan",
             "Golongan",
             "Wil/Jalan",

@@ -92,7 +92,7 @@ class LaporanBelumBayarController extends Controller
 
 
             $a = [
-                'no' => $no,
+                'no' => $p->id,
                 'nama' => $p->nama,
                 'golongan' => $p->golongan->golongan,
                 'wiljalan' => $p->wiljalan->jalan,

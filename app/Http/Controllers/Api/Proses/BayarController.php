@@ -74,15 +74,15 @@ class BayarController extends Controller
         ]);
         $user_id = Auth::user()->id;
 
-        $u = Auth::user()->getAllPermissions();
-        $c = collect($u);
-        $hit = $c->where("name", 'penagihan');
-        if (count($hit) == 0) {
-            return response()->json([
-                "sukses" => true,
-                "pesan" => "Akses tidak diberikan...",
-            ], 404);
-        }
+        // $u = Auth::user()->getAllPermissions();
+        // $c = collect($u);
+        // $hit = $c->where("name", 'penagihan');
+        // if (count($hit) == 0) {
+        //     return response()->json([
+        //         "sukses" => true,
+        //         "pesan" => "Akses tidak diberikan...",
+        //     ], 404);
+        // }
 
         $sekarang = Carbon::now();
 
@@ -141,14 +141,32 @@ class BayarController extends Controller
                 ], 202);
             }
             // return $catat_tagih->get();
+
+            //jika belum bayar bulan sebelumnya ada 2 pilihan, 
+
             $belum_bayar_bln_sebelumnya = $catat_tagih->get()->count();
             if ($belum_bayar_bln_sebelumnya > 0) {
-                DB::rollback();
-                return response()->json([
-                    "sukses" => false,
-                    "pesan" => "Ada tagihan bulan sebelumnya yang belum dibayar...",
-                ], 202);
+                if (Auth::user()->can('bayar_lompat')) {
+                    $pp = Pelanggan::find($r->pelanggan_id);
+                    if ($pp->wiljalan_id == 38 or $pp->wiljalan_id == 36) {
+                        //lanjutkan kan proses lot kala dan bukit
+                    } else {
+                        DB::rollback();
+                        return response()->json([
+                            "sukses" => false,
+                            "pesan" => "Pelanggan ini bukan wilayah Bukit atau Lot kala...",
+                        ], 404);
+                    }
+                } else {
+                    DB::rollback();
+                    return response()->json([
+                        "sukses" => false,
+                        "pesan" => "Ada tagihan bulan sebelumnya yang belum dibayar... ",
+                    ], 404);
+                }
             }
+
+
 
             $tagihan->status_bayar = "Y";
             $tagihan->sistem_bayar = "Cash";

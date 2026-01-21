@@ -58,7 +58,7 @@ class DataController extends Controller
     }
 
 
-    public function akun_daftar_permmisi(Request $r)
+    public function akun_daftar_permisi(Request $r)
     {
         $this->validate($r, [
             'user_id' => 'required|exists:users,id',
@@ -67,7 +67,7 @@ class DataController extends Controller
 
         $user = User::find($r->user_id);
 
-        $user->givePermissionTo('edit artikel');
+        $user->givePermissionTo($r->permisi_id);
 
         return response()->json([
             'sukses' => true,
@@ -90,7 +90,7 @@ class DataController extends Controller
 
         return response()->json([
             'sukses' => true,
-            'pesan' => "Berhasil di daftarkan...",
+            'pesan' => "Berhasil di dihapus...",
         ], 201);
     }
 

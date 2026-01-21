@@ -159,8 +159,8 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/hapusdenda', [TagihanController::class, 'hapus_denda']);
     Route::post('/invoice_all', [TagihanController::class, 'invoice_all'])->middleware('auth.permission:cetak_invoice');
 
-    Route::post('/bayar', [BayarController::class, 'store']);
-    Route::post('/batalbayar', [BayarController::class, 'destroy'])->middleware('auth.permission:batal_bayar');;
+    Route::post('/bayar', [BayarController::class, 'store'])->middleware('auth.permission:penagihan');
+    Route::post('/batalbayar', [BayarController::class, 'destroy'])->middleware('auth.permission:batal_bayar');
     Route::post('/cetak_penagihan', [BayarController::class, 'cetak_ulang']);
     Route::post('/diskon', [BayarController::class, 'simpan_diskon']);
 
@@ -256,15 +256,17 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
 
     //akun
     Route::get('/akun/{cari?}', [DataController::class, 'akun']);
-    Route::post('/akun-daftar-ganti-role', [DataController::class, 'akun_daftar_ganti_role']);
+    Route::post('/akun-daftar-ganti-role', [DataController::class, 'akun_daftar_ganti_role'])->middleware('auth.role:super_admin');
+    Route::post('/akun-daftar-permisi', [DataController::class, 'akun_daftar_permisi'])->middleware('auth.role:super_admin');
+    Route::post('/akun-hapus-permisi', [DataController::class, 'akun_hapus_permisi'])->middleware('auth.role:super_admin');
 
-    Route::get('/role', [DataController::class, 'role']);
-    Route::post('/role-tambah-permisi', [DataController::class, 'role_tambah_permisi']);
-    Route::post('/role-hapus-permisi', [DataController::class, 'role_hapus_permisi']);
+    Route::get('/role', [DataController::class, 'role'])->middleware('auth.role:super_admin');
+    Route::post('/role-tambah-permisi', [DataController::class, 'role_tambah_permisi'])->middleware('auth.role:super_admin');
+    Route::post('/role-hapus-permisi', [DataController::class, 'role_hapus_permisi'])->middleware('auth.role:super_admin');
 
-    Route::get('/permisi', [DataController::class, 'permisi']);
-    Route::get('/data_user_aktif', [DataController::class, 'data_user_aktif']);
-    Route::post('/keluarkan-akun', [ProsesAkunController::class, 'keluarkan_akun'])->middleware('auth.permission:keluarkan_akun');
+    Route::get('/permisi', [DataController::class, 'permisi'])->middleware('auth.role:super_admin');
+    Route::get('/data_user_aktif', [DataController::class, 'data_user_aktif'])->middleware('auth.role:super_admin');
+    Route::post('/keluarkan-akun', [ProsesAkunController::class, 'keluarkan_akun'])->middleware('auth.permission:keluarkan_akun')->middleware('auth.role:super_admin');
 
 
     //versi server
