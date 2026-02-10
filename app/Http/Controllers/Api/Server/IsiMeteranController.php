@@ -260,4 +260,113 @@ class IsiMeteranController extends Controller
             "bulan_lalu_tidak_ditemukan" => $bulan_lalu_tidak_ditemukan,
         ], 202);
     }
+
+    function isi_meteran_mengikuti_bulan_lalu(Request $r)
+    {
+        $r->validate([
+            'tahun' => 'required',
+            'bulan' => 'required',
+            'wiljalan_id' => 'required',
+        ]);
+
+        $waktu = Carbon::createFromDate($r->tahun, $r->bulan, 1);
+        $bulan = $waktu->format("m");
+        $tahun = $waktu->format("Y");
+
+
+        $waktu_kurangi_satu_bulan = $waktu->copy()->subMonthsNoOverflow(1);
+
+        $bulanlalu = $waktu_kurangi_satu_bulan->format("m");
+        $tahunlalu = $waktu_kurangi_satu_bulan->format("Y");
+
+
+
+        $pelanggan = Pelanggan::where('wiljalan_id', $r->wiljalan_id)
+            ->get();
+
+        $sudahAda = 0;
+        $sukses = 0;
+        $gagal = 0;
+        $bulan_lalu_tidak_ditemukan = 0;
+        $total_pelanggan = 0;
+        $error_gagal = "";
+
+        foreach ($pelanggan as $p) {
+            $pencatatan = Pencatatan::where('pelanggan_id', $p->id)
+                ->where('bulan', $bulan)
+                ->where('tahun', $tahun)
+                ->exists();
+
+            if ($pencatatan) {
+                $sudahAda += 1;
+                continue; // skip kalau sudah ada
+            }
+
+            $bulanLaluData = Pencatatan::where('pelanggan_id', $p->id)
+                ->where('bulan', $bulanlalu)
+                ->where('tahun', $tahunlalu)
+                ->first();
+
+            if (!$bulanLaluData) {
+
+                $bulan_lalu_tidak_ditemukan += 1;
+                continue;
+            } else {
+                $awal = $bulanLaluData->akhir;
+                $pemakaian = $bulanLaluData->pemakaian;
+            }
+
+
+
+            $akhir = $awal + $pemakaian;
+
+
+
+
+            DB::beginTransaction();
+            try {
+
+
+                // if ($cekcatat->pemakaian == 0) {
+                //     $akhir = $cekcatat->akhir;
+                //     $pemakaian = 0;
+                // } else {
+                //     $pemakaian = $r->pemakaian;
+                // }
+
+                $pencatatan =  new Pencatatan();
+                $pencatatan->awal = $awal; //
+                $pencatatan->akhir = $akhir; //
+                $pencatatan->pemakaian = $pemakaian; //
+                $pencatatan->bulan = $r->bulan; //
+                $pencatatan->tahun = $r->tahun; //
+                $pencatatan->pelanggan_id = $p->id;
+                $pencatatan->user_id = 1; //
+                $pencatatan->manual = 1; //
+                $pencatatan->save();
+
+                $tag = new Prosespencatatan();
+                $tag->simpanTagihan($pencatatan->id, $p->id, $pemakaian);
+                // $this->simpanTagihan($pencatatan->id, $p->id, $r->pemakaian);
+                DB::commit();
+                $sukses += 1;
+            } catch (\Exception $e) {
+                DB::rollback();
+                $gagal += 1;
+                $error_gagal = $e->getMessage();
+            }
+        }
+
+        $total_pelanggan = $sudahAda + $gagal + $sukses;
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Data ditemukan...",
+            "sukses" => $sukses,
+            "gagal" => $gagal,
+            "sudahAda" => $sudahAda,
+            "total_pelanggan" => $total_pelanggan,
+            "bulan_lalu_tidak_ditemukan" => $bulan_lalu_tidak_ditemukan,
+            "error_gagal" => $error_gagal,
+        ], 202);
+    }
 }
