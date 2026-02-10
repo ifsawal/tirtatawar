@@ -14,6 +14,8 @@ use App\Models\Master\PenagihHapus;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\Master\IzinPerubahan;
+use App\Models\Master\UserWiljalan;
+use App\Models\Master\Wiljalan;
 use Illuminate\Support\Facades\Auth;
 
 class BayarController extends Controller
@@ -72,7 +74,9 @@ class BayarController extends Controller
             'id' => 'required', //no tagihan
             'pelanggan_id' => 'required',
         ]);
-        $user_id = Auth::user()->id;
+
+        $auth = Auth::user();
+        $user_id = $auth->id;
 
         // $u = Auth::user()->getAllPermissions();
         // $c = collect($u);
@@ -89,6 +93,36 @@ class BayarController extends Controller
 
         DB::beginTransaction();
         try {
+
+
+            $pelanggan = Pelanggan::with(
+                'user:id,nama',
+                'pdam:id,pdam,ttd',
+                'desa.kecamatan:id,kecamatan',
+                'golongan:id,golongan,biaya',
+                'rute:id,rute',
+                'wiljalan:id,jalan',
+            )->where('id', $r->pelanggan_id)->first();
+
+            // return $pelanggan->user_id_petugas;
+            if ($pelanggan->user_id_petugas <> $user_id) { //apakah di tabel pelanggan <> id petugas  yang login
+                $user_wiljalan = UserWiljalan::where('user_id', '=', $auth->id)
+                    ->where(function ($q) use ($pelanggan) {
+                        $q->where('wiljalan_id', $pelanggan->wiljalan_id)
+                            ->orWhereNull('wiljalan_id');
+                    })
+                    ->first();
+
+                if (!$user_wiljalan) { //cek apakah di tabel wiljalan ada id petugas dan wiljalannya terdaftar
+                    DB::rollback();
+                    return response()->json([
+                        "sukses" => false,
+                        "pesan" => "Akses tidak diberikan, karena bukan wilayah kamu...",
+                    ], 404);
+                }
+            }
+
+
             $tagihan = Tagihan::where('id', '=', $r->id)
                 ->where('status_bayar', '=', 'Y')
                 ->first();
@@ -211,14 +245,7 @@ class BayarController extends Controller
             $userpenagih = Penagih::with('user:id,nama')
                 ->where('id', '=', $penagih->id)->first();
 
-            $pelangan = Pelanggan::with(
-                'user:id,nama',
-                'pdam:id,pdam,ttd',
-                'desa.kecamatan:id,kecamatan',
-                'golongan:id,golongan,biaya',
-                'rute:id,rute',
-                'wiljalan:id,jalan',
-            )->where('id', $r->pelanggan_id)->first();
+
 
             DB::commit();
             // DB::rollback();
@@ -226,7 +253,7 @@ class BayarController extends Controller
             Log::channel('sukses')->info("reques:" . $r . ",respon:" . response()->json([
                 "sukses" => true,
                 "pesan" => "Pembayaran sukses...",
-                "pelanggan" => $pelangan,
+                "pelanggan" => $pelanggan,
                 "datatagihan" => $tagihan,
                 "penagih" =>  $userpenagih,
                 "setoran" =>  $tambahsetoran,
@@ -236,7 +263,7 @@ class BayarController extends Controller
             return response()->json([
                 "sukses" => true,
                 "pesan" => "Pembayaran sukses...",
-                "pelanggan" => $pelangan,
+                "pelanggan" => $pelanggan,
                 "datatagihan" => $tagihan,
                 "penagih" =>  $userpenagih,
                 "setoran" =>  $tambahsetoran,
