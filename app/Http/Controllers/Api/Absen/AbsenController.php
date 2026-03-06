@@ -74,10 +74,10 @@ class AbsenController extends Controller
             ], 400);
         }
 
-        if (strtotime($jam_masuk) > strtotime($cabangData->pagi)) { //==========================================
+        if (strtotime($jam_masuk) > strtotime($cabangData->pagi . '+4 hours')) { //==========================================
             return response()->json([ //========================================================================
                 'sukses' => false,
-                'pesan' => 'Waktu absen masuk sudah lewat pukul ' . date('H:i', strtotime($cabangData->pagi)) . '.',
+                'pesan' => 'Waktu absen masuk sudah lewat 4 jam...',
             ], 400);
         }
 
@@ -104,7 +104,13 @@ class AbsenController extends Controller
         }
 
 
-
+        if ($jam_masuk <= $cabangData->pagi) {
+            $pagi = 0;
+        } else {
+            $jamMasuk = Carbon::parse($jam_masuk);
+            $pagi = Carbon::parse($cabangData->pagi);
+            $pagi = $jamMasuk->diffInMinutes($pagi);
+        }
 
 
         $nama_gambar = config('external.nama_gambar');
@@ -121,6 +127,7 @@ class AbsenController extends Controller
             $absen->cabang_id = $cabang_id;
             $absen->tanggal = $tanggal;
             $absen->jam_masuk = $jam_masuk;
+            $absen->pagi = $pagi;
             $absen->status = 'hadir';
             $absen->lokasi_masuk = $r->lat . ',' . $r->long;
             $absen->foto_masuk = $file;
@@ -192,7 +199,7 @@ class AbsenController extends Controller
         $tanggal = date('Y-m-d');
         $jam_masuk = date('H:i:s');
         $jam_kedepan = date('H:i:s', strtotime($cabangData->sore . '+2 hours'));
-        if (strtotime($jam_masuk) < strtotime($cabangData->sore)) {
+        if (strtotime($jam_masuk) < strtotime($cabangData->sore . '-4 hours')) {
             return response()->json([
                 'sukses' => false,
                 'pesan' => 'Waktu absen keluar belum dimulai...',
@@ -233,6 +240,13 @@ class AbsenController extends Controller
         }
 
 
+        if ($jam_masuk >= $cabangData->sore) {
+            $siang = 0;
+        } else {
+            $jamMasuk = Carbon::parse($jam_masuk);
+            $siang = Carbon::parse($cabangData->sore);
+            $siang = $jamMasuk->diffInMinutes($siang);
+        }
 
 
         DB::beginTransaction();
@@ -244,8 +258,10 @@ class AbsenController extends Controller
                 $cekAbsen->cabang_id = $cabang_id;
                 $cekAbsen->tanggal = $tanggal;
                 $cekAbsen->status = 'hadir';
+                
             }
             $cekAbsen->jam_keluar = $jam_masuk;
+            $cekAbsen->siang = $siang;
             $cekAbsen->lokasi_keluar = $r->lat . ',' . $r->long;
             $cekAbsen->foto_keluar = $file;
             $cekAbsen->save();

@@ -19,7 +19,9 @@ return new class extends Migration
             $table->foreign('cabang_id')->references('id')->on('cabangs')->onDelete('restrict')->onUpdate('cascade');
             $table->date("tanggal");
             $table->time("jam_masuk")->nullable();
+            $table->integer("pagi")->nullable();
             $table->time("jam_keluar")->nullable();
+            $table->integer("siang")->nullable();
             $table->enum("status", ['hadir', 'izin', 'sakit', 'alpha'])->default('hadir');
             $table->string("keterangan")->nullable();
             $table->string("lokasi_masuk")->nullable();
