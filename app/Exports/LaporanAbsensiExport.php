@@ -27,36 +27,36 @@ class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping,
     public function registerEvents(): array
     {
         return [
-        AfterSheet::class => function (AfterSheet $event) {
+            AfterSheet::class => function (AfterSheet $event) {
 
-            $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $this->bulan, $this->tahun);
+                $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $this->bulan, $this->tahun);
 
-            // Kolom Excel mulai dari B (karena A = nama)
-            $columnIndex = 2;
+                // Kolom Excel mulai dari B (karena A = nama)
+                $columnIndex = 2;
 
-            for ($day = 1; $day <= $daysInMonth; $day++) {
-                $tanggal = sprintf('%04d-%02d-%02d', $this->tahun, $this->bulan, $day);
-                $carbon = \Carbon\Carbon::parse($tanggal);
+                for ($day = 1; $day <= $daysInMonth; $day++) {
+                    $tanggal = sprintf('%04d-%02d-%02d', $this->tahun, $this->bulan, $day);
+                    $carbon = \Carbon\Carbon::parse($tanggal);
 
-                // Jika Sabtu / Minggu → beri warna
-                if ($carbon->isWeekend()) {
-                    
-                    // convert number to Excel column name (B, C, D, ...)
-                    $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex);
+                    // Jika Sabtu / Minggu → beri warna
+                    if ($carbon->isWeekend()) {
 
-                    // Style warna
-                    $event->sheet->getStyle("{$columnLetter}:{$columnLetter}")
-                        ->getFill()
-                        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                        ->getStartColor()
-                        ->setARGB('FFE9E9');  // warna pink lembut
+                        // convert number to Excel column name (B, C, D, ...)
+                        $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex);
 
+                        // Style warna
+                        $event->sheet->getStyle("{$columnLetter}:{$columnLetter}")
+                            ->getFill()
+                            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                            ->getStartColor()
+                            ->setARGB('FFE9E9');  // warna pink lembut
+
+                    }
+
+                    $columnIndex++;
                 }
-
-                $columnIndex++;
-            }
-        },
-    ];
+            },
+        ];
     }
 
     public function collection()
@@ -80,7 +80,7 @@ class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping,
         return array_merge(
             ['Nama'],
             $days,
-            ['Hadir', 'Setengah Hari', 'Izin', 'Sakit', 'Cuti']
+            ['Hadir', 'Setengah Hari', 'Izin', 'Sakit', 'Cuti', 'Terlambat']
         );
     }
 
@@ -91,6 +91,7 @@ class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping,
         $row = [$user->nama];
 
         $hadir = $izin = $sakit = $cuti = $setengah = 0;
+        $terlambat = 0;
 
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $tanggal = sprintf('%04d-%02d-%02d', $this->tahun, $this->bulan, $day);
@@ -98,7 +99,12 @@ class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping,
 
             if ($absen) {
                 $status = '';
-
+                if (is_numeric($absen->pagi) && $absen->pagi > 0) {//jika ada terlambat pagi
+                    $terlambat += $absen->pagi;
+                }
+                if (is_numeric($absen->siang) && $absen->siang > 0) {//jika ada terlambat siang
+                    $terlambat += $absen->siang;
+                }
                 // logika status berdasarkan jam masuk / keluar
                 if ($absen->jam_masuk && $absen->jam_keluar) {
                     $status = 'H';
@@ -138,6 +144,7 @@ class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping,
         $row[] = $izin;
         $row[] = $sakit;
         $row[] = $cuti;
+        $row[] = $terlambat;
 
         return $row;
     }
