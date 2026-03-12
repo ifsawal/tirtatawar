@@ -188,7 +188,7 @@ class BayarController extends Controller
                         DB::rollback();
                         return response()->json([
                             "sukses" => false,
-                            "pesan" => "Pelanggan ini bukan wilayah Bukit atau Lot kala...",
+                            "pesan" => "Pembayaran lompat hanya untuk wilayah Bukit atau Lot kala...",
                         ], 404);
                     }
                 } else {
