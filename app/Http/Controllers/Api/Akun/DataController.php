@@ -32,7 +32,7 @@ class DataController extends Controller
             'sukses' => true,
             'data' => $user,
             'data2' => Role::all(['id', 'name', 'guard_name']),
-            'data3' => Permission::all('id', 'name', 'guard_name'),
+            'data3' => Permission::where('id', '>=', 27)->get(['id', 'name', 'guard_name']),
         ], 200);
     }
 
@@ -103,7 +103,7 @@ class DataController extends Controller
         return response()->json([
             'sukses' => true,
             'data' => $roles,
-            'data2' => Permission::all('id', 'name', 'guard_name'),
+            'data2' => Permission::where('id', '>=', 27)->get(['id', 'name', 'guard_name']),
         ]);
     }
 
