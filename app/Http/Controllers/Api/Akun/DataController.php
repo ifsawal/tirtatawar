@@ -150,7 +150,9 @@ class DataController extends Controller
         $permissions = Permission::with([
             'roles:id,name,guard_name',
             'user:id,nama,email',
-        ])->orderBy('id', 'desc')->get(['id', 'name', 'guard_name']);
+        ])
+            ->where('id', '>=', 27)
+            ->orderBy('id', 'desc')->get(['id', 'name', 'guard_name']);
         return response()->json([
             'sukses' => true,
             'data' => $permissions,
