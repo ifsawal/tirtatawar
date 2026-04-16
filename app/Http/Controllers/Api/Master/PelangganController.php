@@ -348,9 +348,7 @@ class PelangganController extends Controller
         ], 202);
     }
 
-    public function update(Request $request, $id)
-    {
-    }
+    public function update(Request $request, $id) {}
 
     public function update_pel(Request $request)
     {
@@ -510,6 +508,23 @@ class PelangganController extends Controller
         }
     }
 
+    public function pelanggan_putus_sambungan(Request $r)
+    {
+        $pelanggan = Pelanggan::onlyTrashed()
+            ->select([
+                'id',
+                'nama',
+            ])
+            ->orderBy('deleted_at', 'desc')
+            ->take(50)
+            ->get();
+
+        return response()->json([
+            "sukses" => true,
+            "pesan" => "Data ditemukan...",
+            'data' => $pelanggan,
+        ], 200);
+    }
 
     public function aktif(Request $r)
     {

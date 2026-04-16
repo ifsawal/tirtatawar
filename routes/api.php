@@ -131,8 +131,9 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/pelanggan/cari', [PelangganController::class, 'cari']);
     Route::post('/pelanggan/carisatu', [PelangganController::class, 'carisatu']);
     Route::get('/pelangganhistoriaktif/{id}', [PelangganController::class, 'pelangganhistoriaktif']);
-    Route::post('/pelangganhapus', [PelangganController::class, 'destroy'])->middleware('auth.permission:hapus_pelanggan');
+    Route::post('/pelangganhapus', [PelangganController::class, 'destroy'])->middleware('auth.permission:putus_sambungan');
     Route::post('/pelangganaktif', [PelangganController::class, 'aktif']);
+    Route::get('/pelanggan-putus', [PelangganController::class, 'pelanggan_putus_sambungan']);
 
     Route::post('/laporan_survei', [DataPelangganController::class, 'index']);
 
