@@ -80,7 +80,7 @@ class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping,
         return array_merge(
             ['Nama'],
             $days,
-            ['Hadir', 'Setengah Hari', 'Izin', 'Sakit', 'Cuti', 'Terlambat']
+            ['Hadir', 'Setengah Hari', 'Izin', 'Sakit', 'Cuti', 'Terlambat', 'Pulang Cepat']
         );
     }
 
@@ -92,7 +92,8 @@ class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping,
 
         $hadir = $izin = $sakit = $cuti = $setengah = 0;
         $terlambat = 0;
-
+        $pulang_cepat = 0;
+        
         for ($day = 1; $day <= $daysInMonth; $day++) {
             $tanggal = sprintf('%04d-%02d-%02d', $this->tahun, $this->bulan, $day);
             $absen = $user->absen->firstWhere('tanggal', $tanggal);
@@ -100,10 +101,11 @@ class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping,
             if ($absen) {
                 $status = '';
                 if (is_numeric($absen->pagi) && $absen->pagi > 0) {//jika ada terlambat pagi
-                    $terlambat += $absen->pagi;
+                if (is_numeric($absen->pagi) && $absen->pagi > 0) {//jika ada pulang_cepat pagi
+                $terlambat += $absen->pagi;
                 }
                 if (is_numeric($absen->siang) && $absen->siang > 0) {//jika ada terlambat siang
-                    $terlambat += $absen->siang;
+                    $pulang_cepat += $absen->siang;
                 }
                 // logika status berdasarkan jam masuk / keluar
                 if ($absen->jam_masuk && $absen->jam_keluar) {
@@ -145,6 +147,7 @@ class LaporanAbsensiExport implements FromCollection, WithHeadings, WithMapping,
         $row[] = $sakit;
         $row[] = $cuti;
         $row[] = $terlambat;
+        $row[] = $pulang_cepat;
 
         return $row;
     }

@@ -49,6 +49,7 @@ use App\Http\Controllers\Api\Pengguna\PenggunaController;
 use App\Http\Controllers\Api\Server\IsiMeteranController;
 use App\Http\Controllers\Api\Absen\LaporanAbsenController;
 use App\Http\Controllers\Api\Data\DataPelangganController;
+use App\Http\Controllers\Api\Data\DataPencatatanController;
 use App\Http\Controllers\Api\Master\HpPelangganController;
 use App\Http\Controllers\Api\Master\GolPenetapanController;
 use App\Http\Controllers\Api\Master\PhotoCatatanController;
@@ -124,6 +125,9 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/laporanpencatatan', [LaporanPencatatanController::class, 'laporanpencatatan']);
     Route::get('/laporanpencatatanexport', [LaporanPencatatanController::class, 'laporanpencatatanexport']);
 
+    Route::get('/petugas-pencatat/{bulan}/{tahun}', [DataPencatatanController::class, 'petugas_pencatat']);
+    Route::get('/rekap-pencatatan-petugas/{id}/{bulan}/{tahun}', [DataPencatatanController::class, 'rekap_pencatatan_petugas']);
+
     Route::post('/delete/gambar/rumah', [PelangganController::class, 'deletegambarrumah']);
     Route::post('/upload/gambar/rumah/{id}', [PelangganController::class, 'uploadgambarrumah']);
     Route::get('/pelanggan/belumsetujui', [PelangganController::class, 'belumsetujui']);
@@ -131,9 +135,9 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin']], function () 
     Route::post('/pelanggan/cari', [PelangganController::class, 'cari']);
     Route::post('/pelanggan/carisatu', [PelangganController::class, 'carisatu']);
     Route::get('/pelangganhistoriaktif/{id}', [PelangganController::class, 'pelangganhistoriaktif']);
-    Route::post('/pelangganhapus', [PelangganController::class, 'destroy'])->middleware('auth.permission:putus_sambungan');
+    Route::post('/pelangganhapus', [PelangganController::class, 'destroy'])->middleware('auth.permission:putus_sambungan'); //proses putusa sambungan
     Route::post('/pelangganaktif', [PelangganController::class, 'aktif']);
-    Route::get('/pelanggan-putus', [PelangganController::class, 'pelanggan_putus_sambungan']);
+    Route::get('/pelanggan-putus', [PelangganController::class, 'pelanggan_putus_sambungan']); //data pelanggan yang putus
 
     Route::post('/laporan_survei', [DataPelangganController::class, 'index']);
 

@@ -153,10 +153,13 @@ class LaporanPencatatanController extends Controller
             ], 404);
         }
 
+        $pelanggan = Pelanggan::count();
+ 
         return response()->json([
             "sukses" => true,
             "pesan" => "Sukses, data ditemukan...",
             "data" => $catatan,
+            "total_pelanggan" => $pelanggan,
         ], 202);
     }
 
