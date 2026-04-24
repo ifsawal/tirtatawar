@@ -33,25 +33,42 @@ class LaporanBayarController extends Controller
         ];
 
         if (isset($r->bulan) && isset($r->tahun)) {
-            $penagih = Penagih::with($queri)
-                ->whereHas('tagihan.pencatatan.pelanggan', function ($q) {
-                    $q->whereNull('deleted_at');
+            $penagih = Penagih::query()
+                ->select('penagihs.*') // Hindari tabrakan ID kolom
+                ->join('tagihans', 'penagihs.tagihan_id', '=', 'tagihans.id')
+                ->join('pencatatans', 'tagihans.pencatatan_id', '=', 'pencatatans.id')
+                ->join('pelanggans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id')
+                ->whereNull('pelanggans.deleted_at') // Filter soft delete pelanggan
+                ->where('penagihs.user_id', $user_id)
+                ->whereDate('penagihs.waktu', $tanggal)
+                ->when($r->bulan && $r->tahun, function ($q) use ($r) {
+                    return $q->where('pencatatans.bulan', $r->bulan)
+                        ->where('pencatatans.tahun', $r->tahun);
                 })
-                ->whereRelation('tagihan.pencatatan', 'bulan', '=', $r->bulan)
-                ->whereRelation('tagihan.pencatatan', 'tahun', '=', $r->tahun)
-                ->where('user_id', $user_id)
-                ->whereDate('waktu', $tanggal)
-                ->orderBy('id', "DESC")
+                ->with($queri) // Tetap muat relasi untuk format JSON
+                ->orderBy('penagihs.id', "DESC")
                 ->get();
+
+            // $penagih = Penagih::with($queri)
+            //     ->whereRelation('tagihan.pencatatan', 'bulan', '=', $r->bulan)
+            //     ->whereRelation('tagihan.pencatatan', 'tahun', '=', $r->tahun)
+            //     ->where('user_id', $user_id)
+            //     ->whereDate('waktu', $tanggal)
+            //     ->orderBy('id', "DESC")
+            //     ->get();
         } else {
             $penagih = Penagih::with($queri)
-                ->whereHas('tagihan.pencatatan.pelanggan', function ($q) {
-                    $q->whereNull('deleted_at');
-                })
+                ->whereHas('tagihan.pencatatan.pelanggan') // Ini akan otomatis mengecek deleted_at IS NULL
                 ->where('user_id', $user_id)
                 ->whereDate('waktu', $tanggal)
                 ->orderBy('id', "DESC")
                 ->get();
+
+            // $penagih = Penagih::with($queri)
+            //     ->where('user_id', $user_id)
+            //     ->whereDate('waktu', $tanggal)
+            //     ->orderBy('id', "DESC")
+            //     ->get();
         }
 
         $gol = Golongan::all('id', 'golongan');
