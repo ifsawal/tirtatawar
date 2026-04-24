@@ -34,6 +34,9 @@ class LaporanBayarController extends Controller
 
         if (isset($r->bulan) && isset($r->tahun)) {
             $penagih = Penagih::with($queri)
+                ->whereHas('tagihan.pencatatan.pelanggan', function ($q) {
+                    $q->whereNull('deleted_at');
+                })
                 ->whereRelation('tagihan.pencatatan', 'bulan', '=', $r->bulan)
                 ->whereRelation('tagihan.pencatatan', 'tahun', '=', $r->tahun)
                 ->where('user_id', $user_id)
@@ -42,6 +45,9 @@ class LaporanBayarController extends Controller
                 ->get();
         } else {
             $penagih = Penagih::with($queri)
+                ->whereHas('tagihan.pencatatan.pelanggan', function ($q) {
+                    $q->whereNull('deleted_at');
+                })
                 ->where('user_id', $user_id)
                 ->whereDate('waktu', $tanggal)
                 ->orderBy('id', "DESC")
@@ -96,6 +102,9 @@ class LaporanBayarController extends Controller
 
         if (isset($r->bulan) && isset($r->tahun)) {
             $penagih = Penagih::with($queri)
+                ->whereHas('tagihan.pencatatan.pelanggan', function ($q) {
+                    $q->whereNull('deleted_at');
+                })
                 ->whereRelation('tagihan.pencatatan', 'bulan', '=', $r->bulan)
                 ->whereRelation('tagihan.pencatatan', 'tahun', '=', $r->tahun)
                 ->where('user_id', $user_id)
@@ -104,6 +113,9 @@ class LaporanBayarController extends Controller
                 ->get();
         } else {
             $penagih = Penagih::with($queri)
+                ->whereHas('tagihan.pencatatan.pelanggan', function ($q) {
+                    $q->whereNull('deleted_at');
+                })
                 ->where('user_id', $user_id)
                 ->whereDate('waktu', $tanggal)
                 ->orderBy('id', "DESC")
@@ -277,6 +289,7 @@ class LaporanBayarController extends Controller
         $catat->leftjoin('penagihs', 'penagihs.tagihan_id', '=', 'tagihans.id');
         $catat->leftjoin('users', 'penagihs.user_id', '=', 'users.id');
 
+        $catat->whereNull('pelanggans.deleted_at');
         $catat->whereYear('tagihans.tgl_bayar', '=', date('Y', strtotime($r->waktu_bayar)));
         $catat->whereMonth('tagihans.tgl_bayar', '=', date('m', strtotime($r->waktu_bayar)));
 
@@ -327,6 +340,9 @@ class LaporanBayarController extends Controller
             "tagihan.pencatatan.pelanggan.golongan:id,golongan",
             "tagihan.pencatatan.pelanggan.wiljalan:id,jalan"
         )
+            ->whereHas('tagihan.pencatatan.pelanggan', function ($q) {
+                $q->whereNull('deleted_at');
+            })
             ->wheredate("waktu", $tanggal)
             ->where('user_id', $user_id)
             ->get()
@@ -387,6 +403,7 @@ class LaporanBayarController extends Controller
         $rekap->join('tagihans', 'tagihans.id', '=', 'penagihs.tagihan_id');
         $rekap->join('pencatatans', 'pencatatans.id', '=', 'tagihans.pencatatan_id');
         $rekap->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+        $rekap->whereNull('pelanggans.deleted_at');
         $rekap->where('penagihs.user_id', '=', $user_id);
         isset($r->wiljalan_id) ? $rekap->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : "";
         $rekap->whereDate('penagihs.waktu', '=', $r->tanggal);
