@@ -27,48 +27,33 @@ class LaporanBayarController extends Controller
         $queri = [
             'tagihan:id,jumlah,diskon,denda,total,status_bayar,sistem_bayar,pencatatan_id',
             'tagihan.pencatatan:id,awal,akhir,pemakaian,bulan,tahun,pelanggan_id',
-            'tagihan.pencatatan.pelanggan:id,nama,golongan_id,wiljalan_id',
-            'tagihan.pencatatan.pelanggan.golongan:id,golongan',
-            'tagihan.pencatatan.pelanggan.wiljalan:id,jalan',
+            // 'tagihan.pencatatan.pelanggan:id,nama,golongan_id,wiljalan_id',
+            'tagihan.pencatatan.pelanggan' => function ($q) {
+                $q->withTrashed()
+                    ->select('id', 'nama', 'golongan_id', 'wiljalan_id')
+                    ->with([
+                        'golongan:id,golongan',
+                        'wiljalan:id,jalan'
+                    ]);
+            },
+            // 'tagihan.pencatatan.pelanggan.golongan:id,golongan',
+            // 'tagihan.pencatatan.pelanggan.wiljalan:id,jalan',
         ];
 
         if (isset($r->bulan) && isset($r->tahun)) {
-            $penagih = Penagih::query()
-                ->select('penagihs.*') // Hindari tabrakan ID kolom
-                ->join('tagihans', 'penagihs.tagihan_id', '=', 'tagihans.id')
-                ->join('pencatatans', 'tagihans.pencatatan_id', '=', 'pencatatans.id')
-                ->join('pelanggans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id')
-                ->whereNull('pelanggans.deleted_at') // Filter soft delete pelanggan
-                ->where('penagihs.user_id', $user_id)
-                ->whereDate('penagihs.waktu', $tanggal)
-                ->when($r->bulan && $r->tahun, function ($q) use ($r) {
-                    return $q->where('pencatatans.bulan', $r->bulan)
-                        ->where('pencatatans.tahun', $r->tahun);
-                })
-                ->with($queri) // Tetap muat relasi untuk format JSON
-                ->orderBy('penagihs.id', "DESC")
-                ->get();
-
-            // $penagih = Penagih::with($queri)
-            //     ->whereRelation('tagihan.pencatatan', 'bulan', '=', $r->bulan)
-            //     ->whereRelation('tagihan.pencatatan', 'tahun', '=', $r->tahun)
-            //     ->where('user_id', $user_id)
-            //     ->whereDate('waktu', $tanggal)
-            //     ->orderBy('id', "DESC")
-            //     ->get();
-        } else {
             $penagih = Penagih::with($queri)
-                ->whereHas('tagihan.pencatatan.pelanggan') // Ini akan otomatis mengecek deleted_at IS NULL
+                ->whereRelation('tagihan.pencatatan', 'bulan', '=', $r->bulan)
+                ->whereRelation('tagihan.pencatatan', 'tahun', '=', $r->tahun)
                 ->where('user_id', $user_id)
                 ->whereDate('waktu', $tanggal)
                 ->orderBy('id', "DESC")
                 ->get();
-
-            // $penagih = Penagih::with($queri)
-            //     ->where('user_id', $user_id)
-            //     ->whereDate('waktu', $tanggal)
-            //     ->orderBy('id', "DESC")
-            //     ->get();
+        } else {
+            $penagih = Penagih::with($queri)
+                ->where('user_id', $user_id)
+                ->whereDate('waktu', $tanggal)
+                ->orderBy('id', "DESC")
+                ->get();
         }
 
         $gol = Golongan::all('id', 'golongan');
@@ -112,16 +97,21 @@ class LaporanBayarController extends Controller
         $queri = [
             'tagihan:id,jumlah,diskon,denda,total,status_bayar,sistem_bayar,pencatatan_id',
             'tagihan.pencatatan:id,awal,akhir,pemakaian,bulan,tahun,pelanggan_id',
-            'tagihan.pencatatan.pelanggan:id,nama,golongan_id,wiljalan_id',
-            'tagihan.pencatatan.pelanggan.golongan:id,golongan',
-            'tagihan.pencatatan.pelanggan.wiljalan:id,jalan',
+            'tagihan.pencatatan.pelanggan' => function ($q) {
+                $q->withTrashed()
+                    ->select('id', 'nama', 'golongan_id', 'wiljalan_id')
+                    ->with([
+                        'golongan:id,golongan',
+                        'wiljalan:id,jalan'
+                    ]);
+            },
+            // 'tagihan.pencatatan.pelanggan:id,nama,golongan_id,wiljalan_id',
+            // // 'tagihan.pencatatan.pelanggan.golongan:id,golongan',
+            // // 'tagihan.pencatatan.pelanggan.wiljalan:id,jalan',
         ];
 
         if (isset($r->bulan) && isset($r->tahun)) {
             $penagih = Penagih::with($queri)
-                ->whereHas('tagihan.pencatatan.pelanggan', function ($q) {
-                    $q->whereNull('deleted_at');
-                })
                 ->whereRelation('tagihan.pencatatan', 'bulan', '=', $r->bulan)
                 ->whereRelation('tagihan.pencatatan', 'tahun', '=', $r->tahun)
                 ->where('user_id', $user_id)
@@ -130,9 +120,6 @@ class LaporanBayarController extends Controller
                 ->get();
         } else {
             $penagih = Penagih::with($queri)
-                ->whereHas('tagihan.pencatatan.pelanggan', function ($q) {
-                    $q->whereNull('deleted_at');
-                })
                 ->where('user_id', $user_id)
                 ->whereDate('waktu', $tanggal)
                 ->orderBy('id', "DESC")
@@ -306,7 +293,6 @@ class LaporanBayarController extends Controller
         $catat->leftjoin('penagihs', 'penagihs.tagihan_id', '=', 'tagihans.id');
         $catat->leftjoin('users', 'penagihs.user_id', '=', 'users.id');
 
-        $catat->whereNull('pelanggans.deleted_at');
         $catat->whereYear('tagihans.tgl_bayar', '=', date('Y', strtotime($r->waktu_bayar)));
         $catat->whereMonth('tagihans.tgl_bayar', '=', date('m', strtotime($r->waktu_bayar)));
 
@@ -350,16 +336,21 @@ class LaporanBayarController extends Controller
 
     public static function query2(Request $r, $user_id, $tanggal)
     {
-        $query = Penagih::with(
+        $query = Penagih::with([
             "tagihan:id,jumlah,diskon,biaya,pajak,denda,total,status_bayar,total_nodenda,pencatatan_id",
             "tagihan.pencatatan:id,bulan,tahun,pelanggan_id",
-            "tagihan.pencatatan.pelanggan:id,nama,golongan_id,wiljalan_id",
-            "tagihan.pencatatan.pelanggan.golongan:id,golongan",
-            "tagihan.pencatatan.pelanggan.wiljalan:id,jalan"
-        )
-            ->whereHas('tagihan.pencatatan.pelanggan', function ($q) {
-                $q->whereNull('deleted_at');
-            })
+            'tagihan.pencatatan.pelanggan' => function ($q) {
+                $q->withTrashed()
+                    ->select('id', 'nama', 'golongan_id', 'wiljalan_id')
+                    ->with([
+                        'golongan:id,golongan',
+                        'wiljalan:id,jalan'
+                    ]);
+            },
+            // "tagihan.pencatatan.pelanggan:id,nama,golongan_id,wiljalan_id",
+            // "tagihan.pencatatan.pelanggan.golongan:id,golongan",
+            // "tagihan.pencatatan.pelanggan.wiljalan:id,jalan"
+        ])
             ->wheredate("waktu", $tanggal)
             ->where('user_id', $user_id)
             ->get()
@@ -420,7 +411,6 @@ class LaporanBayarController extends Controller
         $rekap->join('tagihans', 'tagihans.id', '=', 'penagihs.tagihan_id');
         $rekap->join('pencatatans', 'pencatatans.id', '=', 'tagihans.pencatatan_id');
         $rekap->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
-        $rekap->whereNull('pelanggans.deleted_at');
         $rekap->where('penagihs.user_id', '=', $user_id);
         isset($r->wiljalan_id) ? $rekap->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : "";
         $rekap->whereDate('penagihs.waktu', '=', $r->tanggal);
