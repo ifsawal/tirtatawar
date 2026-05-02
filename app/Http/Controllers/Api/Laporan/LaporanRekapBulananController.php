@@ -17,6 +17,13 @@ class LaporanRekapBulananController extends Controller
 
     public function laporanrekapbulananexport(Request $r)
     {
+        $this->validate($r, [
+            'bulan' => 'required',
+            'tahun' => 'required|integer',
+            'jenis' => 'required|in:aktif,hapus',
+        ]);
+
+        // return self::rekap($r, 'cetak');
         return Excel::download(new LaporanRekapBulananExport($r), 'laporan_rekap_pencatatan_penagihan.xlsx');
     }
 
@@ -52,15 +59,20 @@ class LaporanRekapBulananController extends Controller
         $rekap->where('rekaps.tahun', '=', $r->tahun);
         $rekap->where('rekaps.bulan', '=', $r->bulan);
         $rekap->where('rekaps.pdam_id', '=', $pdam_id);
+        if ($r->jenis == "hapus") {
+            $rekap->where('rekaps.jenis', '=', 'hapus');
+        } else {
+            $rekap->where('rekaps.jenis', '=', null);
+        }
 
         // $rekap = Rekap::where('bulan', $r->bulan)
         //     ->where('tahun', $r->tahun)
         //     ->where('pdam_id', $pdam_id)
         //     ->get();
 
-        if ($cetak == "cetak") {
-            return $rekap->get();
-        }
+        // if ($cetak == "cetak") {
+        //     return $rekap->get();
+        // }
         return $rekap->get();
     }
 
@@ -70,9 +82,10 @@ class LaporanRekapBulananController extends Controller
         $this->validate($r, [
             'bulan' => 'required',
             'tahun' => 'required|integer',
+            'jenis' => 'required|in:aktif,hapus',
         ]);
 
-        $rekap = self::rekap($r);
+        $rekap = self::rekap($r, "N", $r->jenis);
 
         if (count($rekap) == 0) {
             return response()->json([
@@ -95,6 +108,7 @@ class LaporanRekapBulananController extends Controller
         $this->validate($r, [
             'bulan' => 'required',
             'tahun' => 'required|integer',
+            'jenis' => 'required|in:aktif,hapus',
         ]);
         $user_id = Auth::user()->id;
         $pdam_id = Auth::user()->pdam_id;
@@ -105,6 +119,11 @@ class LaporanRekapBulananController extends Controller
             $rekap = Rekap::where('bulan', $r->bulan)
                 ->where('tahun', $r->tahun)
                 ->where('wiljalan_id', $j->id)
+                ->when($r->jenis === "hapus", function ($q) {  //ini memastikan klo paragmeter di kirim hapus, maka where hapus
+                    $q->where('jenis', 'hapus');
+                }, function ($q) {
+                    $q->whereNull('jenis');
+                })
                 ->first();
 
             if ($rekap && $rekap->status_update == 1) {
@@ -115,7 +134,13 @@ class LaporanRekapBulananController extends Controller
                 continue;
             }
 
-            $pel = Pelanggan::where('wiljalan_id', $j->id)->get()->count();
+            if ($r->jenis == "hapus") {
+                $pel = Pelanggan::onlyTrashed()
+                    ->where('wiljalan_id', $j->id)
+                    ->count();
+            } else {
+                $pel = Pelanggan::where('wiljalan_id', $j->id)->count();
+            }
 
             $catat = Pencatatan::query();
             // $catat->select(
@@ -126,6 +151,11 @@ class LaporanRekapBulananController extends Controller
             $catat->where('pencatatans.tahun', '=', $r->tahun);
             $catat->where('pencatatans.bulan', '=', $r->bulan);
             $catat->where('pelanggans.wiljalan_id', '=', $j->id);
+            if ($r->jenis == "hapus") {
+                $catat->whereNotNull('pelanggans.deleted_at');
+            } else {
+                $catat->whereNull('pelanggans.deleted_at');
+            }
             // $catat->sum('pemakaian');
 
             $h_catat = $catat->get()->count();
@@ -134,22 +164,22 @@ class LaporanRekapBulananController extends Controller
             $h_adm = $catat->sum('tagihans.biaya');
             $h_pajak = $catat->sum('tagihans.pajak');
             $h_total = $catat->sum('tagihans.total_nodenda');
-            
+
 
             $terbayar = 0;
             $sisa = 0;
             $pel_terbayar = 0;
-            $denda=0;
+            $denda = 0;
             foreach ($catat->get() as $d) {
                 if ($d->status_bayar == "Y") {
                     $terbayar += $d['total_nodenda'];
                     $pel_terbayar += 1;
                     $denda += $d['denda'];
-                }else{
+                } else {
                     $sisa += $d['total_nodenda'];
                 }
             }
-            $pelanggan_belum_bayar = $h_catat-$pel_terbayar;  //ini di hitung berdasarkan pelanggan yang di catat
+            $pelanggan_belum_bayar = $h_catat - $pel_terbayar;  //ini di hitung berdasarkan pelanggan yang di catat
 
 
             if ($rekap) {
@@ -163,10 +193,13 @@ class LaporanRekapBulananController extends Controller
                 $rekap->total = $h_total;
                 $rekap->terbayar = $terbayar;
                 $rekap->sisa = $sisa;
-                $rekap->persentase = $pel_terbayar===0?0:floor(($terbayar/$h_total)*100);
+                $rekap->persentase = $pel_terbayar === 0 ? 0 : floor(($terbayar / $h_total) * 100);
                 $rekap->denda = $denda;
-                $rekap->den_terbayar = $denda+$terbayar;
+                $rekap->den_terbayar = $denda + $terbayar;
                 $rekap->pelanggan_belum_bayar = $pelanggan_belum_bayar;
+                if ($r->jenis == "hapus") {
+                    $rekap->jenis = "hapus";
+                }
                 $rekap->save();
             } else {
                 $rekap = new Rekap();
@@ -184,10 +217,13 @@ class LaporanRekapBulananController extends Controller
                 $rekap->pdam_id = $pdam_id;
                 $rekap->terbayar = $terbayar;
                 $rekap->sisa = $sisa;
-                $rekap->persentase = $pel_terbayar===0?0:floor(($pel_terbayar*100)/$h_catat);
-                $rekap->denda = $denda ;
-                $rekap->den_terbayar = $denda+$terbayar;
+                $rekap->persentase = $pel_terbayar === 0 ? 0 : floor(($pel_terbayar * 100) / $h_catat);
+                $rekap->denda = $denda;
+                $rekap->den_terbayar = $denda + $terbayar;
                 $rekap->pelanggan_belum_bayar = $pelanggan_belum_bayar;
+                if ($r->jenis == "hapus") {
+                    $rekap->jenis = "hapus";
+                }
                 $rekap->save();
             }
 

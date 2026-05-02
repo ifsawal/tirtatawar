@@ -20,6 +20,10 @@ class Pencatatan extends Model
     {
         return $this->belongsTo(Pelanggan::class, 'pelanggan_id', 'id');
     }
+    public function pelanggan_hapus_tampil()
+    {
+        return $this->belongsTo(Pelanggan::class, 'pelanggan_id', 'id')->withTrashed();;
+    }
 
     public function user()
     {

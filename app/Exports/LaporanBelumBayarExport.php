@@ -12,12 +12,13 @@ class LaporanBelumBayarExport implements FromCollection, WithHeadings, WithColum
     /**
      * @return \Illuminate\Support\Collection
      */
-    public $tahun,$batas;
+    public $tahun,$batas,$r;
 
-    function __construct($tahun, $batas)
+    function __construct($tahun, $batas, $r)
     {
         $this->tahun = $tahun;
         $this->batas = $batas;
+        $this->r = $r;
     }
 
 
@@ -25,7 +26,7 @@ class LaporanBelumBayarExport implements FromCollection, WithHeadings, WithColum
 
     public function collection()
     {
-        return LaporanBelumBayarController::laporan_belum_bayar($this->tahun,$this->batas);
+        return LaporanBelumBayarController::laporan_belum_bayar($this->tahun,$this->batas, $this->r);
     }
 
 

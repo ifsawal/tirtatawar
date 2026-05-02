@@ -15,6 +15,9 @@ class LaporanPelangganController extends Controller
 
     public function laporanpelangganexport(Request $r)
     {
+        $r->validate([
+            'jenis' => 'required|in:aktif,hapus',
+        ]);
         // isset($r->semuaakun) ? $user_id = '' : $user_id = Auth::user()->id;
         return Excel::download(new LaporanPelangganExport($r), 'laporan_data_pelanggan.xlsx');
     }
@@ -49,7 +52,12 @@ class LaporanPelangganController extends Controller
 
         $pdam = Auth::user();
 
-        $rekap = Pelanggan::query();
+        if (isset($r->jenis) && $r->jenis == "hapus") {
+            $rekap = Pelanggan::onlyTrashed();
+        } else {
+            $rekap = Pelanggan::query();
+        }
+
         $rekap->select(
             'pelanggans.id',
             'pelanggans.nama',
@@ -80,7 +88,11 @@ class LaporanPelangganController extends Controller
         isset($r->wiljalan) ? $rekap->where('pelanggans.wiljalan_id', '=', $r->wiljalan) : "";
         isset($r->rute) ? $rekap->where('pelanggans.rute_id', '=', $r->rute) : "";
         isset($r->desa) ? $rekap->where('pelanggans.desa_id', '=', $r->desa) : "";
-
+        if (isset($r->jenis) && $r->jenis == "hapus") {
+            $rekap->whereNotNull('pelanggans.deleted_at');
+        } else {
+            $rekap->whereNull('pelanggans.deleted_at');
+        }
 
         if ($cetak == "cetak") {
             return $rekap->get();

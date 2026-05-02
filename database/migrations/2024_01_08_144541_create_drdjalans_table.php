@@ -25,7 +25,8 @@ return new class extends Migration
             $table->integer('jumm3');
             $table->integer('jumtotal');
             $table->integer('status_update')->default(0);
-            $table->unique(['rute_id', 'wiljalan_id', 'golongan_id', 'bulan', 'tahun']);
+            $table->string('jenis')->nullable();// jenis = hapus jika aktif ==NULL
+            $table->unique(['rute_id', 'wiljalan_id', 'golongan_id', 'bulan', 'tahun','jenis']);
             $table->timestamps();
         });
     }

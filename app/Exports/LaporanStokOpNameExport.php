@@ -20,11 +20,12 @@ class LaporanStokOpNameExport implements FromCollection, WithHeadings, WithMappi
 
 
     protected int $tahun;
-    protected $akhirTahun;
+    protected $akhirTahun, $r;
 
-    public function __construct(int $tahun,$batas_data_diambil)
+    public function __construct(int $tahun, $batas_data_diambil, $r)
     {
         $this->tahun = $tahun;
+        $this->r = $r;
 
         $this->akhirTahun =  date('Y-m-t', strtotime($batas_data_diambil));
     }
@@ -32,9 +33,19 @@ class LaporanStokOpNameExport implements FromCollection, WithHeadings, WithMappi
 
     public function collection()
     {
+        $jenis = $this->r['jenis'];
         $akhir = $this->akhirTahun;
         return DB::table('wiljalans as w')
-            ->leftJoin('pelanggans as p', 'p.wiljalan_id', '=', 'w.id')
+            ->leftJoin('pelanggans as p', function ($join) use ($jenis) {
+                $join->on('p.wiljalan_id', '=', 'w.id');
+                if ($jenis === 'hapus') {
+                    $join->whereNotNull('p.deleted_at');
+                } else {
+                    $join->whereNull('p.deleted_at');
+                }
+            })
+
+
             ->leftJoin('pencatatans as c', function ($join) {
                 $join->on('c.pelanggan_id', '=', 'p.id')
                     ->where('c.tahun', $this->tahun);

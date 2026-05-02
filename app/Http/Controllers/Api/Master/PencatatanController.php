@@ -226,7 +226,7 @@ class PencatatanController extends Controller
     {
         $input = Carbon::parse($tahun . "-" . $bulan . "-1")->format("Y-m");
         $sekarang = Carbon::now()->startOfMonth(); //tanggal nya tetap 1 bulan di sesuaikan //ini tidak boleh di pake lagi ya.. resiko
-        $tambahbulan = $sekarang->addMonth()->format('Y-m'); //tambah 1 bulan ke depan dari sekarang
+        $tambahbulan = $sekarang->copy()->addMonth()->format('Y-m'); //tambah 1 bulan ke depan dari sekarang
 
         $syarat = ['tahun_buka', 'superadmin_buka', 'buka_semua', 'buka_satu', 'buka_satu_user','tgl_mulai_input'];
         $atur = Pengaturan::whereIn('aturan', $syarat)->get();

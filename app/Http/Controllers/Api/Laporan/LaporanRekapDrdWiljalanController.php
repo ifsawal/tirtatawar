@@ -19,6 +19,7 @@ class LaporanRekapDrdWiljalanController extends Controller
         $this->validate($r, [
             'bulan' => 'required',
             'tahun' => 'required',
+            'jenis' => 'required|in:aktif,hapus',
         ]);
         $user = Auth::user();
 
@@ -33,7 +34,12 @@ class LaporanRekapDrdWiljalanController extends Controller
 
 
             foreach ($gol as $g) {
-                $data = Pelanggan::query();
+                // $data = Pelanggan::query();
+                if ($r->jenis == "hapus") {
+                    $data = Pelanggan::onlyTrashed();
+                } else {
+                    $data = Pelanggan::query();
+                }
                 $data->select(
                     'pelanggans.id',
                     'pelanggans.nama',
@@ -51,8 +57,13 @@ class LaporanRekapDrdWiljalanController extends Controller
                 $data->where('pencatatans.tahun', '=', $r->tahun);
                 $data->where('pencatatans.bulan', '=', $r->bulan);
                 $data->where('pelanggans.pdam_id', '=', $user->pdam_id);
+
                 $hasil = $data->get();
-                $jum_pelanggan = $data->get()->count();
+                $jum_pelanggan = $hasil->count();
+                // if ($jum_pelanggan > 0) {
+                //     return $hasil;
+                // }
+
                 $total = 0;
                 $pemakaian = 0;
                 foreach ($hasil as $h) {
@@ -64,7 +75,13 @@ class LaporanRekapDrdWiljalanController extends Controller
                     ->where('tahun', $r->tahun)
                     ->where('wiljalan_id', $wil['id'])
                     ->where('golongan_id', $g['id'])
+                    ->when($r->jenis == "hapus", function ($q) {  //ini memastikan klo paragmeter di kirim hapus, maka where hapus
+                        $q->where('jenis', 'hapus');
+                    }, function ($q) {
+                        $q->whereNull('jenis');
+                    })
                     ->first();
+
                 if (!$drd) {
                     $drd = new Drdjalan();
                 }
@@ -77,6 +94,9 @@ class LaporanRekapDrdWiljalanController extends Controller
                 $drd->jumpel = $jum_pelanggan;
                 $drd->jumm3 = $pemakaian;
                 $drd->jumtotal = $total;
+                if ($r->jenis == "hapus") {
+                    $drd->jenis = "hapus";
+                }
                 $drd->save();
 
                 $tampung_gol[] = [
@@ -117,7 +137,7 @@ class LaporanRekapDrdWiljalanController extends Controller
         return response()->json([
             "sukses" => true,
             "pesan" => "Sukses...",
-            // "data" =>  $pel,
+            "data" =>  $pel,
         ], 202);
     }
 
@@ -126,6 +146,7 @@ class LaporanRekapDrdWiljalanController extends Controller
         $this->validate($r, [
             'bulan' => 'required',
             'tahun' => 'required',
+            'jenis' => 'required|in:aktif,hapus',
         ]);
         return Excel::download(new LaporanRekapDrdWiljalanExport($r), 'laporan_rekap_DRDwiljalan.xlsx');
     }
@@ -162,6 +183,11 @@ class LaporanRekapDrdWiljalanController extends Controller
                     ->where('golongan_id', $g['id'])
                     ->where('bulan', $r['bulan'])
                     ->where('tahun', $r['tahun'])
+                    ->when($r->jenis == "hapus", function ($q) {  //ini memastikan klo paragmeter di kirim hapus, maka where hapus
+                        $q->where('jenis', 'hapus');
+                    }, function ($q) {
+                        $q->whereNull('jenis');
+                    })
                     ->first(['jumpel', 'jumm3', 'jumtotal']);
                 $satu += $lap->jumpel;
                 $dua += $lap->jumm3;
@@ -193,8 +219,4 @@ class LaporanRekapDrdWiljalanController extends Controller
         }
         return collect($tampung_jalan);
     }
-
-
-
-
 }

@@ -20,26 +20,27 @@ class LaporanBelumBayarController extends Controller
 
     public function laporan_belum_bayar_export(Request $r, $tahun)
     {
+        $this->validate($r, [
+            "jenis" => 'required|in:aktif,hapus',
+        ]);
+
         if (empty($r['batas_data_diambil'])) {
             $r['batas_data_diambil'] = date('Y-m-d');
         }
 
-        return Excel::download(new LaporanBelumBayarExport($tahun, $r->batas_data_diambil), 'laporan_belum_bayar.xlsx');
+        return Excel::download(new LaporanBelumBayarExport($tahun, $r->batas_data_diambil,$r), 'laporan_belum_bayar.xlsx');
     }
 
-    public static function laporan_belum_bayar($tahun, $batas_data_diambil)
+    public static function laporan_belum_bayar($tahun, $batas_data_diambil, $r)
     {
 
         $batas_akhir = date("Y-m-t", strtotime($batas_data_diambil));
 
-        $pel = Pelanggan::with([
-            'golongan:id,golongan',
-            'wiljalan:id,jalan',
-        ])
-            // ->limit(10)
-
-            ->get();
-
+        if($r->jenis == "hapus"){
+            $pel = Pelanggan::onlyTrashed()->with(['golongan:id,golongan','wiljalan:id,jalan',])->get();
+        } else {
+            $pel = Pelanggan::with(['golongan:id,golongan','wiljalan:id,jalan',])->get();
+        }
 
         $has = [];
         $kolom_awal = 4;

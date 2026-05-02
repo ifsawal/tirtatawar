@@ -25,7 +25,11 @@ class LaporanPetugasController extends Controller
     public function ambil_data($r, $user_id, $pdam_id, $tampil_data = NULL)
     {
 
-        $data = Pelanggan::query();
+        if (isset($r->jenis) && $r->jenis == "hapus") {
+            $data = Pelanggan::onlyTrashed();
+        } else {
+            $data = Pelanggan::query(); // default: hanya yang tidak terhapus
+        }
         $data->select(
             'pelanggans.id',
             'pelanggans.nama',
@@ -48,7 +52,10 @@ class LaporanPetugasController extends Controller
         $data->where('pencatatans.tahun', '=', $r->tahun);
         $data->where('pencatatans.bulan', '=', $r->bulan);
         $data->where('pelanggans.pdam_id', '=', $pdam_id);
-        $jumlah_data = $data->get()->count();
+
+
+        $jumlah_data = $data->count();
+
 
         if ($jumlah_data == 0) {
             return [
@@ -150,6 +157,7 @@ class LaporanPetugasController extends Controller
         $this->validate($r, [
             'bulan' => 'required',
             'tahun' => 'required',
+            'jenis' => 'required|in:aktif,hapus',
         ]);
         $user = Auth::user();
         !isset($r->byuser) ? $byuser = $user->id : $byuser = $r->byuser;
@@ -218,6 +226,11 @@ class LaporanPetugasController extends Controller
         $data->where('pencatatans.tahun', '=', $r->tahun);
         $data->where('penagihs.user_id', '=', $user_id);
         $data->where('pelanggans.user_id_petugas', '=', $user_id);
+        if (isset($r->jenis) && $r->jenis == "hapus") {
+            $data->whereNotNull('pelanggans.deleted_at');
+        } else {
+            $data->whereNull('pelanggans.deleted_at');
+        }
         return $data->sum('tagihans.total');
     }
 
@@ -234,6 +247,12 @@ class LaporanPetugasController extends Controller
         $data->where('pencatatans.tahun', '=', $r->tahun);
         $data->where('penagihs.user_id', '<>', $user_id);
         $data->where('pelanggans.user_id_petugas', '=', $user_id);
+        if (isset($r->jenis) && $r->jenis == "hapus") {
+            $data->whereNotNull('pelanggans.deleted_at');
+        } else {
+
+            $data->whereNull('pelanggans.deleted_at');
+        }
         return $data->get(['users.id', 'users.nama']);
     }
 
@@ -242,12 +261,13 @@ class LaporanPetugasController extends Controller
         $this->validate($r, [
             'bulan' => 'required',
             'tahun' => 'required',
+            'jenis' => 'required|in:aktif,hapus',
         ]);
 
         $user = Auth::user();
         $pdam_id = $user->pdam_id;
 
-        $ka = 2; //petugas
+        $ka = 2; //jenis role petugas 
         $user = User::with('roles:id,name')
             ->where('pdam_id', $pdam_id)
             ->whereHas('roles', function ($q) use ($ka) {
@@ -257,10 +277,10 @@ class LaporanPetugasController extends Controller
 
         $da = [];
 
-        $drd=0;
-        $terbayar=0;
-        $sisa=0;
-        $persentase=0;
+        $drd = 0;
+        $terbayar = 0;
+        $sisa = 0;
+        $persentase = 0;
 
         foreach ($user as $u) {
             $data = $this->ambil_data($r, $u['id'], $pdam_id, true);
@@ -269,10 +289,15 @@ class LaporanPetugasController extends Controller
 
             $tagih_lapangan = (int)$this->tagih_lapangan($u['id'], $r);
 
-            
+
             $lap = LapBayar::where('bulan', $r->bulan)
                 ->where('tahun', $r->tahun)
                 ->where('user_id', $u['id'])
+                ->when($r->jenis == "hapus", function ($q) {  //ini memastikan klo paragmeter di kirim hapus, maka where hapus
+                    $q->where('jenis', 'hapus');
+                }, function ($q) {
+                    $q->whereNull('jenis');
+                })
                 ->first();
             if (!$lap) {
                 $lap = new LapBayar();
@@ -285,24 +310,27 @@ class LaporanPetugasController extends Controller
             $lap->p_terbayar =  $data['terbayar'];
             $lap->p_no_bayar =  $data['jumlah_data'] - $data['terbayar'];
             $lap->drd =  $data['drd'];
-            $lap->terbayar_no_denda =  $data['terbayar_no_denda'];//
-            $lap->denda =  $data['denda'];//
-            $lap->sisa =  $data['drd']-$data['terbayar_no_denda'];
-            $lap->persentase =  floor(($data['jumlah_terbayar']/$data['drd'])*100);
+            $lap->terbayar_no_denda =  $data['terbayar_no_denda']; //
+            $lap->denda =  $data['denda']; //
+            $lap->sisa =  $data['drd'] - $data['terbayar_no_denda'];
+            $lap->persentase =  floor(($data['jumlah_terbayar'] / $data['drd']) * 100);
             $lap->total_rp =  $data['jumlah_rupiah'];
             $lap->rp_terbayar =  $data['jumlah_terbayar'];
             $lap->rp_no_bayar =  $data['jumlah_rupiah'] - $data['jumlah_terbayar'];
             $lap->tagih_sendiri =  $tagih_lapangan;
+            if ($r->jenis == "hapus") {
+                $lap->jenis = "hapus";
+            }
             $lap->save();
 
             $da[] = $lap;
 
-        $drd=$drd+$data['drd'];
-        $terbayar=$terbayar+$data['terbayar_no_denda'];
-        $sisa=$sisa+($data['drd']-$data['terbayar_no_denda']);
-
-
+            $drd = $drd + $data['drd'];
+            $terbayar = $terbayar + $data['terbayar_no_denda'];
+            $sisa = $sisa + ($data['drd'] - $data['terbayar_no_denda']);
         }
+
+
 
         return response()->json([
             "sukses" => true,
@@ -311,7 +339,7 @@ class LaporanPetugasController extends Controller
             "drd" => $drd,
             "terbayar" => $terbayar,
             "sisa" => $sisa,
-            "total_persentase" => floor(($terbayar/$drd)*100),
+            "total_persentase" => $drd ? floor(($terbayar / $drd) * 100) : 0,
 
         ], 201);
     }
@@ -341,8 +369,12 @@ class LaporanPetugasController extends Controller
         $data->join('users', 'users.id', '=', 'lap_bayars.user_id');
         $data->where('lap_bayars.bulan', '=', $r->bulan);
         $data->where('lap_bayars.tahun', '=', $r->tahun);
+        if ($r->jenis === "hapus") {
+            $data->where('lap_bayars.jenis', "hapus");
+        } else {
+            $data->whereNull('lap_bayars.jenis');
+        }
         $hasil_data = $data->get();
-
 
         return $hasil_data;
     }
@@ -353,6 +385,7 @@ class LaporanPetugasController extends Controller
         $this->validate($r, [
             'bulan' => 'required',
             'tahun' => 'required',
+            'jenis' => 'required|in:aktif,hapus',
         ]);
         return Excel::download(new LaporanBayarExport($r), 'laporan_bayar.xlsx');
     }

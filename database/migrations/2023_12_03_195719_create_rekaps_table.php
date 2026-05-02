@@ -34,8 +34,9 @@ return new class extends Migration
             $table->integer('den_terbayar');
             $table->integer('pelanggan_belum_bayar');
             $table->unsignedBigInteger('pdam_id');
+            $table->string('jenis')->nullable();
             $table->foreign('pdam_id')->references('id')->on('pdams')->onDelete('restrict')->onUpdate('cascade');
-            $table->unique(['wiljalan_id', 'bulan', 'tahun']);
+            $table->unique(['wiljalan_id', 'bulan', 'tahun', 'jenis']);
 
             $table->timestamps();
         });

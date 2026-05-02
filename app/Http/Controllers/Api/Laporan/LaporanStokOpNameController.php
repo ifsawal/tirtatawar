@@ -20,13 +20,14 @@ class LaporanStokOpNameController extends Controller
 
         $this->validate($r, [
             'tahun' => 'required',
-            'batas_data_diambil' => 'required|date|date_format:Y-m-d',
+            'batas_data_diambil' => 'required|date',
+            'jenis' => 'required|in:aktif,hapus',
         ]);
 
         $akhirTahun = date('Y-m-t', strtotime($r->tahun . '-12-31'));
 
         return Excel::download(
-            new LaporanStokOpNameExport($r->tahun, $r->batas_data_diambil),
+            new LaporanStokOpNameExport($r->tahun, $r->batas_data_diambil, $r),
             "laporan-tagihan-belum-bayar-$r->tahun.xlsx"
         );
     }

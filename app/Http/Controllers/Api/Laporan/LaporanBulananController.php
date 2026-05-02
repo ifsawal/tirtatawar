@@ -61,6 +61,11 @@ class LaporanBulananController extends Controller
 
         $catat->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
         $catat->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+        if ($r->jenis == "hapus") {
+            $catat->whereNotNull('pelanggans.deleted_at');
+        } else {
+            $catat->whereNull('pelanggans.deleted_at');
+        }
 
 
         if ($cetak == "cetak") {
@@ -82,18 +87,18 @@ class LaporanBulananController extends Controller
 
         if ($cetak == "cetak") {
             // return $catat->get();
-            
-            $tampung=[];
-            foreach($catat->get() as $d){
-                
-                $denda=0;
-                $denda_pembayaran=0;
-                if($d->status_bayar=="Y"){
-                    $denda=$d['denda'];
-                    $denda_pembayaran=$denda+$d->total_nodenda;
+
+            $tampung = [];
+            foreach ($catat->get() as $d) {
+
+                $denda = 0;
+                $denda_pembayaran = 0;
+                if ($d->status_bayar == "Y") {
+                    $denda = $d['denda'];
+                    $denda_pembayaran = $denda + $d->total_nodenda;
                 }
 
-                $tampung[]=[
+                $tampung[] = [
                     "pelanggan_id"      => $d->id,
                     "nama"              => $d->nama,
                     "golongan"              => $d->golongan,
@@ -117,7 +122,6 @@ class LaporanBulananController extends Controller
 
 
             return collect($tampung);
-
         }
         return $catat->paginate(50);
     }
@@ -128,6 +132,7 @@ class LaporanBulananController extends Controller
         $this->validate($r, [
             'bulan' => 'required',
             'tahun' => 'required',
+            'jenis' => 'required|in:aktif,hapus',
         ]);
 
         $catatan = self::filter($r);
@@ -148,6 +153,11 @@ class LaporanBulananController extends Controller
 
     public function laporanbayarbulananexport(Request $r)
     {
+        $this->validate($r, [
+            'bulan' => 'required',
+            'tahun' => 'required',
+            'jenis' => 'required|in:aktif,hapus',
+        ]);
         return Excel::download(new LaporanBayarBulananExport($r), 'laporan.xlsx');
     }
 

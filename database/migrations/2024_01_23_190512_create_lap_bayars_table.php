@@ -29,8 +29,9 @@ return new class extends Migration
             $table->integer('denda');
             $table->integer('sisa');
             $table->integer('persentase');
+            $table->string('jenis');
 
-            $table->unique(['user_id', 'bulan', 'tahun']);
+            $table->unique(['user_id', 'bulan', 'tahun','jenis']);
             $table->timestamps();
         });
     }
