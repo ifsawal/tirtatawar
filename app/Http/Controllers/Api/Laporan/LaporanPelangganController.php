@@ -70,11 +70,13 @@ class LaporanPelangganController extends Controller
             'rutes.rute',
             'desas.desa',
             'kecamatans.kecamatan',
+            'users.nama as petugas',
 
 
         );
         $rekap->join('golongans', 'golongans.id', '=', 'pelanggans.golongan_id');
         $rekap->join('wiljalans', 'wiljalans.id', '=', 'pelanggans.wiljalan_id');
+        $rekap->join('users', 'users.id', '=', 'pelanggans.user_id_petugas');
         $rekap->join('rutes', 'rutes.id', '=', 'pelanggans.rute_id');
         $rekap->leftjoin('desas', 'desas.id', '=', 'pelanggans.desa_id');
         $rekap->leftjoin('kecamatans', 'kecamatans.id', '=', 'desas.kecamatan_id');

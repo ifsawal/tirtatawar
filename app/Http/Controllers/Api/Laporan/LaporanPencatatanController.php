@@ -69,6 +69,7 @@ class LaporanPencatatanController extends Controller
         }
 
         $catat->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+        $catat->whereNull('pelanggans.deleted_at');
 
 
         $catat->join('users', 'users.id', '=', 'pencatatans.user_id');

@@ -47,6 +47,7 @@ class LaporanPelangganExport implements FromCollection, WithHeadings, WithColumn
             "Rute Air",
             "Desa",
             "Kecamatan",
+            "Petugas",
         ];
     }
 
@@ -63,6 +64,7 @@ class LaporanPelangganExport implements FromCollection, WithHeadings, WithColumn
             'H' => 15,
             'I' => 20,
             'J' => 15,
+            'K' => 15,
             'L' => 15,
         ];
     }
