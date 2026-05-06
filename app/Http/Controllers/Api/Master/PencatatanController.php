@@ -672,6 +672,26 @@ class PencatatanController extends Controller
         ]);
 
 
+        $input = Carbon::now()->startOfMonth()->format('Y-m');
+        // $sekarang = Carbon::now()->startOfMonth(); //tanggal nya tetap 1 bulan di sesuaikan //ini tidak boleh di pake lagi ya.. resiko
+        // $tambahbulan = $sekarang->copy()->addMonth()->format('Y-m'); //tambah 1 bulan ke depan dari sekarang
+
+        $syarat = ['tahun_buka', 'superadmin_buka', 'buka_semua', 'buka_satu', 'buka_satu_user','tgl_mulai_input'];
+        $atur = Pengaturan::whereIn('aturan', $syarat)->get();
+        $filter = collect($atur)
+            ->whereIn('aturan', $syarat)
+            ->pluck('value', 'aturan');
+
+        $tgl_mulai_input = $filter['tgl_mulai_input'];
+
+        if (date('Y-m') == $input && date('d') <= $tgl_mulai_input) { //batasan tgl mulai input
+            return response()->json([
+                "sukses" => false,
+                "pesan" => "Pencatatan meteraan bulan " . $input . " belum dibuka...",
+                "kode" => 2,
+            ], 404);
+        }
+
 
 
         $pelanggan = Pelanggan::where("id", $request->pelanggan_id)->first();
