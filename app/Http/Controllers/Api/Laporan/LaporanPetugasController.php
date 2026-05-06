@@ -285,11 +285,6 @@ class LaporanPetugasController extends Controller
         foreach ($user as $u) {
             $data = $this->ambil_data($r, $u['id'], $pdam_id, true);
 
-            if ($data['sukses'] == false) continue;
-
-            $tagih_lapangan = (int)$this->tagih_lapangan($u['id'], $r);
-
-
             $lap = LapBayar::where('bulan', $r->bulan)
                 ->where('tahun', $r->tahun)
                 ->where('user_id', $u['id'])
@@ -299,6 +294,17 @@ class LaporanPetugasController extends Controller
                     $q->whereNull('jenis');
                 })
                 ->first();
+
+            if ($data['sukses'] == false) {
+                //jika ada perubahan pertugas di pelanggan, kemudian 1 petugas gak punya pelanggan lagi, lap_bayar lamanya harus di hapus
+                if ($lap) {
+                    $lap->delete();
+                }
+                continue;
+            }
+
+            $tagih_lapangan = (int)$this->tagih_lapangan($u['id'], $r);
+
             if (!$lap) {
                 $lap = new LapBayar();
             }
