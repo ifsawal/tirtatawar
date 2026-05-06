@@ -40,6 +40,7 @@ class LaporanBelumBayarExport implements FromCollection, WithHeadings, WithColum
             "Nama Pelanggan",
             "Golongan",
             "Wil/Jalan",
+            "Petugas",
             "1",
             "2",
             "3",
@@ -63,7 +64,7 @@ class LaporanBelumBayarExport implements FromCollection, WithHeadings, WithColum
             'B' => 30,
             'C' => 25,
             'D' => 30,
-            'E' => 10,
+            'E' => 30,
             'F' => 10,
             'G' => 10,
             'H' => 10,
@@ -75,6 +76,7 @@ class LaporanBelumBayarExport implements FromCollection, WithHeadings, WithColum
             'O' => 10,
             'P' => 10,
             'Q' => 15,
+            'R' => 15,
         ];
     }
 }

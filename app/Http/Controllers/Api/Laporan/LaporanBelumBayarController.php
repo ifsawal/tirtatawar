@@ -37,9 +37,9 @@ class LaporanBelumBayarController extends Controller
         $batas_akhir = date("Y-m-t", strtotime($batas_data_diambil));
 
         if($r->jenis == "hapus"){
-            $pel = Pelanggan::onlyTrashed()->with(['golongan:id,golongan','wiljalan:id,jalan',])->get();
+            $pel = Pelanggan::onlyTrashed()->with(['golongan:id,golongan','wiljalan:id,jalan','petugas:id,nama'])->get();
         } else {
-            $pel = Pelanggan::with(['golongan:id,golongan','wiljalan:id,jalan',])->get();
+            $pel = Pelanggan::with(['golongan:id,golongan','wiljalan:id,jalan','petugas:id,nama'])->get();
         }
 
         $has = [];
@@ -97,6 +97,7 @@ class LaporanBelumBayarController extends Controller
                 'nama' => $p->nama,
                 'golongan' => $p->golongan->golongan,
                 'wiljalan' => $p->wiljalan->jalan,
+                'petugas' => $p->petugas->nama,
             ];
 
             $c['total'] = "=SUM(E$kolom_awal:P$kolom_awal)";
