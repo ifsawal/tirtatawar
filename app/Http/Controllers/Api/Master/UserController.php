@@ -46,12 +46,27 @@ class UserController extends Controller
             ], 202);
     }
 
+    public function user_petugas()
+    {
+        $user = Auth::user();
+        $user = User::role('petugas')
+            ->where('pdam_id', $user->pdam_id)
+            ->select('id', 'nama', 'email')
+            ->orderBy('nama', 'DESC')
+            ->get();
+
+        return response()
+            ->json([
+                'sukses' => true,
+                'pesan' => "User ditemukan...",
+                'data' => $user,
+            ], 202);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
