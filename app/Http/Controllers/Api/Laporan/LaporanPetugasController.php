@@ -42,6 +42,11 @@ class LaporanPetugasController extends Controller
         $data->join('pencatatans', 'pencatatans.pelanggan_id', '=', 'pelanggans.id');
         $data->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
         $data->where('pelanggans.user_id_petugas', '=', $user_id);
+        if (isset($r->jenis) && $r->jenis == "hapus") {
+        } else {
+            $data->whereNull('pelanggans.deleted_at');
+        }
+
 
         isset($r->golongan_id) ? $data->where('pelanggans.golongan_id', '=', $r->golongan_id) : '';
         isset($r->wiljalan_id) ? $data->where('pelanggans.wiljalan_id', '=', $r->wiljalan_id) : '';
