@@ -41,6 +41,7 @@ class LaporanBulananController extends Controller
                 'users.nama as nama_user',
                 'tagihans.total_nodenda',
                 'tagihans.denda',
+                'pemilik.nama as petugas_pemilik',
 
             );
         } else {
@@ -61,6 +62,7 @@ class LaporanBulananController extends Controller
 
         $catat->join('tagihans', 'tagihans.pencatatan_id', '=', 'pencatatans.id');
         $catat->join('pelanggans', 'pelanggans.id', '=', 'pencatatans.pelanggan_id');
+        $catat->join('users as pemilik', 'pemilik.id', '=', 'pelanggans.user_id_petugas');
         if ($r->jenis == "hapus") {
             $catat->whereNotNull('pelanggans.deleted_at');
         } else {
@@ -116,6 +118,7 @@ class LaporanBulananController extends Controller
                     "denda"              => $denda,
                     "denda_pembayaran"              => $denda_pembayaran,
                     "nama_user"              => $d->nama_user,
+                    "petugas_pemilik"              => $d->petugas_pemilik,
 
                 ];
             }

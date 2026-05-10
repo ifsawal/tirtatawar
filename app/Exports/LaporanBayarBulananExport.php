@@ -46,6 +46,7 @@ class LaporanBayarBulananExport implements FromCollection, WithHeadings, WithCol
             "Denda",
             "Denda + Pembayaran",
             "Penagih",
+            "Petugas Pemilik",
         ];
     }
 
